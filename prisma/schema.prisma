@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  accounts  Account[]
+  notes     Note[]
+  password  Password?
+}
+
+model Password {
+  hash   String
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  title     String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id        Int     @id @default(autoincrement())
+  name      String
+  price     Decimal
+  mainImage String
+}
+
+model Account {
+  id           String        @id @default(cuid())
+  userId       String
+  type         String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  name         String
+  balance      Decimal       @db.Decimal(10, 2)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+}
+
+model Transaction {
+  id        String   @id @default(cuid())
+  accountId String
+  date      DateTime
+  payee     String
+  category  String
+  memo      String
+  inflow    Decimal  @db.Decimal(10, 2)
+  outflow   Decimal  @db.Decimal(10, 2)
+  userId    String
+  account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id           String  @id @default(cuid())
+  userId       String
+  spent        Decimal
+  due          Decimal
+  frequency    String
+  name         String
+  currentValue Decimal
+  maxValue     Decimal
+}
