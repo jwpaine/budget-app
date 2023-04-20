@@ -7,7 +7,7 @@ import {
   useActionData,
   useFetcher,
 } from "@remix-run/react";
-import invariant from "tiny-invariant";
+// import invariant from "tiny-invariant";
 import * as React from "react";
 import { getAccount } from "~/models/account.server";
 import { requireUserId } from "~/session.server";
@@ -25,7 +25,7 @@ import { Decimal } from "@prisma/client/runtime";
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
-  invariant(params.accountId, "Account not found");
+  // invariant(params.accountId, "Account not found");
 
   const account = await getAccount({ userId, id: params.accountId });
   if (!account) {

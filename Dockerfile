@@ -17,7 +17,6 @@ RUN npm install --production=false
 
 # Setup production node_modules
 FROM base as production-deps
-
 WORKDIR /myapp
 
 COPY --from=deps /myapp/node_modules /myapp/node_modules

@@ -1,6 +1,5 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import invariant from "tiny-invariant";
 
 import { deleteAccount } from "~/models/account.server";
 import { requireUserId } from "~/session.server";

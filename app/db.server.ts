@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import invariant from "tiny-invariant";
-
+// import invariant from "tiny-invariant";
+const prismaClient = new PrismaClient()
 let prisma: PrismaClient;
 
 declare global {
@@ -23,7 +23,8 @@ if (process.env.NODE_ENV === "production") {
 function getClient() {
   console.log("getting client...");
   const { DATABASE_URL } = process.env;
-  invariant(typeof DATABASE_URL === "string", "DATABASE_URL env var not set");
+  console.log(`DATABASE_URL: ${DATABASE_URL}`)
+  // invariant(typeof DATABASE_URL === "string", "DATABASE_URL env var not set");
 
   const databaseUrl = new URL(DATABASE_URL);
 
