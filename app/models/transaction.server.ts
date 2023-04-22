@@ -15,6 +15,27 @@ export function getTransactions({
   });
 }
 
+export function generateOutflowTransactionCategories({
+  userId
+}: {
+  userId: User["id"];
+}) {
+  return prisma.transaction.groupBy({
+    by: ['category'],
+    _sum: {
+      outflow: true,
+    },
+    orderBy: [{ _sum: { outflow: 'desc' } }],
+    where: { 
+      userId,  
+      outflow: { gt: 0},
+      category: {
+        not: undefined || ""
+      }
+    }
+  })
+}
+
 export function createTransaction({
   accountId,
   date,

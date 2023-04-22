@@ -8,9 +8,7 @@ import { requireUserId } from "~/session.server";
 import NewTransactionPage from "../../components/transactions/new";
 
 import {
-  createTransaction,
-  getTransactions,
-  deleteTransaction,
+  createTransaction
 } from "~/models/transaction.server";
 import { incrementAccountBalance } from "~/models/account.server";
 import { Decimal } from "@prisma/client/runtime";

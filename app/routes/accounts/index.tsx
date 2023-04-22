@@ -12,20 +12,29 @@ import {
 // import invariant from "tiny-invariant";
 import * as React from "react";
 import { getAccount } from "~/models/account.server";
-import { requireUserId } from "~/session.server";
+import { requireUserId, } from "~/session.server";
+
+import { useOptionalUser } from "~/utils";
 
 import NewTransactionPage from "../../components/transactions/new";
 import { getCategories } from "~/models/category.server";
 import { Decimal } from "@prisma/client/runtime";
 
-export async function loader({ request, params }: LoaderArgs) {
-  const userId = await requireUserId(request);
-  const categories = await getCategories({ userId });
+import {
+  generateOutflowTransactionCategories
+} from "~/models/transaction.server";
 
-  return json({ userId, categories });
+
+export async function loader({ request, params }: LoaderArgs) {
+  
+  const userId = await requireUserId(request);
+ // const categories = await getCategories({ userId });
+ const outflowCategories = await generateOutflowTransactionCategories({userId})
+  return json({ userId, outflowCategories});
 }
 
 export default function Budget() {
+  const user = useOptionalUser()
   const data = useLoaderData<typeof loader>();
 
   const nameRef = React.useRef<HTMLInputElement>(null);
@@ -39,6 +48,14 @@ export default function Budget() {
 
   return (
     <div className="w-full bg-slate-200">
+
+      {data.outflowCategories?.map((c) => {
+        return <div>
+          {JSON.stringify(c)}
+        </div>
+      })}
+
+      {user?.email}
       <category.Form method="post" action="/category/new">
         <input ref={nameRef} name="name" placeholder="Name" />
         <input ref={maxValueRef} name="maxValue" placeholder="Amount" />
@@ -50,43 +67,50 @@ export default function Budget() {
         <button type="submit">Add Category</button>
       </category.Form>
 
-      {data.categories?.map((c) => {
-        return (
-          <div
-            className={`border-bottom my-0.5 flex flex-col border-slate-300 px-3 py-0.5 hover:bg-slate-100`}
-            key={c.id}
-          >
-            <div className="flex justify-between">
-              <div>
-                <span className="text-s font-bold text-slate-800">
-                  {c.name || "-"}
-                </span>
-                <span className="text-s m-left-4 text-slate-800">
-                  Needed: {c.maxValue || "-"}
-                </span>
-              </div>
 
-              <span className={`text-black`}>{Number(c.currentValue)}</span>
-            </div>
 
-            <div className="flex justify-between">
-              <span className="text-xs text-slate-800">
-                Due: {new Date(c.due).toISOString().slice(0, 10)}
-              </span>
-              <category.Form method="post" action="/category/delete">
-                <input name="id" defaultValue={c.id} type="hidden" />
-                <button type="submit">X</button>
-              </category.Form>
-            </div>
-
-            {/* <p>CurrentValue: {c.currentValue}</p>
-                            <p>MaxValue: {c.maxValue}</p>
-                            <p>Spent: {c.spent}</p>
-                            <p>Due: {c.due}</p>
-                            <p>Frequency: {c.frequency}</p> */}
-          </div>
-        );
-      })}
+   
     </div>
   );
 }
+
+
+// {data.categories?.map((c) => {
+//   return (
+//     <div
+//       className={`border-bottom my-0.5 flex flex-col border-slate-300 px-3 py-0.5 hover:bg-slate-100`}
+//       key={c.id}
+//     >
+//       <div className="flex justify-between">
+//         <div>
+//           <span className="text-s font-bold text-slate-800">
+//             {c.name || "-"}
+//           </span>
+//           <span className="text-s m-left-4 text-slate-800">
+//             Needed: {c.maxValue || "-"}
+//           </span>
+//         </div>
+
+//         <span className={`text-black`}>{Number(c.currentValue)}</span>
+//       </div>
+
+//       <div className="flex justify-between">
+//         <span className="text-xs text-slate-800">
+//           Due: {new Date(c.due).toISOString().slice(0, 10)}
+//         </span>
+//         <category.Form method="post" action="/category/delete">
+//           <input name="id" defaultValue={c.id} type="hidden" />
+//           <button type="submit">X</button>
+//         </category.Form>
+//       </div>
+
+//       {/* <p>CurrentValue: {c.currentValue}</p>
+//                       <p>MaxValue: {c.maxValue}</p>
+//                       <p>Spent: {c.spent}</p>
+//                       <p>Due: {c.due}</p>
+//                       <p>Frequency: {c.frequency}</p> */}
+//     </div>
+//   );
+// })}
+
+
