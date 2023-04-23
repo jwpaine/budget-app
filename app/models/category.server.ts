@@ -3,10 +3,30 @@ import type { User } from "@prisma/client";
 import { prisma } from "~/db.server";
 
 export function getCategories({ userId }: { userId: User["id"] }) {
+  
+  
+  let transactionCategories = prisma.transaction.groupBy({
+    by: ['category'],
+    _sum: {
+      outflow: true,
+      inflow: true,
+    },
+ //   orderBy: [{ _sum: { outflow: 'desc' } }],
+    where: { 
+      userId,  
+      category: {
+        not: undefined || ""
+      }
+    },
+  })
+  
   return prisma.category.findMany({
     where: { userId },
   });
 }
+
+
+
 
 export function createCategory({
   name,
