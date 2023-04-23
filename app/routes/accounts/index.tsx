@@ -26,11 +26,11 @@ import { Decimal } from "@prisma/client/runtime";
 
 
 export async function loader({ request, params }: LoaderArgs) {
-  
+
   const userId = await requireUserId(request);
- const categories = await getCategories({ userId });
- // const outflowCategories = await generateTransactionCategories({userId})
-  return json({ userId, categories});
+  const categories = await getCategories({ userId });
+  // const outflowCategories = await generateTransactionCategories({userId})
+  return json({ userId, categories });
 }
 
 export default function Budget() {
@@ -63,32 +63,38 @@ export default function Budget() {
       </category.Form>
 
       {data.categories?.map((c) => {
-  return (
-    <div
-      className={`border-bottom my-0.5 flex flex-col border-slate-300 px-3 py-0.5 hover:bg-slate-100`}
-      key={c.id}
-    >
-      <div className="flex justify-between">
-          <span className="text-s font-bold text-slate-800">
-            {c.name || "-"}
-          </span>
-      </div>
+        return (
+          <div
+            className={`border-bottom my-0.5 flex flex-col border-slate-300 px-3 py-0.5 hover:bg-slate-100`}
+            key={c.id}
+          >
+            <div className="flex justify-between">
+              <span className="text-s font-bold text-slate-800">
+                Name: {c.category || "-"}
+              </span>
+              <span className="text-s font-bold text-slate-800">
+                outflow: {c.outflow}
+              </span>
+              <span className="text-s font-bold text-slate-800">
+                inflow: {c.inflow}
+              </span>
+            </div>
 
-      <div className="flex justify-between">
-        <category.Form method="post" action="/category/delete">
-          <input name="id" defaultValue={c.id} type="hidden" />
-          <button type="submit">X</button>
-        </category.Form>
-      </div>
+            <div className="flex justify-between">
+              <category.Form method="post" action="/category/delete">
+                <input name="id" defaultValue={c.id} type="hidden" />
+                <button type="submit">X</button>
+              </category.Form>
+            </div>
 
-      {/* <p>CurrentValue: {c.currentValue}</p>
+            {/* <p>CurrentValue: {c.currentValue}</p>
                       <p>MaxValue: {c.maxValue}</p>
                       <p>Spent: {c.spent}</p>
                       <p>Due: {c.due}</p>
                       <p>Frequency: {c.frequency}</p> */}
-    </div>
-  );
-})}
+          </div>
+        );
+      })}
     </div>
   );
 }
