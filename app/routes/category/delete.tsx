@@ -14,6 +14,8 @@ export async function action({ request, params }: ActionArgs) {
 
   const id = formData.get("id") as string;
 
+  console.log('deleting category:', id)
+
   const t = await deleteCategory({ id, userId });
 
   return redirect(`/accounts`);

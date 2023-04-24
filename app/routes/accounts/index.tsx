@@ -17,7 +17,9 @@ import { requireUserId, } from "~/session.server";
 import { useOptionalUser } from "~/utils";
 
 import NewTransactionPage from "../../components/transactions/new";
-import { getCategories } from "~/models/category.server";
+import { getCategories} from "~/models/category.server";
+import {getUncategorizedTransactions } from "~/models/transaction.server";
+
 import { Decimal } from "@prisma/client/runtime";
 
 // import {
@@ -29,8 +31,10 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const userId = await requireUserId(request);
   const categories = await getCategories({ userId });
+  const uncategorized = await getUncategorizedTransactions({ userId });
+
   // const outflowCategories = await generateTransactionCategories({userId})
-  return json({ userId, categories });
+  return json({ userId, categories, uncategorized });
 }
 
 export default function Budget() {
@@ -62,6 +66,12 @@ export default function Budget() {
         <button type="submit">Add Category</button>
       </category.Form>
 
+      
+      
+      {data.uncategorized?.map((un) => {
+        return (
+          <div>{JSON.stringify(un)}</div>)
+        })}
       {data.categories?.map((c) => {
         return (
           <div

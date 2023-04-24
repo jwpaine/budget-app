@@ -22,10 +22,12 @@ export async function action({ request, params }: ActionArgs) {
   const accountId = formData.get("accountId") as string;
   const date = new Date(formData.get("date") as string) as Date;
   const payee = (formData.get("payee") as string) || "";
-  const category = (formData.get("category") as string) || "";
+  const category = (formData.get("category") as string) || "Uncategorized";
   const memo = (formData.get("memo") as string) || "";
-  const inflow = Number(formData.get("inflow")) || 0;
-  const outflow = Number(formData.get("outflow")) || 0;
+  const inflow = ( Number(formData.get("inflow")).toFixed(2) || 0 ) as number;
+  const outflow = ( Number(formData.get("outflow")).toFixed(2) || 0 ) as number;
+
+
 
   // @TODO: To/From payee = account transfers
   // create transaction
@@ -40,7 +42,9 @@ export async function action({ request, params }: ActionArgs) {
     userId,
   });
   // update account balance
-  const value = inflow > 0 ? inflow : -outflow;
+  const value = inflow > 0 ? inflow : -outflow
+
+  console.log('value:', value)
   let id = accountId as string;
   const a = await incrementAccountBalance({ id, userId, value });
 

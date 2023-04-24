@@ -2,17 +2,24 @@ import type { User } from "@prisma/client";
 
 import { prisma } from "~/db.server";
 
+export function getCategoryNames({ userId }: { userId: User["id"] }) {
+  return prisma.category.findMany({
+    where: { userId },
+    select: {name : true}
+  });
+}
+
 export function getCategories({ userId }: { userId: User["id"] }) {
-  
 
   const categories = prisma.$queryRaw`SELECT 
     category.name as category,
+    category.id as id,
     SUM(transaction.outflow) as outflow,
     SUM(transaction.inflow) as inflow
     FROM "Category" as category 
     LEFT JOIN "Transaction" as transaction on transaction.category = category.name
-    WHERE transaction."userId" = ${userId} 
-    GROUP BY category.name
+    WHERE category."userId" = ${userId} 
+    GROUP BY category.id
     ORDER BY outflow desc
   `
   
@@ -22,6 +29,7 @@ export function getCategories({ userId }: { userId: User["id"] }) {
 
 
 
+// , select: {name : true}
 export function createCategory({
   name,
   userId,

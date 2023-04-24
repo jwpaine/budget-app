@@ -15,7 +15,18 @@ export function getTransactions({
   });
 }
 
+export function getUncategorizedTransactions({ userId }: { userId: User["id"] }) {
 
+  // get Uncategorized
+
+  const category = "Uncategorized"
+
+  return prisma.transaction.findMany({
+    where: { userId, category }
+  });
+
+
+}
 
 
 export function createTransaction({

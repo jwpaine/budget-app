@@ -11,6 +11,7 @@ import {
 import * as React from "react";
 import { getAccount } from "~/models/account.server";
 import { requireUserId } from "~/session.server";
+import { getCategoryNames } from "~/models/category.server";
 import NewTransactionPage from "../../components/transactions/new";
 
 import {
@@ -32,6 +33,8 @@ export async function loader({ request, params }: LoaderArgs) {
     return redirect("/accounts");
   }
 
+  const categories = await getCategoryNames({ userId })
+
   const transactions = await getTransactions({
     userId,
     accountId: params.accountId,
@@ -41,7 +44,7 @@ export async function loader({ request, params }: LoaderArgs) {
     return redirect("/accounts");
   }
 
-  return json({ userId, account, transactions });
+  return json({ userId, account, transactions, categories });
 }
 
 export default function AccountDetailsPage() {
@@ -202,6 +205,14 @@ export default function AccountDetailsPage() {
       )}
 
       <h3>Transactions length: {data.transactions.length}</h3>
+
+      {JSON.stringify(data.categories)}
+
+      {/* {data.categoryNames?.map((cName) => {
+        return <span>{cName}</span>
+      })} */}
+
+     
 
       <transaction.Form
         className=" flex flex-wrap justify-center bg-sky-500 p-1"

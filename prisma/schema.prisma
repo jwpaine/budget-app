@@ -76,3 +76,8 @@ model Category {
   currentValue Decimal
   maxValue     Decimal
 }
+
+
+// alter table public."Account" alter column balance set data type numeric(10,2);
+// alter table public."Transaction" alter column inflow set data type numeric(10,2);
+// alter table public."Transaction" alter column outflow set data type numeric(10,2);
