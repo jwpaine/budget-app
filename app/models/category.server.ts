@@ -5,7 +5,7 @@ import { prisma } from "~/db.server";
 export function getCategoryNames({ userId }: { userId: User["id"] }) {
   return prisma.category.findMany({
     where: { userId },
-    select: {name : true}
+    select: {name : true, id : true}
   });
 }
 
@@ -14,10 +14,11 @@ export function getCategories({ userId }: { userId: User["id"] }) {
   const categories = prisma.$queryRaw`SELECT 
     category.name as category,
     category.id as id,
+    category."currentValue" as "currentValue",
     SUM(transaction.outflow) as outflow,
     SUM(transaction.inflow) as inflow
     FROM "Category" as category 
-    LEFT JOIN "Transaction" as transaction on transaction.category = category.name
+    LEFT JOIN "Transaction" as transaction on transaction.category = category.id
     WHERE category."userId" = ${userId} 
     GROUP BY category.id
     ORDER BY outflow desc

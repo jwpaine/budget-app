@@ -206,13 +206,6 @@ export default function AccountDetailsPage() {
 
       <h3>Transactions length: {data.transactions.length}</h3>
 
-      {JSON.stringify(data.categories)}
-
-      {/* {data.categoryNames?.map((cName) => {
-        return <span>{cName}</span>
-      })} */}
-
-     
 
       <transaction.Form
         className=" flex flex-wrap justify-center bg-sky-500 p-1"
@@ -237,12 +230,19 @@ export default function AccountDetailsPage() {
           className="m-1"
         />
 
-        <input
+        {/* <input
           ref={categoryRef}
           name="category"
           placeholder="Category"
           className="m-1"
-        />
+        /> */}
+        <select name="category">
+          {
+            data.categories?.map((c) => {
+              return <option value={c.id} key={c.id}>{c.name}</option>
+            })
+          }
+        </select>
 
         <input ref={memoRef} name="memo" placeholder="Memo" className="m-1" />
 
@@ -285,13 +285,22 @@ export default function AccountDetailsPage() {
               className="m-1"
             />
 
-            <input
+            {/* <input
               ref={categoryRef}
               name="category"
               defaultValue={t.category}
               placeholder="Category"
               className="m-1"
-            />
+            /> */}
+
+            <select name="category">
+              {
+                data.categories?.map((c) => {
+                  return <option selected={t.category == c.id} value={c.id} key={c.id}>{c.name}</option>
+                })
+              }
+            </select>
+
 
             <input
               ref={memoRef}
@@ -345,9 +354,8 @@ export default function AccountDetailsPage() {
         ) : (
           <div
             onClick={() => setActiveTransaction(t.id)}
-            className={`border-bottom my-0.5 flex flex-col border-slate-300 px-3 py-0.5 ${
-              Number(t.inflow) && "bg-emerald-100 hover:bg-emerald-200"
-            } hover:bg-slate-100 `}
+            className={`border-bottom my-0.5 flex flex-col border-slate-300 px-3 py-0.5 ${Number(t.inflow) && "bg-emerald-100 hover:bg-emerald-200"
+              } hover:bg-slate-100 `}
             key={t.id}
           >
             <div className="flex justify-between">
@@ -361,7 +369,13 @@ export default function AccountDetailsPage() {
                     `ml-1 rounded bg-white p-0.5 text-xs text-black`
                   }
                 >
-                  {t.category}
+                  {/* {t.category} */}
+
+                  {data.categories?.map((c) => {
+                    return t.category == c.id && c.name
+                    return <option selected={t.category == c.id} value={c.id} key={c.id}>{c.name}</option>
+                  })}
+
                 </span>
                 <span className="text-xs text-slate-800">{t.memo}</span>
               </div>
@@ -375,17 +389,6 @@ export default function AccountDetailsPage() {
                   {new Date(t.date).toISOString().slice(0, 10)}
                 </span>
               </div>
-              <transaction.Form method="post" action="/transaction/delete">
-                <input name="transactionId" defaultValue={t.id} type="hidden" />
-                <input
-                  name="accountId"
-                  defaultValue={data.account.id}
-                  type="hidden"
-                />
-                <button type="submit" className="px-2 py-1 text-slate-800">
-                  X
-                </button>
-              </transaction.Form>
             </div>
           </div>
         );

@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link, useMatches } from "@remix-run/react";
 
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -17,8 +17,8 @@ import { requireUserId, } from "~/session.server";
 import { useOptionalUser } from "~/utils";
 
 import NewTransactionPage from "../../components/transactions/new";
-import { getCategories} from "~/models/category.server";
-import {getUncategorizedTransactions } from "~/models/transaction.server";
+import { getCategories } from "~/models/category.server";
+import { getUncategorizedTransactions } from "~/models/transaction.server";
 
 import { Decimal } from "@prisma/client/runtime";
 
@@ -26,20 +26,27 @@ import { Decimal } from "@prisma/client/runtime";
 //   generateTransactionCategories
 // } from "~/models/transaction.server";
 
+export const useRouteData = (routeId: string) => {
+  const matches = useMatches()
+  const data = matches.find((match) => match.id === routeId)?.data
+
+  return data || undefined
+}
 
 export async function loader({ request, params }: LoaderArgs) {
 
   const userId = await requireUserId(request);
   const categories = await getCategories({ userId });
-  const uncategorized = await getUncategorizedTransactions({ userId });
+  //  const uncategorized = await getUncategorizedTransactions({ userId });
 
   // const outflowCategories = await generateTransactionCategories({userId})
-  return json({ userId, categories, uncategorized });
+  return json({ userId, categories });
 }
 
 export default function Budget() {
   const user = useOptionalUser()
   const data = useLoaderData<typeof loader>();
+  const parentData = useRouteData("routes/accounts")
 
   const nameRef = React.useRef<HTMLInputElement>(null);
   const maxValueRef = React.useRef<HTMLInputElement>(null);
@@ -50,9 +57,40 @@ export default function Budget() {
   const errors = actionData?.errors;
   const category = useFetcher();
 
-  return (
-    <div className="w-full bg-slate-200">
+  const [activeBudget, setActiveBudget] = React.useState("");
 
+  const renderBudgetTotals = () => {
+    if (!parentData.accounts || parentData.accounts.length == 0) return
+
+    let cash = 0;
+    let dept = 0;
+
+    let assigned = 0;
+
+    console.log("all category data: ", data.categories)
+
+    data.categories?.map((cat) => {
+      let c = Number(cat.currentValue);
+      console.log("incrementing assigned by: ", c)
+      assigned += c
+    });
+
+    parentData.accounts.map((account) => {
+      let v = Number(account.balance);
+      v > 0 ? (cash += v) : (dept += v);
+    });
+
+    const unAssigned = cash - assigned;
+
+    return (
+      <div>
+        <span>UnCategorized: {unAssigned}</span>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex w-full flex-col">
 
       {user?.email}
       <category.Form method="post" action="/category/new">
@@ -66,46 +104,105 @@ export default function Budget() {
         <button type="submit">Add Category</button>
       </category.Form>
 
-      
-      
-      {data.uncategorized?.map((un) => {
-        return (
-          <div>{JSON.stringify(un)}</div>)
-        })}
-      {data.categories?.map((c) => {
-        return (
-          <div
-            className={`border-bottom my-0.5 flex flex-col border-slate-300 px-3 py-0.5 hover:bg-slate-100`}
-            key={c.id}
+      {renderBudgetTotals()}
+
+
+      {
+        data.categories?.map((c) => {
+          return activeBudget == c.id ? (
+            <category.Form
+            className="flex flex-wrap justify-center bg-sky-500 p-1"
+            method="post"
+            action="/transaction/update"
+            onSubmit={() => setActiveBudget("")}
           >
-            <div className="flex justify-between">
-              <span className="text-s font-bold text-slate-800">
-                Name: {c.category || "-"}
-              </span>
-              <span className="text-s font-bold text-slate-800">
-                outflow: {c.outflow}
-              </span>
-              <span className="text-s font-bold text-slate-800">
-                inflow: {c.inflow}
-              </span>
-            </div>
+            <input
+              name="id"
+              defaultValue={c.id}
+              type="hidden"
+            />
+            
+            <input
+              name="name"
+              defaultValue={c.category}
+              placeholder="Category Name"
+              className="m-1"
+            />
 
-            <div className="flex justify-between">
-              <category.Form method="post" action="/category/delete">
-                <input name="id" defaultValue={c.id} type="hidden" />
-                <button type="submit">X</button>
-              </category.Form>
-            </div>
+            <input
 
-            {/* <p>CurrentValue: {c.currentValue}</p>
-                      <p>MaxValue: {c.maxValue}</p>
-                      <p>Spent: {c.spent}</p>
-                      <p>Due: {c.due}</p>
-                      <p>Frequency: {c.frequency}</p> */}
-          </div>
-        );
-      })}
+              name="currentValue"
+              defaultValue={c.currentValue}
+              placeholder="Budgeted"
+              className="m-1"
+            />
+
+            <button type="submit" className="rounded bg-sky-800 p-2 text-white">
+              Update Category
+            </button>
+            <button
+              type="button"
+              className="rounded bg-sky-800 p-2 text-white"
+              onClick={() => setActiveBudget("")}
+            >
+              Cancel
+            </button>
+            <category.Form method="post" action="/category/fakedelete">
+              <input name="id" defaultValue={c.id} type="hidden" />
+              <button
+                type="submit"
+                className="bg-red-400 px-2 py-1 text-slate-800"
+              >
+                Delete
+              </button>
+            </category.Form>
+          </category.Form>
+          ) : (
+            <div
+              onClick={() => setActiveBudget(c.id)}
+              className={`border-bottom my-0.5 flex flex-col border-slate-300 px-3 py-0.5 ${Number(c.inflow) && "bg-emerald-100 hover:bg-emerald-200"
+                } hover:bg-slate-100 `}
+              key={c.id}
+            >
+              <div className="flex justify-between">
+                <div>
+                  <span className="text-slac-800 text-s font-bold">
+                    {c.category || "-"}
+                  </span>
+                </div>
+                <span className={`text-black`}>
+                  Budgeted: {Number(c.inflow) + Number(c.currentValue)} | Spent: {Number(c.outflow)}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <div>
+                  <span className="text-xs text-slate-800">
+                    {new Date().toISOString().slice(0, 10)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ) 
+        })
+      }
+
+
+
+
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
   );
 }
 
