@@ -70,7 +70,7 @@ model Category {
   id           String  @id @default(cuid())
   userId       String
   spent        Decimal
-  due          Decimal
+  due          DateTime ?
   frequency    String
   name         String
   currentValue Decimal

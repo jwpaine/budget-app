@@ -70,9 +70,9 @@ export default function Budget() {
     console.log("all category data: ", data.categories)
 
     data.categories?.map((cat) => {
-     // let c = Number(cat.inflow) > 0 ? Number(cat.inflow) : Number(cat.currentValue);
-     let c = Number(cat.currentValue);
-     // console.log(`${cat.name} : ${cat.currentValue}`)
+      // let c = Number(cat.inflow) > 0 ? Number(cat.inflow) : Number(cat.currentValue);
+      let c = Number(cat.currentValue);
+      // console.log(`${cat.name} : ${cat.currentValue}`)
       assigned += c
     });
 
@@ -85,7 +85,7 @@ export default function Budget() {
 
     return (
       <div>
-        <span>To Be Budgeted: {unAssigned}</span>
+        <span>To Be Budgeted: {unAssigned.toFixed(2)}</span>
       </div>
     )
   }
@@ -112,52 +112,59 @@ export default function Budget() {
         data.categories?.map((c) => {
           return activeBudget == c.id ? (
             <category.Form
-            className="flex flex-wrap justify-center bg-sky-500 p-1"
-            method="post"
-            action="/category/update"
-            onSubmit={() => setActiveBudget("")}
-          >
-            <input
-              name="id"
-              defaultValue={c.id}
-              type="hidden"
-            />
-            
-            <input
-              name="name"
-              defaultValue={c.category}
-              placeholder="Category Name"
-              className="m-1"
-            />
-
-            <input
-
-              name="currentValue"
-              defaultValue={c.currentValue}
-              placeholder="Budgeted"
-              className="m-1"
-            />
-
-            <button type="submit" className="rounded bg-sky-800 p-2 text-white">
-              Update Category
-            </button>
-            <button
-              type="button"
-              className="rounded bg-sky-800 p-2 text-white"
-              onClick={() => setActiveBudget("")}
+              className="flex flex-wrap justify-center bg-sky-500 p-1"
+              method="post"
+              action="/category/update"
+              onSubmit={() => setActiveBudget("")}
             >
-              Cancel
-            </button>
-            <category.Form method="post" action="/category/fakedelete">
-              <input name="id" defaultValue={c.id} type="hidden" />
-              <button
-                type="submit"
-                className="bg-red-400 px-2 py-1 text-slate-800"
-              >
-                Delete
+              <input
+                name="id"
+                defaultValue={c.id}
+                type="hidden"
+              />
+
+              <input
+                name="name"
+                defaultValue={c.category}
+                placeholder="Category Name"
+                className="m-1"
+              />
+
+              <input
+
+                name="currentValue"
+                defaultValue={c.currentValue}
+                placeholder="Budgeted"
+                className="m-1"
+              />
+
+              <input
+                name="due"
+                defaultValue={new Date(c.due).toISOString().slice(0, 10)}
+                placeholder="Due Date"
+                className="m-1"
+              />
+
+              <button type="submit" className="rounded bg-sky-800 p-2 text-white">
+                Update Category
               </button>
+              <button
+                type="button"
+                className="rounded bg-sky-800 p-2 text-white"
+                onClick={() => setActiveBudget("")}
+              >
+                Cancel
+              </button>
+              <category.Form method="post" action="/category/delete">
+                <input name="id" defaultValue={c.id} type="hidden" />
+                <button
+                  type="submit"
+                  className="bg-red-400 px-2 py-1 text-slate-800"
+                >
+                  Delete
+                </button>
+              </category.Form>
             </category.Form>
-          </category.Form>
           ) : (
             <div
               onClick={() => setActiveBudget(c.id)}
@@ -175,19 +182,19 @@ export default function Budget() {
                   </span>
                 </div>
                 <span className={`text-black`}>
-                   Budgeted: {Number(c.currentValue)}, in: {Number(c.inflow)} out: {Number(c.outflow)}, Balance: {Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)}
+                  Budgeted: {Number(c.currentValue)}, in: {Number(c.inflow)} out: {Number(c.outflow)}, Balance: {Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)}
                   {/* in-out: {Number(c.inflow) - Number(c.outflow)} */}
                 </span>
               </div>
               <div className="flex justify-between">
                 <div>
                   <span className="text-xs text-slate-800">
-                    {new Date().toISOString().slice(0, 10)}
+                    {new Date(c.due).toISOString().slice(0, 10)}
                   </span>
                 </div>
               </div>
             </div>
-          ) 
+          )
         })
       }
 

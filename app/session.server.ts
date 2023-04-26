@@ -33,10 +33,12 @@ export async function getUserId(
 }
 
 export async function getUser(request: Request) {
+  console.log('getting user')
   const userId = await getUserId(request);
   if (userId === undefined) return null;
 
   const user = await getUserById(userId);
+  console.log("User", user)
   if (user) return user;
 
   throw await logout(request);

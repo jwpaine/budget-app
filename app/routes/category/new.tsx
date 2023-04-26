@@ -19,7 +19,7 @@ export async function action({ request, params }: ActionArgs) {
 
   const name = formData.get("name") as string;
   const maxValue = Number(formData.get("maxValue")) as number || 0;
-  const due = Number(formData.get("due"));
+  // const due = Number(formData.get("due"));
   const frequency = formData.get("frequency") as string || "M"
 
   const currentValue = 0;
@@ -30,7 +30,6 @@ export async function action({ request, params }: ActionArgs) {
     maxValue,
     currentValue,
     spent,
-    due,
     frequency,
     userId,
   });

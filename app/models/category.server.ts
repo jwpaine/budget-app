@@ -6,12 +6,14 @@ export async function updateCategory({
   id,
   userId,
   name,
-  currentValue
+  currentValue,
+  due
 }: {
   id: string;
   name: string,
   currentValue: number
-  userId: User["id"];
+  userId: User["id"]
+  due: Date
 }) {
   
   await prisma.category.updateMany({
@@ -23,7 +25,8 @@ export async function updateCategory({
       userId,
       id,
       name,
-      currentValue
+      currentValue,
+      due
     },
   });
 
@@ -42,6 +45,7 @@ export function getCategories({ userId }: { userId: User["id"] }) {
     category.name as category,
     category.id as id,
     category."currentValue" as "currentValue",
+    category.due as due,
     SUM(transaction.outflow) as outflow,
     SUM(transaction.inflow) as inflow
     FROM "Category" as category 
@@ -62,7 +66,6 @@ export function createCategory({
   name,
   userId,
   maxValue,
-  due,
   frequency,
   currentValue,
   spent,
@@ -70,7 +73,6 @@ export function createCategory({
   name: String;
   userId: User["id"];
   maxValue: Number;
-  due: Number;
   frequency: String;
   currentValue: Number;
   spent: Number;
@@ -80,7 +82,6 @@ export function createCategory({
       name,
       userId,
       maxValue,
-      due,
       frequency,
       currentValue,
       spent,
