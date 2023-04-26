@@ -145,6 +145,13 @@ export default function Budget() {
                 className="m-1"
               />
 
+              <input
+                name="needed"
+                defaultValue={c.needed}
+                placeholder="Needed"
+                className="m-1"
+              />
+
               <button type="submit" className="rounded bg-sky-800 p-2 text-white">
                 Update Category
               </button>
@@ -182,7 +189,8 @@ export default function Budget() {
                   </span>
                 </div>
                 <span className={`text-black`}>
-                  Budgeted: {Number(c.currentValue)}, in: {Number(c.inflow)} out: {Number(c.outflow)}, Balance: {Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)}
+                  Budgeted: {Number(c.currentValue)}, in: {Number(c.inflow)} out: {Number(c.outflow)}, Balance: {Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)},
+                  Needed: {Number(c.needed)}
                   {/* in-out: {Number(c.inflow) - Number(c.outflow)} */}
                 </span>
               </div>

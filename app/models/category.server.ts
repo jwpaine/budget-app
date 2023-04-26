@@ -7,11 +7,13 @@ export async function updateCategory({
   userId,
   name,
   currentValue,
+  maxValue,
   due
 }: {
   id: string;
   name: string,
-  currentValue: number
+  currentValue: number,
+  maxValue: number,
   userId: User["id"]
   due: Date
 }) {
@@ -26,6 +28,7 @@ export async function updateCategory({
       id,
       name,
       currentValue,
+      maxValue,
       due
     },
   });
@@ -46,6 +49,7 @@ export function getCategories({ userId }: { userId: User["id"] }) {
     category.id as id,
     category."currentValue" as "currentValue",
     category.due as due,
+    category."maxValue" as needed,
     SUM(transaction.outflow) as outflow,
     SUM(transaction.inflow) as inflow
     FROM "Category" as category 
