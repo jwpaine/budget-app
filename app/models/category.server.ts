@@ -2,6 +2,33 @@ import type { User } from "@prisma/client";
 
 import { prisma } from "~/db.server";
 
+export async function updateCategory({
+  id,
+  userId,
+  name,
+  currentValue
+}: {
+  id: string;
+  name: string,
+  currentValue: number
+  userId: User["id"];
+}) {
+  
+  await prisma.category.updateMany({
+    where: {
+      id,
+      userId,
+    },
+    data: {
+      userId,
+      id,
+      name,
+      currentValue
+    },
+  });
+
+}
+
 export function getCategoryNames({ userId }: { userId: User["id"] }) {
   return prisma.category.findMany({
     where: { userId },

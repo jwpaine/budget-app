@@ -70,8 +70,9 @@ export default function Budget() {
     console.log("all category data: ", data.categories)
 
     data.categories?.map((cat) => {
-      let c = Number(cat.currentValue);
-      console.log("incrementing assigned by: ", c)
+     // let c = Number(cat.inflow) > 0 ? Number(cat.inflow) : Number(cat.currentValue);
+     let c = Number(cat.currentValue);
+     // console.log(`${cat.name} : ${cat.currentValue}`)
       assigned += c
     });
 
@@ -84,7 +85,7 @@ export default function Budget() {
 
     return (
       <div>
-        <span>UnCategorized: {unAssigned}</span>
+        <span>To Be Budgeted: {unAssigned}</span>
       </div>
     )
   }
@@ -113,7 +114,7 @@ export default function Budget() {
             <category.Form
             className="flex flex-wrap justify-center bg-sky-500 p-1"
             method="post"
-            action="/transaction/update"
+            action="/category/update"
             onSubmit={() => setActiveBudget("")}
           >
             <input
@@ -160,8 +161,11 @@ export default function Budget() {
           ) : (
             <div
               onClick={() => setActiveBudget(c.id)}
-              className={`border-bottom my-0.5 flex flex-col border-slate-300 px-3 py-0.5 ${Number(c.inflow) && "bg-emerald-100 hover:bg-emerald-200"
-                } hover:bg-slate-100 `}
+              className={`border-bottom my-0.5 flex flex-col border-slate-300 px-3 py-0.5 
+                ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) == 0 && "bg-slate-200"} 
+                ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) > 0 && "bg-emerald-200"} 
+                ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) < 0 && "bg-rose-200"} 
+                hover:bg-slate-100 `}
               key={c.id}
             >
               <div className="flex justify-between">
@@ -171,7 +175,8 @@ export default function Budget() {
                   </span>
                 </div>
                 <span className={`text-black`}>
-                  Budgeted: {Number(c.inflow) + Number(c.currentValue)} | Spent: {Number(c.outflow)}
+                   Budgeted: {Number(c.currentValue)}, in: {Number(c.inflow)} out: {Number(c.outflow)}, Balance: {Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)}
+                  {/* in-out: {Number(c.inflow) - Number(c.outflow)} */}
                 </span>
               </div>
               <div className="flex justify-between">
