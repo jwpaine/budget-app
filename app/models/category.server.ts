@@ -56,7 +56,7 @@ export function getCategories({ userId }: { userId: User["id"] }) {
     LEFT JOIN "Transaction" as transaction on transaction.category = category.id
     WHERE category."userId" = ${userId} 
     GROUP BY category.id
-    ORDER BY outflow desc
+    ORDER BY due asc
   `
   
   return categories

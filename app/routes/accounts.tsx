@@ -27,7 +27,7 @@ export default function NotesPage() {
   return (
     <>
       <main className="flex h-full flex-col md:flex-row">
-        <section className="w-full border-r bg-sky-800 md:max-w-sm">
+        <section className="w-full border-r bg-sky-700 md:max-w-sm">
           <span>Cash: {cash.toFixed(2)}</span>
           <br />
           <span>Dept: {dept.toFixed(2)}</span>

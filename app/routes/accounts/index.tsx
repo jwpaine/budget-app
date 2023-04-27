@@ -71,7 +71,7 @@ export default function Budget() {
 
     data.categories?.map((cat) => {
       // let c = Number(cat.inflow) > 0 ? Number(cat.inflow) : Number(cat.currentValue);
-      let c = Number(cat.currentValue);
+      let c = Number(cat.currentValue) + Number(cat.inflow) - Number(cat.outflow);
       // console.log(`${cat.name} : ${cat.currentValue}`)
       assigned += c
     });
@@ -91,21 +91,23 @@ export default function Budget() {
   }
 
   return (
-    <div className="flex w-full flex-col">
-
-      {user?.email}
-      <category.Form method="post" action="/category/new">
-        <input ref={nameRef} name="name" placeholder="Name" />
-        {/* <input ref={maxValueRef} name="maxValue" placeholder="Amount" />
+    <section className="flex w-full flex-col">
+      <header className="bg-sky-800">
+        {user?.email}
+        <category.Form method="post" action="/category/new">
+          <input ref={nameRef} name="name" placeholder="Name" />
+          {/* <input ref={maxValueRef} name="maxValue" placeholder="Amount" />
 
         <input ref={dueRef} name="due" placeholder="Due On" />
 
         <input ref={frequencyRef} name="frequency" placeholder="Frequency" /> */}
 
-        <button type="submit">Add Category</button>
-      </category.Form>
+          <button type="submit">Add Category</button>
+        </category.Form>
 
-      {renderBudgetTotals()}
+        {renderBudgetTotals()}
+
+      </header>
 
 
       {
@@ -175,11 +177,11 @@ export default function Budget() {
           ) : (
             <div
               onClick={() => setActiveBudget(c.id)}
-              className={`border-bottom my-0.5 flex flex-col border-slate-300 px-3 py-0.5 
-                ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) == 0 && "bg-slate-200"} 
-                ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) > 0 && "bg-emerald-200"} 
-                ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) < 0 && "bg-rose-200"} 
-                hover:bg-slate-100 `}
+              className={`border-bottom my-0.5 flex flex-col border-slate-200 px-3 py-0.5 
+                ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) == 0 && "bg-slate-200 hover:bg-slate-300"} 
+                ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) > 0 && "bg-emerald-200 hover:bg-emerald-300"} 
+                ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) < 0 && "bg-rose-200 hover:bg-rose-300"} 
+                `}
               key={c.id}
             >
               <div className="flex justify-between">
@@ -209,7 +211,7 @@ export default function Budget() {
 
 
 
-    </div>
+    </section>
 
 
 
