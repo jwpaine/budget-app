@@ -62,8 +62,11 @@ export default function Budget() {
   const renderBudgetTotals = () => {
     if (!parentData.accounts || parentData.accounts.length == 0) return
 
-    let cash = 0;
-    let dept = 0;
+    let cash = 0 as number
+    let dept = 0 as number
+    let inflow = 0 as number
+    let outflow = 0 as number
+    let currentBalance = 0 as number
 
     let assigned = 0;
 
@@ -71,21 +74,26 @@ export default function Budget() {
 
     data.categories?.map((cat) => {
       // let c = Number(cat.inflow) > 0 ? Number(cat.inflow) : Number(cat.currentValue);
-      let c = Number(cat.currentValue) + Number(cat.inflow) - Number(cat.outflow);
-      // console.log(`${cat.name} : ${cat.currentValue}`)
-      assigned += c
+      currentBalance += Number(cat.currentValue)
+      inflow += Number(cat.inflow)
+      outflow += Number(cat.outflow)
+
     });
 
     parentData.accounts.map((account) => {
-      let v = Number(account.balance);
+      let v = Number(account.balance)
       v > 0 ? (cash += v) : (dept += v);
     });
 
-    const unAssigned = cash - assigned;
+ //   const unAssigned = cash - assigned;
 
     return (
       <div>
-        <span>To Be Budgeted: {unAssigned.toFixed(2)}</span>
+        <span className="text-white">Cash: {cash}</span> <br/>
+        <span className="text-white">Inflow: {inflow}</span> <br/>
+        <span className="text-white">Outflow: {outflow}</span> <br/>
+        <span className="text-white">Budgeted: {currentBalance}</span> <br/>
+        <span className="text-white">to be budgeted: {(cash - currentBalance + outflow - inflow).toFixed(2)}</span>
       </div>
     )
   }
@@ -135,7 +143,7 @@ export default function Budget() {
               <input
 
                 name="currentValue"
-                defaultValue={c.currentValue}
+                defaultValue={Number(c.currentValue)}
                 placeholder="Budgeted"
                 className="m-1"
               />
@@ -191,7 +199,10 @@ export default function Budget() {
                   </span>
                 </div>
                 <span className={`text-black`}>
-                  Budgeted: {Number(c.currentValue)}, in: {Number(c.inflow)} out: {Number(c.outflow)}, Balance: {Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)},
+                  Budgeted: {Number(c.currentValue)}, 
+                  {/* budgeted: {Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)} */}
+                  
+                  in: {Number(c.inflow)} out: {Number(c.outflow)}, Balance: {Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)},
                   Needed: {Number(c.needed)}
                   {/* in-out: {Number(c.inflow) - Number(c.outflow)} */}
                 </span>
