@@ -85,14 +85,14 @@ export default function Budget() {
       v > 0 ? (cash += v) : (dept += v);
     });
 
- //   const unAssigned = cash - assigned;
+    //   const unAssigned = cash - assigned;
 
     return (
       <div>
-        <span className="text-white">Cash: {cash}</span> <br/>
-        <span className="text-white">Inflow: {inflow}</span> <br/>
-        <span className="text-white">Outflow: {outflow}</span> <br/>
-        <span className="text-white">Budgeted: {currentBalance}</span> <br/>
+        <span className="text-white">Cash: {cash}</span> <br />
+        <span className="text-white">Inflow: {inflow}</span> <br />
+        <span className="text-white">Outflow: {outflow}</span> <br />
+        <span className="text-white">Budgeted: {currentBalance}</span> <br />
         <span className="text-white">to be budgeted: {(cash - currentBalance + outflow - inflow).toFixed(2)}</span>
       </div>
     )
@@ -114,6 +114,30 @@ export default function Budget() {
         </category.Form>
 
         {renderBudgetTotals()}
+
+        <div className={`border-bottom my-0.5 flex flex-col border-slate-200 px-3 py-0.5 bg-slate-300`}>
+          <div className="flex justify-between">
+            <div>
+              <span className="text-slac-800 text-s font-bold">
+                Category
+              </span>
+            </div>
+            <div className={`grid grid-cols-5 w-full max-w-xl `}>
+              <span>Budgeted</span>
+              <span> in </span>
+              <span> out </span>
+              <span> Balance </span>
+              <span> Needed </span>
+            </div>
+          </div>
+          <div className="flex justify-between">
+            <div>
+              <span className="text-xs text-slate-800">
+                Needed By Date
+              </span>
+            </div>
+          </div>
+        </div>
 
       </header>
 
@@ -198,14 +222,14 @@ export default function Budget() {
                     {c.category || "-"}
                   </span>
                 </div>
-                <span className={`text-black`}>
-                  Budgeted: {Number(c.currentValue)}, 
-                  {/* budgeted: {Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)} */}
-                  
-                  in: {Number(c.inflow)} out: {Number(c.outflow)}, Balance: {Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)},
-                  Needed: {Number(c.needed)}
+                <div className={`grid grid-cols-5 w-full max-w-xl `}>
+                  <span className={``}>{Number(c.currentValue) != 0 && Number(c.currentValue)}</span>
+                  <span className={``}>{Number(c.inflow) != 0 && Number(c.inflow)}</span>
+                  <span className={``}>{Number(c.outflow) != 0 && Number(c.outflow)}</span>
+                  <span className={``}>{(Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)) != 0 && Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)}</span>
+                  <span className={``}>{Number(c.needed) != 0 && Number(c.needed)}</span>
                   {/* in-out: {Number(c.inflow) - Number(c.outflow)} */}
-                </span>
+                </div>
               </div>
               <div className="flex justify-between">
                 <div>
