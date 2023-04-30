@@ -360,8 +360,7 @@ export default function AccountDetailsPage() {
         ) : (
           <div
             onClick={() => setActiveTransaction(t.id)}
-            className={`border-bottom my-0.5 flex flex-col border-slate-300 px-3 py-0.5 ${Number(t.inflow) && "bg-emerald-100 hover:bg-emerald-200"
-              } hover:bg-slate-100 `}
+            className={`mb-0.5 flex flex-col px-3 py-0.5 ${Number(t.inflow) > 0 ? "bg-emerald-100 hover:bg-emerald-200" : "bg-slate-200 hover:bg-slate-300"} `}
             key={t.id}
           >
             <div className="flex justify-between">
@@ -369,12 +368,9 @@ export default function AccountDetailsPage() {
                 <span className="text-slac-800 text-s font-bold">
                   {t.payee || "-"}
                 </span>
+                
                 <span
-                  className={
-                    t.category &&
-                    `ml-1 rounded bg-white p-0.5 text-xs text-black`
-                  }
-                >
+                  className={`ml-1 rounded ${t.category != "Uncategorized" && 'border border-slate-400 bg-white'} p-0.5 mr-2 text-sm text-black`}>
                   {/* {t.category} */}
 
                   {data.categories?.map((c) => {

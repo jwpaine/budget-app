@@ -59,6 +59,8 @@ export default function Budget() {
 
   const [activeBudget, setActiveBudget] = React.useState("");
 
+  const [confirmDelete, setConfirmDelete] = React.useState(false);
+
   const renderBudgetTotals = () => {
     if (!parentData.accounts || parentData.accounts.length == 0) return
 
@@ -81,12 +83,12 @@ export default function Budget() {
     });
 
     parentData.accounts.map((account) => {
-      if(account.type != 'loan') {
-       cash += Number(account.balance)
+      if (account.type != 'loan') {
+        cash += Number(account.balance)
       } else {
         dept += Number(account.balance)
       }
-     
+
       // v > 0 ? (cash += v) : (dept += v);
     });
 
@@ -132,13 +134,13 @@ export default function Budget() {
               </span>
             </div>
             <div className={`grid grid-cols-4 w-full max-w-xl `}>
-              <span className={`text-right`}>Budgeted </span>
-              <span className={`text-right`}> Activity </span>
-              <span className={`text-right`}> Balance </span>
-              <span className={`text-right`}> Needed </span>
+              <span className={`flex flex-col justify-center text-right`}>Budgeted </span>
+              <span className={`flex flex-col justify-center text-right`}> Activity </span>
+              <span className={`flex flex-col justify-center text-right`}> Balance </span>
+              <span className={`flex flex-col justify-center text-right`}> Needed </span>
             </div>
           </div>
-         
+
         </div>
 
       </header>
@@ -147,71 +149,102 @@ export default function Budget() {
       {
         data.categories?.map((c) => {
           return activeBudget == c.id ? (
-            <category.Form
-              className="flex flex-wrap justify-center bg-sky-500 p-1"
-              method="post"
-              action="/category/update"
-              onSubmit={() => setActiveBudget("")}
-            >
-              <input
-                name="id"
-                defaultValue={c.id}
-                type="hidden"
-              />
-
-              <input
-                name="name"
-                defaultValue={c.category}
-                placeholder="Category Name"
-                className="m-1"
-              />
-
-              <input
-
-                name="currentValue"
-                defaultValue={Number(c.currentValue)}
-                placeholder="Budgeted"
-                className="m-1"
-              />
-
-              <input
-                name="due"
-                defaultValue={new Date(c.due).toISOString().slice(0, 10)}
-                placeholder="Due Date"
-                className="m-1"
-              />
-
-              <input
-                name="needed"
-                defaultValue={c.needed}
-                placeholder="Needed"
-                className="m-1"
-              />
-
-              <button type="submit" className="rounded bg-sky-800 p-2 text-white">
-                Update Category
-              </button>
-              <button
-                type="button"
-                className="rounded bg-sky-800 p-2 text-white"
-                onClick={() => setActiveBudget("")}
-              >
-                Cancel
-              </button>
-              <category.Form method="post" action="/category/delete">
+            confirmDelete ?
+              <category.Form
+                className="flex flex-wrap justify-center bg-sky-700 p-1"
+                method="post"
+                action="/category/delete"
+                onSubmit={() => {
+                  setActiveBudget("")
+                  setConfirmDelete(false)
+                }
+                }>
+                <h3>Remove category {c.category}?</h3>
                 <input name="id" defaultValue={c.id} type="hidden" />
                 <button
                   type="submit"
                   className="bg-red-400 px-2 py-1 text-slate-800"
                 >
-                  Delete
+                  Confirm Delete
+                </button>
+                <button
+                  type="button"
+                  className="bg-green-400 px-2 py-1 text-slate-800"
+                  onClick={() => setConfirmDelete(false)}
+                >
+                  Cancel
                 </button>
               </category.Form>
-            </category.Form>
+              :
+              <category.Form
+                className="flex flex-wrap justify-center bg-sky-300 p-1"
+                method="post"
+                action="/category/update"
+                onSubmit={() => setActiveBudget("")}
+              >
+                <input
+                  name="id"
+                  defaultValue={c.id}
+                  type="hidden"
+                />
+
+                <input
+                  name="name"
+                  defaultValue={c.category}
+                  placeholder="Category Name"
+                  className="m-1"
+                />
+
+                <input
+
+                  name="currentValue"
+                  defaultValue={Number(c.currentValue)}
+                  placeholder="Budgeted"
+                  className="m-1"
+                />
+
+                <input
+                  name="due"
+                  defaultValue={new Date(c.due).toISOString().slice(0, 10)}
+                  placeholder="Due Date"
+                  className="m-1"
+                />
+
+                <input
+                  name="needed"
+                  defaultValue={c.needed}
+                  placeholder="Needed"
+                  className="m-1"
+                />
+
+                <button type="submit" className="rounded bg-sky-800 p-2 text-white">
+                  Update Category
+                </button>
+                <button
+                  type="button"
+                  className="rounded bg-sky-800 p-2 text-white"
+                  onClick={() => setActiveBudget("")}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="rounded bg-sky-800 p-2 text-white"
+                  onClick={() => setConfirmDelete(true)}
+                >
+                  Delete
+                </button>
+
+              </category.Form>
+
           ) : (
             <div
-              onClick={() => setActiveBudget(c.id)}
-              className={`border-bottom my-0.5 flex flex-col border-slate-200 px-3 py-0.5 
+              onClick={() => {
+                setConfirmDelete(false)
+                setActiveBudget(c.id)
+
+              }}
+              className={`mb-0.5 flex flex-col px-3 py-0.5 
                 ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) == 0 && "bg-slate-200 hover:bg-slate-300"} 
                 ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) > 0 && "bg-emerald-200 hover:bg-emerald-300"} 
                 ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) < 0 && "bg-rose-200 hover:bg-rose-300"} 
@@ -228,14 +261,14 @@ export default function Budget() {
                   </span>
                 </div>
                 <div className={`grid grid-cols-4 gap-4 w-full max-w-xl `}>
-                  <span className={`text-right `}>{Number(c.currentValue).toFixed(2)}</span>
-                  <span className={`text-right`}>{(Number(c.inflow) - Number(c.outflow)).toFixed(2)}</span>
-                  <span className={`text-right`}>{(Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)).toFixed(2)}</span>
-                  <span className={`text-right`}>{Number(c.needed)}</span>
+                  <span className={`flex flex-col justify-center text-right `}>{Number(c.currentValue).toFixed(2)}</span>
+                  <span className={`flex flex-col justify-center text-right`}>{(Number(c.inflow) - Number(c.outflow)).toFixed(2)}</span>
+                  <span className={`flex flex-col justify-center text-right`}>{(Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)).toFixed(2)}</span>
+                  <span className={`flex flex-col justify-center text-right`}>{Number(c.needed)}</span>
                   {/* in-out: {Number(c.inflow) - Number(c.outflow)} */}
                 </div>
               </div>
-             
+
             </div>
           )
         })
