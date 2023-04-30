@@ -12,6 +12,9 @@ import {
 import tailwindStylesheetUrl from "~/styles/tailwind.css";
 import { getUser } from "~/session.server";
 
+import Header  from "./components/Header"
+import Footer  from "./components/Footer"
+
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: tailwindStylesheetUrl },
 ];
@@ -30,10 +33,13 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
+        <Header />
         <Outlet />
+        {/* <Footer /> */}
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
+       
       </body>
     </html>
   );

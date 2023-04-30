@@ -123,26 +123,22 @@ export default function Budget() {
 
         <div className={`border-bottom my-0.5 flex flex-col border-slate-200 px-3 py-0.5 bg-slate-300`}>
           <div className="flex justify-between">
-            <div>
+            <div className="flex flex-col w-40">
               <span className="text-slac-800 text-s font-bold">
                 Category
               </span>
-            </div>
-            <div className={`grid grid-cols-5 w-full max-w-xl `}>
-              <span>Budgeted</span>
-              <span> in </span>
-              <span> out </span>
-              <span> Balance </span>
-              <span> Needed </span>
-            </div>
-          </div>
-          <div className="flex justify-between">
-            <div>
               <span className="text-xs text-slate-800">
                 Needed By Date
               </span>
             </div>
+            <div className={`grid grid-cols-4 w-full max-w-xl `}>
+              <span className={`text-right`}>Budgeted </span>
+              <span className={`text-right`}> Activity </span>
+              <span className={`text-right`}> Balance </span>
+              <span className={`text-right`}> Needed </span>
+            </div>
           </div>
+         
         </div>
 
       </header>
@@ -223,27 +219,23 @@ export default function Budget() {
               key={c.id}
             >
               <div className="flex justify-between">
-                <div>
+                <div className="flex flex-col w-40">
                   <span className="text-slac-800 text-s font-bold">
                     {c.category || "-"}
                   </span>
-                </div>
-                <div className={`grid grid-cols-5 w-full max-w-xl `}>
-                  <span className={``}>{Number(c.currentValue) != 0 && Number(c.currentValue).toFixed(2)}</span>
-                  <span className={``}>{Number(c.inflow) != 0 && Number(c.inflow).toFixed(2)}</span>
-                  <span className={``}>{Number(c.outflow) != 0 && Number(c.outflow).toFixed(2)}</span>
-                  <span className={``}>{(Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)) != 0 && (Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)).toFixed(2)}</span>
-                  <span className={``}>{Number(c.needed) != 0 && Number(c.needed)}</span>
-                  {/* in-out: {Number(c.inflow) - Number(c.outflow)} */}
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <div>
                   <span className="text-xs text-slate-800">
                     {new Date(c.due).toISOString().slice(0, 10)}
                   </span>
                 </div>
+                <div className={`grid grid-cols-4 gap-4 w-full max-w-xl `}>
+                  <span className={`text-right `}>{Number(c.currentValue).toFixed(2)}</span>
+                  <span className={`text-right`}>{(Number(c.inflow) - Number(c.outflow)).toFixed(2)}</span>
+                  <span className={`text-right`}>{(Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)).toFixed(2)}</span>
+                  <span className={`text-right`}>{Number(c.needed)}</span>
+                  {/* in-out: {Number(c.inflow) - Number(c.outflow)} */}
+                </div>
               </div>
+             
             </div>
           )
         })
