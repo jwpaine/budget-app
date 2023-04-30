@@ -17,8 +17,9 @@ export async function action({ request, params }: ActionArgs) {
 
   const id = formData.get("accountId") as string;
   const name = formData.get("name") as string;
+  const type = formData.get("type") as string;
 
-  const t = await updateAccount({ id, userId, name });
+  const t = await updateAccount({ id, userId, name, type });
 
   return redirect(`/accounts/${id}`);
 }

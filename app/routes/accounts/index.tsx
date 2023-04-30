@@ -81,19 +81,25 @@ export default function Budget() {
     });
 
     parentData.accounts.map((account) => {
-      let v = Number(account.balance)
-      v > 0 ? (cash += v) : (dept += v);
+      if(account.type != 'loan') {
+       cash += Number(account.balance)
+      } else {
+        dept += Number(account.balance)
+      }
+     
+      // v > 0 ? (cash += v) : (dept += v);
     });
 
     //   const unAssigned = cash - assigned;
 
     return (
       <div>
-        <span className="text-white">Cash: {cash}</span> <br />
-        <span className="text-white">Inflow: {inflow}</span> <br />
-        <span className="text-white">Outflow: {outflow}</span> <br />
-        <span className="text-white">Budgeted: {currentBalance}</span> <br />
+        <span className="text-white">Cash: {cash.toFixed(2)}</span> <br />
+        <span className="text-white">Inflow: {inflow.toFixed(2)}</span> <br />
+        <span className="text-white">Outflow: {outflow.toFixed(2)}</span> <br />
+        <span className="text-white">Budgeted: {currentBalance.toFixed(2)}</span> <br />
         <span className="text-white">to be budgeted: {(cash - currentBalance + outflow - inflow).toFixed(2)}</span>
+        {/* 10710.87 - 11906.23 + 2259.98 - 144 */}
       </div>
     )
   }
@@ -223,10 +229,10 @@ export default function Budget() {
                   </span>
                 </div>
                 <div className={`grid grid-cols-5 w-full max-w-xl `}>
-                  <span className={``}>{Number(c.currentValue) != 0 && Number(c.currentValue)}</span>
-                  <span className={``}>{Number(c.inflow) != 0 && Number(c.inflow)}</span>
-                  <span className={``}>{Number(c.outflow) != 0 && Number(c.outflow)}</span>
-                  <span className={``}>{(Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)) != 0 && Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)}</span>
+                  <span className={``}>{Number(c.currentValue) != 0 && Number(c.currentValue).toFixed(2)}</span>
+                  <span className={``}>{Number(c.inflow) != 0 && Number(c.inflow).toFixed(2)}</span>
+                  <span className={``}>{Number(c.outflow) != 0 && Number(c.outflow).toFixed(2)}</span>
+                  <span className={``}>{(Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)) != 0 && (Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)).toFixed(2)}</span>
                   <span className={``}>{Number(c.needed) != 0 && Number(c.needed)}</span>
                   {/* in-out: {Number(c.inflow) - Number(c.outflow)} */}
                 </div>

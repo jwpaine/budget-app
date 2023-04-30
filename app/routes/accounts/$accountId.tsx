@@ -165,6 +165,12 @@ export default function AccountDetailsPage() {
               type="hidden"
             />
             <input name="name" defaultValue={data.account.name} />
+            <select name="type">
+              <option value="checking" selected={data.account.type == "checking"} >Checking</option>
+              <option value="savings" selected={data.account.type == "savings"}>Savings</option>
+              <option value="cash" selected={data.account.type == "cash"}>Cash</option>
+              <option value="loan" selected={data.account.type == "loan"}>Loan / Credit Card</option>
+            </select>
             <button type="submit" className="bg-sky-600">
               Update
             </button>

@@ -10,7 +10,13 @@ export async function action({ request }: ActionArgs) {
   const userId = await requireUserId(request);
 
   const formData = await request.formData();
-  const name = formData.get("name");
+  const name = formData.get("name") as string
+  const type = formData.get("type") as string
+
+  console.log("received type: ", type)
+
+
+
   const balance = Number(formData.get("balance"));
 
   if (typeof name !== "string") {
@@ -24,7 +30,7 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  const note = await addAccount({ name, balance, userId });
+  const note = await addAccount({ name, type, balance, userId });
 
   return redirect(`/accounts`);
 }
@@ -86,6 +92,23 @@ export default function NewNotePage() {
         {actionData?.errors?.balance && (
           <div className="pt-1 text-red-700" id="title-error">
             {actionData.errors.balance}
+          </div>
+        )}
+      </div>
+
+      <div>
+        <label className="flex w-full flex-col gap-1">
+          <span>Account Type: </span>
+          <select name="type">
+            <option value="checking">Checking</option>
+            <option value="savings">Savings</option>
+            <option value="cash">Cash</option>
+            <option value="loan">Loan / Credit Card</option>
+          </select>
+        </label>
+        {actionData?.errors?.name && (
+          <div className="pt-1 text-red-700" id="title-error">
+            {actionData.errors.name}
           </div>
         )}
       </div>

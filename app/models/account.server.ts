@@ -9,7 +9,7 @@ export function getAccount({
   userId: User["id"];
 }) {
   return prisma.account.findFirst({
-    select: { id: true, name: true, balance: true },
+    select: { id: true, name: true, balance: true, type: true },
     where: { id, userId },
   });
 }
@@ -25,13 +25,13 @@ export function addAccount({
   name,
   balance,
   userId,
-}: Pick<Account, "id"> & {
-  userId: User["id"];
-}) {
+  type
+}: Pick<Account, "id"> & { userId: User["id"]; id: string; name: string, type: string, balance: number}) {
   return prisma.account.create({
     data: {
       name,
       balance,
+      type,
       user: {
         connect: {
           id: userId,
@@ -57,10 +57,11 @@ export function updateAccount({
   id,
   userId,
   name,
-}: Pick<Account, "id"> & { userId: User["id"]; id: string; name: string }) {
+  type
+}: Pick<Account, "id"> & { userId: User["id"]; id: string; name: string, type: string }) {
   return prisma.account.updateMany({
     where: { id, userId },
-    data: { name },
+    data: { name, type },
   });
 }
 
