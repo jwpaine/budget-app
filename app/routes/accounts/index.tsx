@@ -58,8 +58,8 @@ export default function Budget() {
   const category = useFetcher();
 
   const [activeBudget, setActiveBudget] = React.useState("");
-
   const [confirmDelete, setConfirmDelete] = React.useState(false);
+  const [resolve, setResolve] = React.useState(0);
 
   const renderBudgetTotals = () => {
     if (!parentData.accounts || parentData.accounts.length == 0) return
@@ -89,10 +89,9 @@ export default function Budget() {
         dept += Number(account.balance)
       }
 
-      // v > 0 ? (cash += v) : (dept += v);
+
     });
 
-    //   const unAssigned = cash - assigned;
 
     return (
       <div>
@@ -134,7 +133,7 @@ export default function Budget() {
               </span>
             </div>
             <div className={`grid grid-cols-4 w-full max-w-xl `}>
-              <span className={`flex flex-col justify-center text-right`}>Budgeted </span>
+              <span className={`flex flex-col justify-center text-right`}> Budgeted </span>
               <span className={`flex flex-col justify-center text-right`}> Activity </span>
               <span className={`flex flex-col justify-center text-right`}> Balance </span>
               <span className={`flex flex-col justify-center text-right`}> Needed </span>
@@ -198,7 +197,7 @@ export default function Budget() {
                 <input
 
                   name="currentValue"
-                  defaultValue={Number(c.currentValue)}
+                  defaultValue={`${c.currentValue}${(c.inflow - c.outflow + c.currentValue) < 0 ? `+${Math.abs((Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)))}` : '' }`}
                   placeholder="Budgeted"
                   className="m-1"
                 />
@@ -242,7 +241,6 @@ export default function Budget() {
               onClick={() => {
                 setConfirmDelete(false)
                 setActiveBudget(c.id)
-
               }}
               className={`mb-0.5 flex flex-col px-3 py-0.5 
                 ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) == 0 && "bg-slate-200 hover:bg-slate-300"} 

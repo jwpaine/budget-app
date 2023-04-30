@@ -16,23 +16,18 @@ export default function NotesPage() {
   const data = useLoaderData<typeof loader>();
   const user = useUser();
 
-  let cash = 0;
-  let dept = 0;
+  // let cash = 0;
+  // let dept = 0;
 
-  data.accounts.map((account) => {
-    let v = Number(account.balance);
-    v > 0 ? (cash += v) : (dept += v);
-  });
+  // data.accounts.map((account) => {
+  //   let v = Number(account.balance);
+  //   v > 0 ? (cash += v) : (dept += v);
+  // });
 
   return (
     <>
       <main className="flex h-full flex-col md:flex-row">
         <section className="w-full border-r bg-sky-700 md:max-w-sm">
-          <span>Cash: {cash.toFixed(2)}</span>
-          <br />
-          <span>Dept: {dept.toFixed(2)}</span>
-
-          <hr />
 
           {data.accounts.length === 0 ? (
             <p className="p-4">No accounts added</p>
