@@ -35,6 +35,28 @@ export async function updateCategory({
 
 }
 
+export async function setBudget({
+  id,
+  userId,
+  currentValue
+}: {
+  id: string;
+  currentValue: number,
+  userId: User["id"]
+}) {
+  
+  await prisma.category.updateMany({
+    where: {
+      id,
+      userId,
+    },
+    data: {
+      currentValue
+    },
+  });
+
+}
+
 export function getCategoryNames({ userId }: { userId: User["id"] }) {
   return prisma.category.findMany({
     where: { userId },

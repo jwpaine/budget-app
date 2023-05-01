@@ -147,6 +147,11 @@ export default function Budget() {
 
       {
         data.categories?.map((c) => {
+          let budgeted = Number(c.currentValue).toFixed(2)
+          let balance = (Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)).toFixed(2)
+          let activity = (Number(c.inflow) - Number(c.outflow)).toFixed(2)
+          let needed = Number(c.needed)
+
           return activeBudget == c.id ? (
             confirmDelete ?
               <category.Form
@@ -175,66 +180,102 @@ export default function Budget() {
                 </button>
               </category.Form>
               :
-              <category.Form
-                className="flex flex-wrap justify-center bg-sky-300 p-1"
-                method="post"
-                action="/category/update"
-                onSubmit={() => setActiveBudget("")}
-              >
-                <input
-                  name="id"
-                  defaultValue={c.id}
-                  type="hidden"
-                />
-
-                <input
-                  name="name"
-                  defaultValue={c.category}
-                  placeholder="Category Name"
-                  className="m-1"
-                />
-
-                <input
-
-                  name="currentValue"
-                  defaultValue={`${c.currentValue}${(c.inflow - c.outflow + c.currentValue) < 0 ? `+${Math.abs((Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)))}` : '' }`}
-                  placeholder="Budgeted"
-                  className="m-1"
-                />
-
-                <input
-                  name="due"
-                  defaultValue={new Date(c.due).toISOString().slice(0, 10)}
-                  placeholder="Due Date"
-                  className="m-1"
-                />
-
-                <input
-                  name="needed"
-                  defaultValue={c.needed}
-                  placeholder="Needed"
-                  className="m-1"
-                />
-
-                <button type="submit" className="rounded bg-sky-800 p-2 text-white">
-                  Update Category
-                </button>
-                <button
-                  type="button"
-                  className="rounded bg-sky-800 p-2 text-white"
-                  onClick={() => setActiveBudget("")}
+              <div>
+                <category.Form
+                  className="flex flex-wrap justify-center bg-sky-300 p-1"
+                  method="post"
+                  action="/category/update"
+                  onSubmit={() => setActiveBudget("")}
                 >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="rounded bg-sky-800 p-2 text-white"
-                  onClick={() => setConfirmDelete(true)}
-                >
-                  Delete
-                </button>
+                  <input
+                    name="id"
+                    defaultValue={c.id}
+                    type="hidden"
+                  />
 
-              </category.Form>
+                  <input
+                    name="name"
+                    defaultValue={c.category}
+                    placeholder="Category Name"
+                    className="m-1"
+                  />
+
+                  <input
+
+                    name="currentValue"
+                    defaultValue={`${budgeted}`}
+                    placeholder="Budgeted"
+                    className="m-1"
+                  />
+
+                  <input
+                    name="due"
+                    defaultValue={new Date(c.due).toISOString().slice(0, 10)}
+                    placeholder="Due Date"
+                    className="m-1"
+                  />
+
+                  <input
+                    name="needed"
+                    defaultValue={needed}
+                    placeholder="Needed"
+                    className="m-1"
+                  />
+
+                  <button type="submit" className="rounded bg-sky-800 p-2 text-white">
+                    Update Category
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded bg-sky-800 p-2 text-white"
+                    onClick={() => setActiveBudget("")}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded bg-sky-800 p-2 text-white"
+                    onClick={() => setConfirmDelete(true)}
+                  >
+                    Delete
+                  </button>
+
+                </category.Form>
+
+                {Number(balance) < 0 && (
+                  <category.Form
+                    className="flex flex-wrap justify-center bg-sky-300 p-1"
+                    method="post"
+                    action="/category/update"
+                    onSubmit={() => setActiveBudget("")}
+                  >
+                    <input
+                      name="action"
+                      defaultValue="setBudget"
+                      type="hidden"
+                    />
+
+                    <input
+                      name="id"
+                      defaultValue={c.id}
+                      type="hidden"
+                    />
+
+                    <input
+                      name="currentValue"
+                      defaultValue={Number(Number(budgeted) + Math.abs(Number(balance))).toFixed(2)}
+                      type="hidden"
+                    />
+
+                    <button
+                      type="submit"
+                      className="rounded bg-emerald-600 p-2 text-white"
+                    >
+                      Resolve
+                    </button>
+                  </category.Form>
+                )}
+              </div>
 
           ) : (
             <div
@@ -259,10 +300,10 @@ export default function Budget() {
                   </span>
                 </div>
                 <div className={`grid grid-cols-4 gap-4 w-full max-w-xl `}>
-                  <span className={`flex flex-col justify-center text-right `}>{Number(c.currentValue).toFixed(2)}</span>
-                  <span className={`flex flex-col justify-center text-right`}>{(Number(c.inflow) - Number(c.outflow)).toFixed(2)}</span>
-                  <span className={`flex flex-col justify-center text-right`}>{(Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)).toFixed(2)}</span>
-                  <span className={`flex flex-col justify-center text-right`}>{Number(c.needed)}</span>
+                  <span className={`flex flex-col justify-center text-right `}>{budgeted}</span>
+                  <span className={`flex flex-col justify-center text-right`}>{activity}</span>
+                  <span className={`flex flex-col justify-center text-right`}>{balance}</span>
+                  <span className={`flex flex-col justify-center text-right`}>{needed}</span>
                   {/* in-out: {Number(c.inflow) - Number(c.outflow)} */}
                 </div>
               </div>
