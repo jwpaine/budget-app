@@ -34,6 +34,7 @@
     "/postgres-data"
   ],
   "dependencies": {
+    "@azure/msal-node": "^1.17.1",
     "@isaacs/express-prometheus-middleware": "^1.2.1",
     "@prisma/client": "^4.12.0",
     "@remix-run/express": "*",
