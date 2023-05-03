@@ -6,6 +6,7 @@ const sessionSecret = process.env.SESSION_SECRET as string
 const cognitoDomain = process.env.COGNITO_DOMAIN as string
 const clientId = process.env.CLIENT_ID as string
 const clientSecret = process.env.CLIENT_SECRET as string
+const cognitoRedirect = process.env.COGNITO_REDIRECT as string
 
 if (!sessionSecret) {
     throw new Error("SESSION_SECRET must be set");
@@ -15,6 +16,10 @@ if (!cognitoDomain) {
 }
 if (!clientId) {
     throw new Error("CLIENT_ID must be set");
+}
+
+if (!cognitoRedirect) {
+    throw new Error("COGNITO_REDIRECT must be set");
 }
 
 const USER_SESSION_KEY = "cognitoCode";
@@ -37,8 +42,8 @@ export async function getSession(request: Request) {
 
 export async function getAuthCode() {
     console.log("Fetching Authorization code")
-    let redirectUri = "http://localhost:3000/auth"
-    const uri = `${cognitoDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid&redirect_uri=${redirectUri}&state=/`;
+   // let redirectUri = "http://localhost:3000/auth"
+    const uri = `${cognitoDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid&redirect_uri=${cognitoRedirect}&state=/`;
     return redirect(uri);
 }
 
@@ -67,7 +72,7 @@ async function createUserSession({
     code: string
 }) {
 
-    const redirectUri = "http://localhost:3000/auth"
+    const redirectUri = cognitoRedirect
     const tokenResponse = await getToken({ code, redirectUri });
     if (tokenResponse.status === 200) {
 
@@ -129,7 +134,7 @@ export async function authorize({ request, redirectTo }: { request: Request, red
 
 
     const session = await getSession(request);
-    const redirectUri = "http://localhost:3000/auth"
+    const redirectUri = cognitoRedirect //"http://localhost:3000/auth"
 
     if (!code) {
         // code
@@ -255,81 +260,3 @@ export async function logout(request: Request) {
     });
   }
 
-
-
-/*
-/auth:
-
-authorize(request, redirect):
-    code:
-        getToken(code) -> createUserSession -> redirect /auth
-    !code:
-        user = getUser() (access token -> refresh? -> or fail)
-        user: redirect / (or back to last url)
-        !user: getAuthCode() -> /auth
-        
-
-    
-
-
-
-
-  //The url does not have a code, so this is the first time we are hitting the login page
-  //First try to get a user from an access token saved as a cookie
-  if (!user) {
-    user = await hasValidAccessToken(request);
-    if (!user) {
-      //Then try to refresh the access token from a refresh token saved as a cookie
-      const { accessToken, idToken, refreshToken } = await refreshAccessToken(request, redirectUri);
-      if (accessToken) {
-        user = await getUser(accessToken);
-        if (user) {
-          headers.append("Set-cookie", await cookieAccessToken.serialize({
-            access_token: accessToken
-          }));
-          headers.append("Set-cookie", await cookieIdToken.serialize({
-            id_token: idToken
-          }));
-          headers.append("Set-cookie", await cookieRefreshToken.serialize({
-            refresh_token: refreshToken
-          }));
-        }
-      }
-    }
-    if (!user) {
-      //if we still have no user then send them to the cognito login page
-      const uri = `https://${cognitoDomain}/login?client_id=${clientId}&response_type=code&scope=email+openid&redirect_uri=${redirectUri}&state=${redirectTo}`;
-      return redirect(uri);
-    }
-  }
-  if (user) {
-    //TODO Persist the user in the session
-    console.log("This should be persisted in session: ", user);
-    const state = url.searchParams.get("state");
-    const finalRedirectTo = decodeURIComponent(state || redirectTo);
-    console.log('finalRedirectTo :>> ', finalRedirectTo);
-    return redirect(finalRedirectTo, { headers });
-  }
-  //All failed, return to login
-  return redirect(`/login?redirect=${redirectTo}`);
-}
-
-
-
-
-
-//Does the user have a valid access token? If so, return the user info
-// async function hasValidAccessToken(request) {
-//   const cookieHeaders = request.headers.get("Cookie");
-//   if (cookieHeaders) {
-//     const cookieAccessTokenValue = await (cookieAccessToken.parse(cookieHeaders) || {});
-//     if (cookieAccessTokenValue.access_token) {
-//       return await getUser(cookieAccessTokenValue.access_token);
-//     }
-//   }
-//   return null;
-// }
-
-
-
-*/
