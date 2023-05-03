@@ -80,7 +80,7 @@ async function createUserSession({
         console.log("obtained access tokens ")
         const { access_token, id_token, refresh_token } = json;
         const session = await getSession(request);
-        session.set("access_token", access_token);
+      //  session.set("access_token", access_token);
         //   session.set("id_token", id_token);
         session.set("refresh_token", refresh_token);
 
@@ -143,38 +143,38 @@ export async function authorize({ request, redirectTo }: { request: Request, red
          !user: getAuthCode() -> /auth
          */
         // does our session contain access and refresh tokens?
-        let access_token = session.get("access_token") as string
+      //  let access_token = session.get("access_token") as string
         const refresh_token = session.get("refresh_token") as string
 
-        if (!access_token) {
-            console.log("Access token not set")
-            return await getAuthCode()
-        } else {
-            const user = await getUser({ access_token })
+        // if (!access_token) {
+        //     console.log("Access token not set")
+        //     return await getAuthCode()
+        // } else {
+            // const user = await getUser({ access_token })
 
-            if (user) {
-                console.log("user found!: ", user)
-                return redirect("/")
-            }
+            // if (user) {
+            //     console.log("user found!: ", user)
+            //     return redirect("/")
+            // }
 
-            console.log("user not found")
+          //  console.log("user not found")
             console.log("attempting to obtain new access token using refresh token")
 
             const refreshed = await refreshAccessToken({ refresh_token, redirectUri });
             if (refreshed?.access_token) {
                 // success
                 console.log("successfully refreshed access token: ", refreshed.access_token)
-                access_token = refreshed.access_token
+                let access_token = refreshed.access_token
                 const user = await getUser({ access_token })
                 if (user) {
                     console.log("obtained user: ", user)
                     console.log("saving session")
 
-                    session.set("access_token", access_token);
+                  //  session.set("access_token", access_token);
                     session.set("refresh_token", refresh_token);
                     session.set("user", user)
 
-                    return redirect(redirectUri, {
+                    return redirect("/accounts", {
                         headers: {
                             "Set-Cookie": await sessionStorage.commitSession(session, {
                                 maxAge: true
@@ -187,13 +187,14 @@ export async function authorize({ request, redirectTo }: { request: Request, red
 
                 }
                 console.log("could not obtain user")
-                getAuthCode()
+                return getAuthCode()
                 
             }
 
             console.log("Could not refresh access token.")
+            return getAuthCode()
 
-        }
+      //  }
         //   const user = getUser()
 
 
