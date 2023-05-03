@@ -1,5 +1,7 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
-const msal = require('@azure/msal-node')
+// const msal = require('@azure/msal-node')
+import { Client } from "@microsoft/microsoft-graph-client";
+
 // import invariant from "tiny-invariant";
 
 import type { User } from "~/models/user.server";
@@ -19,64 +21,13 @@ export const sessionStorage = createCookieSessionStorage({
 });
 
 
-
-// Azure AD B2C
-
-// getAuthCode(process.env.SIGN_UP_SIGN_IN_POLICY_AUTHORITY, [], APP_STATES.LOGIN, res);
-
 const APP_STATES = {
   LOGIN: 'login',
   LOGOUT: 'logout',
   PASSWORD_RESET: 'password_reset',
-  EDIT_PROFILE : 'update_profile'
+  EDIT_PROFILE: 'update_profile'
 }
 
-
- const confidentialClientConfig = {
-    auth: {
-        clientId: process.env.APP_CLIENT_ID, 
-        authority: process.env.SIGN_UP_SIGN_IN_POLICY_AUTHORITY, 
-        clientSecret: process.env.APP_CLIENT_SECRET,
-        knownAuthorities: [process.env.AUTHORITY_DOMAIN], //This must be an array
-        redirectUri: process.env.APP_REDIRECT_URI,
-        validateAuthority: false
-    }
-};
-
-// Initialize MSAL Node
-const confidentialClientApplication = new msal.ConfidentialClientApplication(confidentialClientConfig);
-
-const authCodeRequest = {
-  redirectUri: confidentialClientConfig.auth.redirectUri,
-  authority: process.env.SIGN_UP_SIGN_IN_POLICY_AUTHORITY,
-  scopes: [],
-  state: APP_STATES.LOGIN
-};
-
-const tokenRequest = {
-  redirectUri: confidentialClientConfig.auth.redirectUri,
-  authority: process.env.SIGN_UP_SIGN_IN_POLICY_AUTHORITY
-};
-
-export async function getAuthCode()  {
-
-  // prepare the request
-  console.log("Fetching Authorization code")
-
-
-  //Each time you fetch Authorization code, update the relevant authority in the tokenRequest configuration
-
-  // request an authorization code to exchange for a token
-  return confidentialClientApplication.getAuthCodeUrl(authCodeRequest)
-      .then((response) => {
-          console.log("\nAuthCodeURL: \n" + response);
-          //redirect to the auth code URL/send code to 
-          return redirect(response);
-      })
-      .catch((error) => {
-         throw error
-      });
-}
 
 export async function logout_AD(request: Request) {
   const session = await getSession(request);
@@ -115,6 +66,11 @@ export async function getUser(request: Request) {
 
   throw await logout(request);
 }
+
+
+
+
+
 
 export async function requireUserId(
   request: Request,
@@ -160,6 +116,7 @@ export async function createUserSession({
     },
   });
 }
+
 
 export async function logout(request: Request) {
   const session = await getSession(request);

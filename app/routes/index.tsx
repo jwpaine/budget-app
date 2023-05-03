@@ -2,12 +2,13 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 
 
-import { getUserId } from "~/session.server";
+import {  } from "~/session.server";
 
 
 export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (userId) return redirect("/accounts");
+  // const userId = await getUserId(request);
+  // if (userId) return redirect("/accounts");
+ 
   return json({});
 }
 
