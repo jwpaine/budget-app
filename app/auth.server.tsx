@@ -1,6 +1,7 @@
 
-import { createCookieSessionStorage, redirect } from "@remix-run/node";
+import { LoaderArgs, createCookieSessionStorage, redirect, json } from "@remix-run/node";
 import { URLSearchParams } from "url"
+import type { User } from "~/models/user.server";
 const sessionSecret = process.env.SESSION_SECRET as string
 const cognitoDomain = process.env.COGNITO_DOMAIN as string
 const clientId = process.env.CLIENT_ID as string
@@ -43,13 +44,8 @@ export async function getAuthCode() {
 
 async function getToken({ code, redirectUri }: { code: string, redirectUri: string }) {
     const uri = `${cognitoDomain}/oauth2/token`;
-    const body = {
-        grant_type: "authorization_code",
-        client_id: clientId,
-        redirect_uri: redirectUri,
-        code: code
-    }
-    const encode = (str: string):string => Buffer.from(str, 'binary').toString('base64');
+
+    const encode = (str: string): string => Buffer.from(str, 'binary').toString('base64');
     const auth = encode(`${clientId}:${clientSecret}`)
     return await fetch(uri, {
         method: "POST",
@@ -57,71 +53,223 @@ async function getToken({ code, redirectUri }: { code: string, redirectUri: stri
             "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": `Basic ${auth}`
         },
-        body: new URLSearchParams({"grant_type" : "authorization_code", "client_id" : clientId, "redirect_uri" : redirectUri, "code" : code})
+        body: new URLSearchParams({ "grant_type": "authorization_code", "client_id": clientId, "redirect_uri": redirectUri, "code": code })
     });
 }
 
-async function getUser({access_token} : {access_token : string}) {
-    const uri = `${cognitoDomain}/oauth2/userInfo`;
-  
-    const response = await fetch(uri, {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${access_token}`
-      },
-    });
-    if (response.status === 200) {
-      return await response.json();
-    } else {
-      return null;
-    }
-  }
 
-export async function createUserSession({
+
+async function createUserSession({
     request,
     code
 }: {
     request: Request;
     code: string
 }) {
-   
+
     const redirectUri = "http://localhost:3000/auth"
     const tokenResponse = await getToken({ code, redirectUri });
     if (tokenResponse.status === 200) {
-       
+
         const json = await tokenResponse.json();
         console.log("obtained access tokens ")
         const { access_token, id_token, refresh_token } = json;
         const session = await getSession(request);
         session.set("access_token", access_token);
-     //   session.set("id_token", id_token);
+        //   session.set("id_token", id_token);
         session.set("refresh_token", refresh_token);
+
+        const user = await getUser({access_token})
+
+        session.set("user", user)
 
         return redirect(redirectUri, {
             headers: {
-              "Set-Cookie": await sessionStorage.commitSession(session, {
-                maxAge: true
-                  ? 60 * 60 * 24 * 7 // 7 days
-                  : undefined,
-              }),
+                "Set-Cookie": await sessionStorage.commitSession(session, {
+                    maxAge: true
+                        ? 60 * 60 * 24 * 7 // 7 days
+                        : undefined,
+                }),
             },
-          });
+        });
     } else {
-        console.log("bad token response: ")
+        console.log("bad token response: ", tokenResponse)
     }
 }
+
+
+export async function getUserId(
+    request: Request
+  ): Promise<User["id"] | undefined> {
+    const session = await getSession(request);
+    const user = session.get("user");
+    console.log("getUserId: ", user)
+    return user?.username || null
+  }
+
+
+
+export async function requireUserId(
+    request: Request,
+    redirectTo: string = new URL(request.url).pathname
+  ) {
+    const userId = await getUserId(request);
+
+    if (!userId) {
+        console.log("requireUserId: could not find userId")
+        const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
+        throw redirect(`/auth?${searchParams}`);
+      }
+      return userId;
+  }
+
+export async function authorize({ request, redirectTo }: { request: Request, redirectTo: string }) {
+    const url = new URL(request.url)
+    const code = url.searchParams.get('code')
+
+
+    const session = await getSession(request);
+    const redirectUri = "http://localhost:3000/auth"
+
+    if (!code) {
+        // code
+        /* user = getUser() (access token -> refresh? -> or fail)
+         user: redirect / (or back to last url)
+         !user: getAuthCode() -> /auth
+         */
+        // does our session contain access and refresh tokens?
+        let access_token = session.get("access_token") as string
+        const refresh_token = session.get("refresh_token") as string
+
+        if (!access_token) {
+            console.log("Access token not set")
+            return await getAuthCode()
+        } else {
+            const user = await getUser({ access_token })
+
+            if (user) {
+                console.log("user found!: ", user)
+                return redirect("/")
+            }
+
+            console.log("user not found")
+            console.log("attempting to obtain new access token using refresh token")
+
+            const refreshed = await refreshAccessToken({ refresh_token, redirectUri });
+            if (refreshed?.access_token) {
+                // success
+                console.log("successfully refreshed access token: ", refreshed.access_token)
+                access_token = refreshed.access_token
+                const user = await getUser({ access_token })
+                if (user) {
+                    console.log("obtained user: ", user)
+                    console.log("saving session")
+
+                    session.set("access_token", access_token);
+                    session.set("refresh_token", refresh_token);
+                    session.set("user", user)
+
+                    return redirect(redirectUri, {
+                        headers: {
+                            "Set-Cookie": await sessionStorage.commitSession(session, {
+                                maxAge: true
+                                    ? 60 * 60 * 24 * 7 // 7 days
+                                    : undefined,
+                            }),
+                        },
+                    });
+
+
+                }
+                console.log("could not obtain user")
+                getAuthCode()
+                
+            }
+
+            console.log("Could not refresh access token.")
+
+        }
+        //   const user = getUser()
+
+
+    } else {
+        console.log('Code passed')
+        return createUserSession({request, code})
+    }
+
+    return json({ 'code': false })
+
+}
+
+
+
+async function getUser({ access_token }: { access_token: string }) {
+    console.log("validating user")
+    const uri = `${cognitoDomain}/oauth2/userInfo`;
+    const response = await fetch(uri, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${access_token}`
+        },
+    });
+    if (response.status === 200) {
+        return response.json();
+    } else {
+        return null;
+    }
+}
+
+async function refreshAccessToken({ refresh_token, redirectUri }: { refresh_token: string, redirectUri: string }) {
+
+    if (!refresh_token) return null
+
+    const uri = `${cognitoDomain}/oauth2/token`;
+
+    const encode = (str: string): string => Buffer.from(str, 'binary').toString('base64');
+    const auth = encode(`${clientId}:${clientSecret}`)
+    const response = await fetch(uri, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": `Basic ${auth}`
+        },
+        body: new URLSearchParams({ "grant_type": "refresh_token", "client_id": clientId, "redirect_uri": redirectUri, "refresh_token": refresh_token })
+    });
+
+    if (response.status === 200) {
+        const json = await response.json();
+        const { access_token, id_token, refresh_token } = json;
+        return ({ access_token, id_token, refresh_token })
+    }
+
+    return null
+}
+
+
+export async function logout(request: Request) {
+    const session = await getSession(request);
+    return redirect("/", {
+      headers: {
+        "Set-Cookie": await sessionStorage.destroySession(session),
+      },
+    });
+  }
+
+
+
 /*
 /auth:
+
+authorize(request, redirect):
     code:
         getToken(code) -> createUserSession -> redirect /auth
-    !code
+    !code:
         user = getUser() (access token -> refresh? -> or fail)
         user: redirect / (or back to last url)
         !user: getAuthCode() -> /auth
-    
-
         
 
+    
 
 
 
@@ -182,38 +330,6 @@ export async function createUserSession({
 //   return null;
 // }
 
-async function refreshAccessToken(request, redirectUri) {
-  const ret = {
-    accessToken: undefined,
-    idToken: undefined,
-    refreshToken: undefined
-  }
-  const cookieHeaders = request.headers.get("Cookie");
-  if (cookieHeaders) {
-    const cookieRefreshTokenValue = await (cookieRefreshToken.parse(cookieHeaders) || {});
-    if (cookieRefreshTokenValue.refresh_token) {
-      const uri = `https://${cognitoDomain}/oauth2/token`;
-      const body = {
-        grant_type: "refresh_token",
-        client_id: clientId,
-        redirect_uri: redirectUri,
-        refresh_token: cookieRefreshTokenValue.refresh_token
-      }
-      const response = await fetch(uri, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: new URLSearchParams(body)
-      });
-      if (response.status === 200) {
-        const json = await response.json();
-        const { access_token, id_token, refresh_token } = json;
-        ret.accessToken = access_token;
-        ret.idToken = id_token;
-        ret.refreshToken = refresh_token;
-      }
-    }
-  }
-  return ret;
-}
+
+
+*/

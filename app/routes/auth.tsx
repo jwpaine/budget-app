@@ -3,7 +3,7 @@ import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 
-import { createUserSession } from "~/auth.server";
+import { authorize } from "~/auth.server";
 import { verifyLogin } from "~/models/user.server";
 import { safeRedirect, validateEmail } from "~/utils";
 
@@ -11,13 +11,13 @@ import { safeRedirect, validateEmail } from "~/utils";
 
 export async function loader({ request }: LoaderArgs) {
 
-    const url = new URL(request.url)
-    const code = url.searchParams.get('code') as string
+   let redirectOriginal = "/"
+   return authorize({request, redirectOriginal} );
 
-    if(code) {
-        console.log('we received a code! Calling createUserSession')
-        return createUserSession({code, request})
-    }
+    // if(code) {
+    //     console.log('we received a code! Calling createUserSession')
+    //     return createUserSession({code, request})
+    // }
 
     // url = /some_internal_id/some_name?id=some_id
     /*

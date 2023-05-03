@@ -4,7 +4,7 @@ import { Form, useCatch, useLoaderData } from "@remix-run/react";
 // import invariant from "tiny-invariant";
 import * as React from "react";
 import { getAccount } from "~/models/account.server";
-import { requireUserId } from "~/session.server";
+import { requireUserId } from "~/auth.server";
 import NewTransactionPage from "../../components/transactions/new";
 
 import {

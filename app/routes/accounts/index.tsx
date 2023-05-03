@@ -12,7 +12,7 @@ import {
 // import invariant from "tiny-invariant";
 import * as React from "react";
 import { getAccount } from "~/models/account.server";
-import { requireUserId, } from "~/session.server";
+import { requireUserId, } from "~/auth.server";
 
 import { useOptionalUser } from "~/utils";
 

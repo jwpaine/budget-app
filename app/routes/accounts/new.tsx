@@ -4,7 +4,7 @@ import { Form, useActionData } from "@remix-run/react";
 import * as React from "react";
 
 import { addAccount } from "~/models/account.server";
-import { requireUserId } from "~/session.server";
+import { requireUserId } from "~/auth.server";
 
 export async function action({ request }: ActionArgs) {
   const userId = await requireUserId(request);

@@ -3,7 +3,7 @@ import { json, redirect } from "@remix-run/node";
 // import invariant from "tiny-invariant";
 
 import { deleteCategory } from "~/models/category.server";
-import { requireUserId } from "~/session.server";
+import { requireUserId } from "~/auth.server";
 
 export async function action({ request, params }: ActionArgs) {
   //  invariant(params.accountId, "noteId not found");

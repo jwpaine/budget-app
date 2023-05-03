@@ -2,19 +2,20 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
-import { requireUserId } from "~/session.server";
+import { requireUserId } from "~/auth.server";
 import { useUser } from "~/utils";
 import { getAccounts } from "~/models/account.server";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await requireUserId(request);
-  const accounts = await getAccounts({ userId });
+const accounts = await getAccounts({ userId });
+
   return json({ accounts });
 }
 
 export default function NotesPage() {
   const data = useLoaderData<typeof loader>();
-  const user = useUser();
+ //  const user = useUser();
 
   // let cash = 0;
   // let dept = 0;

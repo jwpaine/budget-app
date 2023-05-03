@@ -2,7 +2,7 @@ import type { LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 
 
-import {  } from "~/session.server";
+import {  } from "~/auth.server";
 
 
 export async function loader({ request }: LoaderArgs) {
