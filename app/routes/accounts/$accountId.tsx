@@ -9,6 +9,8 @@ import {
 } from "@remix-run/react";
 // import invariant from "tiny-invariant";
 import * as React from "react";
+
+
 import { getAccount } from "~/models/account.server";
 import { requireUserId } from "~/auth.server";
 import { getCategoryNames } from "~/models/category.server";
@@ -53,8 +55,13 @@ export default function AccountDetailsPage() {
   const payeeRef = React.useRef<HTMLInputElement>(null);
   const categoryRef = React.useRef<HTMLInputElement>(null);
   const memoRef = React.useRef<HTMLInputElement>(null);
+
   const inRef = React.useRef<HTMLInputElement>(null);
   const outRef = React.useRef<HTMLInputElement>(null);
+
+  const updateInRef = React.useRef<HTMLInputElement>(null);
+  const updateOutRef = React.useRef<HTMLInputElement>(null);
+
   const recRef = React.useRef<HTMLInputElement>(null);
 
   const actionData = useActionData();
@@ -68,6 +75,15 @@ export default function AccountDetailsPage() {
   const [activeTransaction, setActiveTransaction] = React.useState("");
   const [updateAccount, setUpdateAccount] = React.useState(false);
   const [validateDelete, setValidateDelete] = React.useState(false);
+
+  const [uncategorized, setUncategorized] = React.useState(false);
+
+  const handleInputChange = () => {
+    if (inRef.current) {
+      const inflowValue = parseFloat(inRef.current.value);
+      setUncategorized(inflowValue > 0);
+    }
+  };
 
   const handleReconcileChange = () => {
     const reconcileValue = parseFloat(recRef.current.value);
@@ -236,25 +252,25 @@ export default function AccountDetailsPage() {
           className="m-1"
         />
 
-        {/* <input
-          ref={categoryRef}
-          name="category"
-          placeholder="Category"
-          className="m-1"
-        /> */}
-        <select name="category">
-          {
-            data.categories?.map((c) => {
-              return <option value={c.id} key={c.id}>{c.name}</option>
-            })
-          }
-        </select>
+        {uncategorized ? (
+              <>
+                <span>Inflow: Uncategorized</span>
+              </>
+            ) : (
+              <select name="category">
+                {
+                 data.categories?.map((c) => {
+                  return <option value={c.id} key={c.id}>{c.name}</option>
+                })
+                }
+              </select>
+            )}
 
         <input ref={memoRef} name="memo" placeholder="Memo" className="m-1" />
 
-        <input ref={inRef} name="inflow" placeholder="In" className="m-1" />
+        <input ref={inRef} onChange={() => handleInputChange()} name="inflow" placeholder="In" className="m-1" />
 
-        <input ref={outRef} name="outflow" placeholder="Out" className="m-1" />
+        <input ref={outRef} onChange={() => handleInputChange()} name="outflow" placeholder="Out" className="m-1" />
 
         <button type="submit" className="rounded bg-sky-800 p-2 text-white">
           Add Transaction
@@ -291,21 +307,21 @@ export default function AccountDetailsPage() {
               className="m-1"
             />
 
-            {/* <input
-              ref={categoryRef}
-              name="category"
-              defaultValue={t.category}
-              placeholder="Category"
-              className="m-1"
-            /> */}
 
-            <select name="category">
-              {
-                data.categories?.map((c) => {
-                  return <option selected={t.category == c.id} value={c.id} key={c.id}>{c.name}</option>
-                })
-              }
-            </select>
+          
+            {uncategorized || t.category == "" ? (
+              <>
+                <span>Inflow: Uncategorized</span>
+              </>
+            ) : (
+              <select name="category">
+                {
+                  data.categories?.map((c) => {
+                    return <option selected={t.category == c.id} value={c.id} key={c.id}>{c.name}</option>
+                  })
+                }
+              </select>
+            )}
 
 
             <input
@@ -368,15 +384,19 @@ export default function AccountDetailsPage() {
                 <span className="text-slac-800 text-s font-bold">
                   {t.payee || "-"}
                 </span>
-                
-                <span
-                  className={`ml-1 rounded ${t.category != "Uncategorized" && 'border border-slate-400 bg-white'} p-0.5 mr-2 text-sm text-black`}>
-                  {/* {t.category} */}
 
-                  {data.categories?.map((c) => {
-                    return t.category == c.id && c.name
-                    return <option selected={t.category == c.id} value={c.id} key={c.id}>{c.name}</option>
-                  })}
+                <span
+                  className={`ml-1 rounded order border-slate-400 bg-white p-0.5 mr-2 text-sm text-black`}>
+                  {/* {t.category} */}
+                  {t.category == "" ? (
+                    <span>Uncategorized</span>
+                  ) : (
+                    data.categories?.map((c) => {
+                      return t.category == c.id && c.name
+                      return <option selected={t.category == c.id} value={c.id} key={c.id}>{c.name}</option>
+                    })
+                  )}
+                 
 
                 </span>
                 <span className="text-xs text-slate-800">{t.memo}</span>
