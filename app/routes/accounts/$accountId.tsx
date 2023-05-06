@@ -23,6 +23,8 @@ import {
 } from "~/models/transaction.server";
 import { Decimal } from "@prisma/client/runtime";
 
+import Transaction from "../../components/Transaction"
+
 // import { TransactionContainer } from "../../../theme/components/Core"
 // import { TransactionContainer } from "theme/components/Core";
 
@@ -78,6 +80,8 @@ export default function AccountDetailsPage() {
 
   const [uncategorized, setUncategorized] = React.useState(false);
 
+
+
   const handleInputChange = () => {
     if (inRef.current) {
       const inflowValue = parseFloat(inRef.current.value);
@@ -101,6 +105,7 @@ export default function AccountDetailsPage() {
 
   const handleFormSubmit = (event) => {
     //  event.preventDefault();
+    console.log("handleFormSubmit called!")
     doReconcile(false);
     setActiveTransaction("");
     setUpdateAccount(false);
@@ -253,18 +258,18 @@ export default function AccountDetailsPage() {
         />
 
         {uncategorized ? (
-              <>
-                <span>Inflow: Uncategorized</span>
-              </>
-            ) : (
-              <select name="category">
-                {
-                 data.categories?.map((c) => {
-                  return <option value={c.id} key={c.id}>{c.name}</option>
-                })
-                }
-              </select>
-            )}
+          <>
+            <span>Inflow: Uncategorized</span>
+          </>
+        ) : (
+          <select name="category">
+            {
+              data.categories?.map((c) => {
+                return <option value={c.id} key={c.id}>{c.name}</option>
+              })
+            }
+          </select>
+        )}
 
         <input ref={memoRef} name="memo" placeholder="Memo" className="m-1" />
 
@@ -278,142 +283,15 @@ export default function AccountDetailsPage() {
       </transaction.Form>
 
       {data.transactions?.map((t) => {
-        return activeTransaction == t.id ? (
-          <transaction.Form
-            className="flex flex-wrap justify-center bg-sky-500 p-1"
-            method="post"
-            action="/transaction/update"
-            onSubmit={handleFormSubmit}
-          >
-            <input
-              name="accountId"
-              defaultValue={data.account.id}
-              type="hidden"
-            />
-            <input name="id" defaultValue={t.id} type="hidden" />
-            <input
-              ref={dateRef}
-              name="date"
-              defaultValue={new Date(t.date).toISOString().slice(0, 10)}
-              placeholder="Date"
-              className="m-1"
-            />
-
-            <input
-              ref={payeeRef}
-              name="payee"
-              defaultValue={t.payee}
-              placeholder="Payee"
-              className="m-1"
-            />
-
-
-          
-            {uncategorized || t.category == "" ? (
-              <>
-                <span>Inflow: Uncategorized</span>
-              </>
-            ) : (
-              <select name="category">
-                {
-                  data.categories?.map((c) => {
-                    return <option selected={t.category == c.id} value={c.id} key={c.id}>{c.name}</option>
-                  })
-                }
-              </select>
-            )}
-
-
-            <input
-              ref={memoRef}
-              name="memo"
-              defaultValue={t.memo}
-              placeholder="Memo"
-              className="m-1"
-            />
-
-            <input
-              ref={inRef}
-              name="inflow"
-              defaultValue={t.inflow}
-              placeholder="In"
-              className="m-1"
-            />
-
-            <input
-              ref={outRef}
-              name="outflow"
-              defaultValue={t.outflow}
-              placeholder="Out"
-              className="m-1"
-            />
-
-            <button type="submit" className="rounded bg-sky-800 p-2 text-white">
-              Update Transaction
-            </button>
-            <button
-              type="button"
-              className="rounded bg-sky-800 p-2 text-white"
-              onClick={() => setActiveTransaction("")}
-            >
-              Cancel
-            </button>
-            <transaction.Form method="post" action="/transaction/delete">
-              <input name="transactionId" defaultValue={t.id} type="hidden" />
-              <input
-                name="accountId"
-                defaultValue={data.account.id}
-                type="hidden"
-              />
-              <button
-                type="submit"
-                className="bg-red-400 px-2 py-1 text-slate-800"
-              >
-                Delete
-              </button>
-            </transaction.Form>
-          </transaction.Form>
-        ) : (
-          <div
-            onClick={() => setActiveTransaction(t.id)}
-            className={`mb-0.5 flex flex-col px-3 py-0.5 ${Number(t.inflow) > 0 ? "bg-emerald-100 hover:bg-emerald-200" : "bg-slate-200 hover:bg-slate-300"} `}
-            key={t.id}
-          >
-            <div className="flex justify-between">
-              <div>
-                <span className="text-slac-800 text-s font-bold">
-                  {t.payee || "-"}
-                </span>
-
-                <span
-                  className={`ml-1 rounded order border-slate-400 bg-white p-0.5 mr-2 text-sm text-black`}>
-                  {/* {t.category} */}
-                  {t.category == "" ? (
-                    <span>Uncategorized</span>
-                  ) : (
-                    data.categories?.map((c) => {
-                      return t.category == c.id && c.name
-                      return <option selected={t.category == c.id} value={c.id} key={c.id}>{c.name}</option>
-                    })
-                  )}
-                 
-
-                </span>
-                <span className="text-xs text-slate-800">{t.memo}</span>
-              </div>
-              <span className={`text-black`}>
-                {Number(t.outflow) == 0 ? `+${t.inflow}` : `-${t.outflow}`}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <div>
-                <span className="text-xs text-slate-800">
-                  {new Date(t.date).toISOString().slice(0, 10)}
-                </span>
-              </div>
-            </div>
-          </div>
-        );
+        return <Transaction onClick={() => {
+          setActiveTransaction(t.id)
+        }}
+          active={t.id == activeTransaction}
+          accountId={data.account.id}
+          transaction={t}
+          onSubmit={handleFormSubmit}
+          categories={data.categories}
+        />
       })}
     </section>
   );
