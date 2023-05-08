@@ -232,8 +232,8 @@ export default function AccountDetailsPage() {
 
       <h3>Transactions length: {data.transactions.length}</h3>
 
-
-      <transaction.Form
+      
+      {/* <transaction.Form
         className=" flex flex-wrap justify-center bg-sky-500 p-1"
         method="post"
         action="/transaction/new"
@@ -279,7 +279,14 @@ export default function AccountDetailsPage() {
         <button type="submit" className="rounded bg-sky-800 p-2 text-white">
           Add Transaction
         </button>
-      </transaction.Form>
+      </transaction.Form> */}
+
+      <Transaction
+          new
+          accountId={data.account.id}
+          onSubmit={handleFormSubmit}
+          categories={data.categories}
+        />
 
       {data.transactions?.map((t) => {
         return <Transaction onClick={() => {

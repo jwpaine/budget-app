@@ -13,7 +13,7 @@ export default function Transaction(props) {
     const updateOutRef = React.useRef<HTMLInputElement>(null);
     const transaction = useFetcher();
 
-    const [uncategorized, setUncategorized] = React.useState(props.transaction.inflow > 0);
+    const [uncategorized, setUncategorized] = React.useState(props.transaction && props.transaction.inflow > 0);
 
 
     const handleInputChange = () => {
@@ -23,11 +23,11 @@ export default function Transaction(props) {
         }
     };
 
-    return props.active ? (
+    return props.active || props.new ? (
         <transaction.Form
             className="flex flex-wrap justify-center bg-sky-500 p-1"
             method="post"
-            action="/transaction/update"
+            action={props.new ? "/transaction/new" : "/transaction/update"}
             onSubmit={() => props.handleFormSubmit()}
         >
             <input
@@ -35,11 +35,11 @@ export default function Transaction(props) {
                 defaultValue={props.accountId}
                 type="hidden"
             />
-            <input name="id" defaultValue={props.transaction.id} type="hidden" />
+            {props.transaction && <input name="id" defaultValue={props.transaction.id} type="hidden" />}
             <input
                 ref={dateRef}
                 name="date"
-                defaultValue={new Date(props.transaction.date).toISOString().slice(0, 10)}
+                defaultValue={props.transaction ? new Date(props.transaction.date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10)}
                 placeholder="Date"
                 className="m-1"
             />
@@ -47,14 +47,14 @@ export default function Transaction(props) {
             <input
                 ref={payeeRef}
                 name="payee"
-                defaultValue={props.transaction.payee}
+                defaultValue={props.transaction ? props.transaction.payee : ""}
                 placeholder="Payee"
                 className="m-1"
             />
 
 
-            {/* || props.transaction.category == "" */ }
-            {uncategorized  ? (
+            {/* || props.transaction.category == "" */}
+            {uncategorized ? (
                 <>
                     <span>Inflow: Uncategorized</span>
                 </>
@@ -62,7 +62,7 @@ export default function Transaction(props) {
                 <select name="category">
                     {
                         props.categories?.map((c) => {
-                            return <option selected={props.transaction.category == c.id} value={c.id} key={c.id}>{c.name}</option>
+                            return <option selected={props.transaction && props.transaction.category == c.id} value={c.id} key={c.id}>{c.name}</option>
                         })
                     }
                 </select>
@@ -72,7 +72,7 @@ export default function Transaction(props) {
             <input
                 ref={memoRef}
                 name="memo"
-                defaultValue={props.transaction.memo}
+                defaultValue={props.transaction ? props.transaction.memo : ""}
                 placeholder="Memo"
                 className="m-1"
             />
@@ -80,7 +80,7 @@ export default function Transaction(props) {
             <input
                 ref={inRef}
                 name="inflow"
-                defaultValue={props.transaction.inflow}
+                defaultValue={props.transaction ? props.transaction.inflow : ""}
                 placeholder="In"
                 className="m-1"
                 onChange={() => handleInputChange()}
@@ -89,23 +89,23 @@ export default function Transaction(props) {
             <input
                 ref={outRef}
                 name="outflow"
-                defaultValue={props.transaction.outflow}
+                defaultValue={props.transaction ? props.transaction.outflow : ""}
                 placeholder="Out"
                 className="m-1"
                 onChange={() => handleInputChange()}
             />
 
             <button type="submit" className="rounded bg-sky-800 p-2 text-white">
-                Update Transaction
+                {props.transaction ? "Update Transaction" : "Add Transaction"}
             </button>
-            <button
+            {props.transaction && <button
                 type="button"
                 className="rounded bg-sky-800 p-2 text-white"
                 onClick={() => props.onSubmit()}
             >
                 Cancel
-            </button>
-            <transaction.Form method="post" action="/transaction/delete">
+            </button>}
+            {props.transaction && <transaction.Form method="post" action="/transaction/delete">
                 <input name="transactionId" defaultValue={props.transaction.id} type="hidden" />
                 <input
                     name="accountId"
@@ -118,7 +118,7 @@ export default function Transaction(props) {
                 >
                     Delete
                 </button>
-            </transaction.Form>
+            </transaction.Form>}
         </transaction.Form>
     ) : (
         <div
