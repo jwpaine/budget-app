@@ -55,14 +55,13 @@ export default function AccountDetailsPage() {
   const data = useLoaderData<typeof loader>();
   const dateRef = React.useRef<HTMLInputElement>(null);
   const payeeRef = React.useRef<HTMLInputElement>(null);
-  const categoryRef = React.useRef<HTMLInputElement>(null);
+
   const memoRef = React.useRef<HTMLInputElement>(null);
 
   const inRef = React.useRef<HTMLInputElement>(null);
   const outRef = React.useRef<HTMLInputElement>(null);
 
-  const updateInRef = React.useRef<HTMLInputElement>(null);
-  const updateOutRef = React.useRef<HTMLInputElement>(null);
+
 
   const recRef = React.useRef<HTMLInputElement>(null);
 
