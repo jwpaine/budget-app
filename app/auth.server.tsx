@@ -8,6 +8,8 @@ const clientId = process.env.CLIENT_ID as string
 const clientSecret = process.env.CLIENT_SECRET as string
 const cognitoRedirect = process.env.COGNITO_REDIRECT as string
 
+import { getUserById, createUser } from "~/models/user.server";
+
 if (!sessionSecret) {
     throw new Error("SESSION_SECRET must be set");
 }
@@ -74,6 +76,7 @@ async function createUserSession({
 
     const redirectUri = cognitoRedirect
     const tokenResponse = await getToken({ code, redirectUri });
+
     if (tokenResponse.status === 200) {
 
         const json = await tokenResponse.json();
@@ -85,6 +88,16 @@ async function createUserSession({
         session.set("refresh_token", refresh_token);
 
         const user = await getUser({access_token})
+
+        const localUser = await getUserById(user.username)
+
+        if(!localUser) {
+            console.log("Local user does NOT exist: ", user.username)
+            const createLocalUser = await createUser(user.email, user.username)
+
+        } else {
+            console.log("Local user exists: ", user.username)
+        }
 
         session.set("user", user)
 
@@ -219,6 +232,7 @@ async function getUser({ access_token }: { access_token: string }) {
         },
     });
     if (response.status === 200) {
+       
         return response.json();
     } else {
         return null;

@@ -84,8 +84,122 @@ export function getCategories({ userId }: { userId: User["id"] }) {
   return categories
 }
 
+export async function initUserCategories({userId} : {userId : User["id"]}) {
+
+  const categories = [
+    { 
+      userId: userId,
+      spent: 0,
+      due: new Date(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).toISOString().slice(0, 10)) as Date,
+      frequency: 'M',
+      name: '🏠 Mortgage',
+      currentValue: 0,
+      maxValue: 1200,
+      
+    },
+    { 
+      userId: userId,
+      spent: 0,
+      due: new Date(new Date(new Date().getFullYear(), new Date().getMonth(), 15).toISOString().slice(0, 10)) as Date,
+      frequency: 'M',
+      name: '📱 Phone',
+      currentValue: 0,
+      maxValue: 120,
+    },
+      
+   
+    { 
+      userId: userId,
+      spent: 0,
+      due: new Date(new Date(new Date().getFullYear(), new Date().getMonth(), 22).toISOString().slice(0, 10)) as Date,
+      frequency: 'M',
+      name: '🎥 Netflix',
+      currentValue: 0,
+      maxValue: 16.61,
+      
+    },
+    { 
+      userId: userId,
+      spent: 0,
+      due: new Date(new Date(new Date().getFullYear(), new Date().getMonth(), 14).toISOString().slice(0, 10)) as Date,
+      frequency: 'M',
+      name: '🚗 Car Insurance',
+      currentValue: 0,
+      maxValue: 90,
+      
+    },
+    { 
+      userId: userId,
+      spent: 0,
+      due: new Date(new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0, 10)) as Date,
+      frequency: 'M',
+      name: '🏋Gym',
+      currentValue: 0,
+      maxValue: 45,
+      
+    },
+    { 
+      userId: userId,
+      spent: 0,
+      due: new Date(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().slice(0, 10)) as Date,
+      frequency: 'M',
+      name: '🥕 Grocery',
+      currentValue: 0,
+      maxValue: 500,
+      
+    },
+
+    { 
+      userId: userId,
+      spent: 0,
+      due: new Date(new Date(new Date().getFullYear(), new Date().getMonth(), 9).toISOString().slice(0, 10)) as Date,
+      frequency: 'M',
+      name: '🔌 Electric',
+      currentValue: 0,
+      maxValue: 150,
+      
+    },
+
+    { 
+      userId: userId,
+      spent: 0,
+      due: new Date(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().slice(0, 10)) as Date,
+      frequency: 'M',
+      name: '🍺 Fun',
+      currentValue: 0,
+      maxValue: 50,
+      
+    }
+  ];
+
+  // '{ userId: string; spent: number; due: string; frequency: string; name: string; currentValue: number; maxValue: number; }[]' 
+  // is not assignable to parameter of type 
+  // '{ name: string; userId: string; maxValue: number; frequency: string; currentValue: number; spent: number; due: Date; }[]'
+
+  
+  return await createCategories(categories)
+    // .then((createdCategories) => {
+    //   console.log('Created categories:', createdCategories);
+    // })
+    // .catch((error) => {
+    //   console.error('Error creating categories:', error);
+    // });
+}
 
 
+export async function createCategories(categories: {
+  name: string,
+  userId: User["id"],
+  maxValue: number,
+  frequency: string,
+  currentValue: number,
+  spent: number,
+  due: Date
+}[]) {
+  return prisma.category.createMany({
+    data: categories,
+  });
+}
 
 // , select: {name : true}
 export function createCategory({
