@@ -1,11 +1,14 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
+import Select from "react-virtualized-select";
+
 import {
   Form,
   useCatch,
   useLoaderData,
   useActionData,
   useFetcher,
+  useMatches,
 } from "@remix-run/react";
 // import invariant from "tiny-invariant";
 import * as React from "react";
@@ -51,6 +54,17 @@ export async function loader({ request, params }: LoaderArgs) {
   return json({ userId, account, transactions, categories });
 }
 
+
+
+export const useRouteData = (routeId: string) => {
+  const matches = useMatches()
+  const data = matches.find((match) => match.id === routeId)?.data
+
+  return data || undefined
+}
+
+
+
 export default function AccountDetailsPage() {
   const data = useLoaderData<typeof loader>();
   const dateRef = React.useRef<HTMLInputElement>(null);
@@ -77,8 +91,27 @@ export default function AccountDetailsPage() {
   const [updateAccount, setUpdateAccount] = React.useState(false);
   const [validateDelete, setValidateDelete] = React.useState(false);
 
+  const [doTransfer, setDoTransfer] = React.useState(false)
+
   const [uncategorized, setUncategorized] = React.useState(false);
 
+  const accountsData = useRouteData("routes/accounts")
+
+
+  // const renderTransferableAccounts = () => {
+  //   let accounts = accountsData.accounts
+
+  //   console.log("Accounts", accounts)
+  //   if (!accounts) return []
+
+  //   return accounts.map((account) => {
+  //     return {
+  //       label: `${account.name}: ${account.value}`,
+  //       value: account.id
+  //     }
+  //   })
+
+  // }
 
 
   const handleInputChange = () => {
@@ -103,11 +136,10 @@ export default function AccountDetailsPage() {
   };
 
   const handleFormSubmit = (event) => {
-    //  event.preventDefault();
-    console.log("handleFormSubmit called!")
     doReconcile(false);
     setActiveTransaction("");
     setUpdateAccount(false);
+    setDoTransfer(false)
   };
 
   if (reconcile) {
@@ -163,14 +195,84 @@ export default function AccountDetailsPage() {
     );
   }
 
+  if (doTransfer) {
+    return (
+      <section>
+        <h3>Transfer</h3>
+
+        <transaction.Form
+          className="flex flex-col"
+          method="post"
+          action="/transaction/new"
+          onSubmit={handleFormSubmit}
+        >
+          <input
+            name="accountId"
+            defaultValue={data.account.id}
+            type="hidden"
+          />
+
+          <input
+            name="type"
+            defaultValue="transfer"
+            type="hidden"
+          />
+
+          {/* <Select options={renderTransferableAccounts()} /> */}
+          <select name="fromId">
+            {
+              accountsData.accounts.map((a) => {
+                return <option selected={a.id == data.account.id} key={a.id} value={a.id}> {`From: ${a.name} (${a.balance})`}</option>
+              })
+            }
+          </select>
+
+          <select name="toId">
+            {
+              accountsData.accounts.map((a) => {
+                return <option key={a.id} value={a.id}> {`To: ${a.name} (${a.balance})`}</option>
+              })
+            }
+          </select>
+
+
+          <input
+            name="value"
+            placeholder="Amount"
+            className="m-1"
+          />
+
+          <input
+            name="date"
+            defaultValue={new Date().toISOString().slice(0, 10)}
+            placeholder="Date"
+            className="m-1"
+          />
+
+
+
+
+          <button type="submit"> Transfer </button>
+          <button type="button" onClick={() => setDoTransfer(false)}> Cancel </button>
+        </transaction.Form>
+
+      </section>
+    )
+  }
+
   return (
     <section className="flex w-full flex-col">
-      {!updateAccount && <h3>{data.account.name}</h3>}
 
-      <button onClick={() => doReconcile(true)}>Reconcile</button>
-      <button onClick={() => setUpdateAccount(true)} type="button">
-        Account Settings
-      </button>
+      <header className="flex flex-col">
+
+        <h3>{data.account.name}</h3>
+        <button onClick={() => doReconcile(true)} type="button">Reconcile</button>
+        <button onClick={() => setUpdateAccount(true)} type="button">Settings</button>
+        <button onClick={() => setDoTransfer(true)} type="button">Transfer</button>
+
+        <h3>Transactions length: {data.transactions.length}</h3>
+
+      </header>
 
       {updateAccount && (
         <div>
@@ -230,9 +332,9 @@ export default function AccountDetailsPage() {
         </div>
       )}
 
-      <h3>Transactions length: {data.transactions.length}</h3>
 
-      
+
+
       {/* <transaction.Form
         className=" flex flex-wrap justify-center bg-sky-500 p-1"
         method="post"
@@ -282,11 +384,12 @@ export default function AccountDetailsPage() {
       </transaction.Form> */}
 
       <Transaction
-          new
-          accountId={data.account.id}
-          onSubmit={handleFormSubmit}
-          categories={data.categories}
-        />
+        new
+        accountId={data.account.id}
+        onSubmit={handleFormSubmit}
+        categories={data.categories}
+
+      />
 
       {data.transactions?.map((t) => {
         return <Transaction onClick={() => {
@@ -297,6 +400,7 @@ export default function AccountDetailsPage() {
           transaction={t}
           onSubmit={handleFormSubmit}
           categories={data.categories}
+
         />
       })}
     </section>

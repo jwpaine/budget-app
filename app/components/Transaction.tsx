@@ -1,4 +1,6 @@
 import { useFetcher } from "@remix-run/react";
+// import Select from "react-virtualized-select";
+
 import * as React from "react";
 
 export default function Transaction(props) {
@@ -22,6 +24,13 @@ export default function Transaction(props) {
             setUncategorized(inflowValue > 0);
         }
     };
+
+    // const renderPayee = () => {
+    //     return Array.from(new Array(1000), (_, index) => ({
+    //         label: `Item ${index}`,
+    //         value: index
+    //       }));
+    // }
 
     return props.active || props.new ? (
         <transaction.Form
@@ -51,6 +60,8 @@ export default function Transaction(props) {
                 placeholder="Payee"
                 className="m-1"
             />
+
+            {/* <Select options={renderPayee()} /> */}
 
 
             {/* || props.transaction.category == "" */}
