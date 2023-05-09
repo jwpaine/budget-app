@@ -1,11 +1,11 @@
-import { Form, Link } from "@remix-run/react";
-import { useOptionalUser } from "~/utils";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 
-export default function Header() {
-  const user = useOptionalUser();
+
+export default function Header(props) {
+
   return (
     <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
-      {user ? (
+      {props.userId ? (
         <>
           <Link
             to="/accounts"
@@ -32,7 +32,7 @@ export default function Header() {
                       Sign up
                     </Link> */}
           <Link
-            to="/login"
+            to="/auth"
             className="flex items-center justify-center rounded-md bg-blue-500 px-4 py-3 font-medium text-white hover:bg-blue-600  "
           >
             Log In

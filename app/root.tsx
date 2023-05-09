@@ -7,10 +7,11 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "~/styles/tailwind.css";
-import { getUser } from "~/session.server";
+import { getUserId } from "~/auth.server";
 
 import Header  from "./components/Header"
 import Footer  from "./components/Footer"
@@ -20,10 +21,11 @@ export const links: LinksFunction = () => [
 ];
 
 export const loader = async ({ request }: LoaderArgs) => {
-  return json({ user: await getUser(request) });
+  return json({ userId: await getUserId(request) });
 };
 
 export default function App() {
+  const data = useLoaderData<typeof loader>();
   return (
     <html lang="en" className="h-full">
       <head>
@@ -33,7 +35,7 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full">
-        <Header />
+        <Header userId={data.userId} />
         <Outlet />
         {/* <Footer /> */}
         <ScrollRestoration />
