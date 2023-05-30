@@ -18,7 +18,9 @@ import { useOptionalUser } from "~/utils";
 
 import NewTransactionPage from "../../components/transactions/new";
 import { getCategories } from "~/models/category.server";
-import { getUncategorizedTransactions } from "~/models/transaction.server";
+import { getTransactions, getUncategorizedTransactions } from "~/models/transaction.server";
+
+// import Graph from "../../components/transactions/graph"
 
 import { Decimal } from "@prisma/client/runtime";
 
@@ -37,11 +39,20 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const userId = await requireUserId(request);
   const categories = await getCategories({ userId });
-  //  const uncategorized = await getUncategorizedTransactions({ userId });
 
-  // const outflowCategories = await generateTransactionCategories({userId})
-  return json({ userId, categories });
+ 
+  let currentDate = new Date() as Date
+  currentDate.setDate(currentDate.getDate() - 30);
+  let startDate = new Date(currentDate.toISOString().slice(0, 10)) as Date
+
+  const accountId = ""
+  
+  const transactions = await getTransactions({userId, startDate, accountId})
+
+  return json({ userId, categories, transactions});
 }
+
+
 
 export default function Budget() {
   const user = useOptionalUser()
@@ -61,6 +72,19 @@ export default function Budget() {
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   const [resolve, setResolve] = React.useState(0);
 
+  const graphTransactions = () => {
+    console.log('graphing transactions')
+    if (!data.transactions) {
+      console.log('no transactions')
+      return
+    }
+
+    return data.transactions.map((t) => {
+      return <>{t.inflow}</>
+    })
+  }
+
+
   const renderBudgetTotals = () => {
     if (!parentData.accounts || parentData.accounts.length == 0) return
 
@@ -74,6 +98,7 @@ export default function Budget() {
 
     console.log("all category data: ", data.categories)
 
+
     data.categories?.map((cat) => {
       // let c = Number(cat.inflow) > 0 ? Number(cat.inflow) : Number(cat.currentValue);
       currentBalance += Number(cat.currentValue)
@@ -84,8 +109,10 @@ export default function Budget() {
 
     parentData.accounts.map((account) => {
       if (account.type != 'loan') {
+    //   console.log(`adding cash: ${account.balance}`)
         cash += Number(account.balance)
       } else {
+    //    console.log(`adding dept: ${account.balance}`)
         dept += Number(account.balance)
       }
 
@@ -95,11 +122,14 @@ export default function Budget() {
 
     return (
       <div>
+       
+        {graphTransactions()}
         <span className="text-white">Cash: {cash.toFixed(2)}</span> <br />
         <span className="text-white">Inflow: {inflow.toFixed(2)}</span> <br />
         <span className="text-white">Outflow: {outflow.toFixed(2)}</span> <br />
         <span className="text-white">Budgeted: {currentBalance.toFixed(2)}</span> <br />
         <span className="text-white">to be budgeted: {(cash - currentBalance + outflow - inflow).toFixed(2)}</span>
+        {/* <span className="text-white">to be budgeted: {(cash - currentBalance - outflow + inflow).toFixed(2)}</span> */}
         {/* 10710.87 - 11906.23 + 2259.98 - 144 */}
       </div>
     )
@@ -278,36 +308,42 @@ export default function Budget() {
               </div>
 
           ) : (
-            <div
-              onClick={() => {
-                setConfirmDelete(false)
-                setActiveBudget(c.id)
-              }}
-              className={`mb-0.5 flex flex-col px-3 py-0.5 
-                ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) == 0 && "bg-slate-200 hover:bg-slate-300"} 
-                ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) > 0 && "bg-emerald-200 hover:bg-emerald-300"} 
-                ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) < 0 && "bg-rose-200 hover:bg-rose-300"} 
-                `}
-              key={c.id}
-            >
-              <div className="flex justify-between">
-                <div className="flex flex-col w-40">
-                  <span className="text-slac-800 text-s font-bold">
-                    {c.category || "-"}
-                  </span>
-                  <span className="text-xs text-slate-800">
-                    {new Date(c.due).toISOString().slice(0, 10)}
-                  </span>
-                </div>
-                <div className={`grid grid-cols-4 gap-4 w-full max-w-xl `}>
-                  <span className={`flex flex-col justify-center text-right `}>{budgeted}</span>
-                  <span className={`flex flex-col justify-center text-right`}>{activity}</span>
-                  <span className={`flex flex-col justify-center text-right`}>{balance}</span>
-                  <span className={`flex flex-col justify-center text-right`}>{needed}</span>
-                  {/* in-out: {Number(c.inflow) - Number(c.outflow)} */}
-                </div>
-              </div>
+            <div>
+              <div
+                onClick={() => {
+                  setConfirmDelete(false)
+                  setActiveBudget(c.id)
+                }}
+                className={`mb-0.5 flex flex-col px-3 py-0.5 
+                  ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) == 0 && "bg-slate-200 hover:bg-slate-300"}                                                                                  
+                  ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) > 0 && "bg-emerald-200 hover:bg-emerald-300"} 
+                  ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) < 0 && "bg-rose-200 hover:bg-rose-300"} 
+                  `}
+                key={c.id}
+              >
+                <div className="flex justify-between">
+                  <div className="flex flex-col w-40">
+                    <span className="text-slac-800 text-s font-bold">
+                      {c.category || "-"}
+                    </span>
+                    <span className="text-xs text-slate-800">
+                      {new Date(c.due).toISOString().slice(0, 10)}
+                    </span>
+                  </div>
+                  <div className={`grid grid-cols-4 gap-4 w-full max-w-xl `}>
+                    
 
+                    <span className={`flex flex-col justify-center text-right`}>{budgeted}</span>
+                    <span className={`flex flex-col justify-center text-right`}>{activity}</span>
+                    <span className={`flex flex-col justify-center text-right`}>{balance}</span>
+
+                    <span className={`flex flex-col justify-center text-right`}>{needed}</span>
+                   
+                    
+                  </div>
+                </div>
+
+              </div>
             </div>
           )
         })

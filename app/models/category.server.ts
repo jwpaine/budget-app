@@ -17,7 +17,7 @@ export async function updateCategory({
   userId: User["id"]
   due: Date
 }) {
-  
+
   await prisma.category.updateMany({
     where: {
       id,
@@ -44,7 +44,7 @@ export async function setBudget({
   currentValue: number,
   userId: User["id"]
 }) {
-  
+
   await prisma.category.updateMany({
     where: {
       id,
@@ -60,34 +60,58 @@ export async function setBudget({
 export function getCategoryNames({ userId }: { userId: User["id"] }) {
   return prisma.category.findMany({
     where: { userId },
-    select: {name : true, id : true}
+    select: { name: true, id: true }
   });
 }
 
 export function getCategories({ userId }: { userId: User["id"] }) {
 
-  const categories = prisma.$queryRaw`SELECT 
+  const categories = prisma.$queryRaw`
+  
+ 
+  SELECT 
     category.name as category,
     category.id as id,
     category."currentValue" as "currentValue",
     category.due as due,
     category."maxValue" as needed,
-    SUM(transaction.outflow) as outflow,
-    SUM(transaction.inflow) as inflow
-    FROM "Category" as category 
-    LEFT JOIN "Transaction" as transaction on transaction.category = category.id
-    WHERE category."userId" = ${userId} 
-    GROUP BY category.id
-    ORDER BY due asc
+    COALESCE(SUM(transaction.outflow), 0) as outflow,
+    COALESCE(SUM(transaction.inflow), 0) as inflow
+  FROM "Category" as category 
+  LEFT OUTER JOIN "Transaction" as transaction on transaction.category = category.id
+  WHERE category."userId" = ${userId}
+  GROUP BY category.id
+  ORDER BY due asc
+
+
   `
-  
+
+//   SELECT 
+//   category.name as category,
+//   category.id as id,
+//   category."currentValue" as "currentValue",
+//   category.due as due,
+//   category."maxValue" as needed,
+//   COALESCE(SUM(transaction.outflow), 0) as outflow,
+//   COALESCE(SUM(transaction.inflow), 0) as inflow
+// FROM "Category" as category 
+// LEFT OUTER JOIN (
+//   SELECT * FROM "Transaction" 
+//   WHERE date >= '2023-06-01' AND date <= '2025-06-30'
+// ) as transaction on transaction.category = category.id
+// WHERE category."userId" = ${userId} 
+// GROUP BY category.id
+// ORDER BY due asc
+
+
+
   return categories
 }
 
-export async function initUserCategories({userId} : {userId : User["id"]}) {
+export async function initUserCategories({ userId }: { userId: User["id"] }) {
 
   const categories = [
-    { 
+    {
       userId: userId,
       spent: 0,
       due: new Date(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).toISOString().slice(0, 10)) as Date,
@@ -95,9 +119,9 @@ export async function initUserCategories({userId} : {userId : User["id"]}) {
       name: '🏠 Mortgage',
       currentValue: 0,
       maxValue: 1200,
-      
+
     },
-    { 
+    {
       userId: userId,
       spent: 0,
       due: new Date(new Date(new Date().getFullYear(), new Date().getMonth(), 15).toISOString().slice(0, 10)) as Date,
@@ -106,9 +130,9 @@ export async function initUserCategories({userId} : {userId : User["id"]}) {
       currentValue: 0,
       maxValue: 120,
     },
-      
-   
-    { 
+
+
+    {
       userId: userId,
       spent: 0,
       due: new Date(new Date(new Date().getFullYear(), new Date().getMonth(), 22).toISOString().slice(0, 10)) as Date,
@@ -116,9 +140,9 @@ export async function initUserCategories({userId} : {userId : User["id"]}) {
       name: '🎥 Netflix',
       currentValue: 0,
       maxValue: 16.61,
-      
+
     },
-    { 
+    {
       userId: userId,
       spent: 0,
       due: new Date(new Date(new Date().getFullYear(), new Date().getMonth(), 14).toISOString().slice(0, 10)) as Date,
@@ -126,9 +150,9 @@ export async function initUserCategories({userId} : {userId : User["id"]}) {
       name: '🚗 Car Insurance',
       currentValue: 0,
       maxValue: 90,
-      
+
     },
-    { 
+    {
       userId: userId,
       spent: 0,
       due: new Date(new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0, 10)) as Date,
@@ -136,9 +160,9 @@ export async function initUserCategories({userId} : {userId : User["id"]}) {
       name: '🏋Gym',
       currentValue: 0,
       maxValue: 45,
-      
+
     },
-    { 
+    {
       userId: userId,
       spent: 0,
       due: new Date(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().slice(0, 10)) as Date,
@@ -146,10 +170,10 @@ export async function initUserCategories({userId} : {userId : User["id"]}) {
       name: '🥕 Grocery',
       currentValue: 0,
       maxValue: 500,
-      
+
     },
 
-    { 
+    {
       userId: userId,
       spent: 0,
       due: new Date(new Date(new Date().getFullYear(), new Date().getMonth(), 9).toISOString().slice(0, 10)) as Date,
@@ -157,10 +181,10 @@ export async function initUserCategories({userId} : {userId : User["id"]}) {
       name: '🔌 Electric',
       currentValue: 0,
       maxValue: 150,
-      
+
     },
 
-    { 
+    {
       userId: userId,
       spent: 0,
       due: new Date(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().slice(0, 10)) as Date,
@@ -168,7 +192,7 @@ export async function initUserCategories({userId} : {userId : User["id"]}) {
       name: '🍺 Fun',
       currentValue: 0,
       maxValue: 50,
-      
+
     }
   ];
 
@@ -176,14 +200,14 @@ export async function initUserCategories({userId} : {userId : User["id"]}) {
   // is not assignable to parameter of type 
   // '{ name: string; userId: string; maxValue: number; frequency: string; currentValue: number; spent: number; due: Date; }[]'
 
-  
+
   return await createCategories(categories)
-    // .then((createdCategories) => {
-    //   console.log('Created categories:', createdCategories);
-    // })
-    // .catch((error) => {
-    //   console.error('Error creating categories:', error);
-    // });
+  // .then((createdCategories) => {
+  //   console.log('Created categories:', createdCategories);
+  // })
+  // .catch((error) => {
+  //   console.error('Error creating categories:', error);
+  // });
 }
 
 

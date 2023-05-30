@@ -1,18 +1,36 @@
 import type { User, Account, Transaction } from "@prisma/client";
 
 import { prisma } from "~/db.server";
-
 export function getTransactions({
   userId,
   accountId,
+  startDate
 }: {
   userId: User["id"];
-  accountId: String;
+  accountId: String,
+  startDate: Date
 }) {
-  return prisma.transaction.findMany({
-    where: { accountId, userId },
-    orderBy: { date: "desc" },
-  });
+  if (accountId != "") {
+    return prisma.transaction.findMany({
+      where: { accountId, userId },
+      orderBy: { date: "desc" },
+    });
+  }
+
+  if (startDate) {
+    return prisma.transaction.findMany({
+      where: {
+        userId,
+        date: {
+          gte: startDate
+        }
+      },
+      orderBy: { date: "desc" },
+    });
+  }
+
+
+
 }
 
 export function getUncategorizedTransactions({ userId }: { userId: User["id"] }) {
