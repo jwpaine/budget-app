@@ -25,7 +25,18 @@ export async function action({ request, params }: ActionArgs) {
 
   const id = formData.get("id") as string;
 
-  const currentValue = Number(formData.get("currentValue")) || 0;
+  let v = formData.get("currentValue") as string
+
+  let sum = v.split("+")
+  let diff = v.split("-")
+
+  if (sum.length > 1 && diff.length > 1) {
+    console.log("canot combine both + and -")
+    return redirect(`/accounts/${accountId}`);
+  }
+
+ 
+  const currentValue = sum.length > 1 ? (Number(sum[0]) + Number(sum[1])) : diff.length > 1 ? (Number(diff[0]) - Number(diff[1])) : Number(v)
 
 
 
