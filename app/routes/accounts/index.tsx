@@ -40,16 +40,16 @@ export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
   const categories = await getCategories({ userId });
 
- 
+
   let currentDate = new Date() as Date
   currentDate.setDate(currentDate.getDate() - 30);
   let startDate = new Date(currentDate.toISOString().slice(0, 10)) as Date
 
   const accountId = ""
-  
-  const transactions = await getTransactions({userId, startDate, accountId})
 
-  return json({ userId, categories, transactions});
+  const transactions = await getTransactions({ userId, startDate, accountId })
+
+  return json({ userId, categories, transactions });
 }
 
 
@@ -109,10 +109,10 @@ export default function Budget() {
 
     parentData.accounts.map((account) => {
       if (account.type != 'loan') {
-    //   console.log(`adding cash: ${account.balance}`)
+        //   console.log(`adding cash: ${account.balance}`)
         cash += Number(account.balance)
       } else {
-    //    console.log(`adding dept: ${account.balance}`)
+        //    console.log(`adding dept: ${account.balance}`)
         dept += Number(account.balance)
       }
 
@@ -122,7 +122,7 @@ export default function Budget() {
 
     return (
       <div>
-       
+
         {graphTransactions()}
         <span className="text-white">Cash: {cash.toFixed(2)}</span> <br />
         <span className="text-white">Inflow: {inflow.toFixed(2)}</span> <br />
@@ -139,16 +139,7 @@ export default function Budget() {
     <section className="flex w-full flex-col">
       <header className="bg-sky-800">
         {user?.email}
-        <category.Form method="post" action="/category/new">
-          <input ref={nameRef} name="name" placeholder="Name" />
-          {/* <input ref={maxValueRef} name="maxValue" placeholder="Amount" />
 
-        <input ref={dueRef} name="due" placeholder="Due On" />
-
-        <input ref={frequencyRef} name="frequency" placeholder="Frequency" /> */}
-
-          <button type="submit">Add Category</button>
-        </category.Form>
 
         {renderBudgetTotals()}
 
@@ -331,15 +322,15 @@ export default function Budget() {
                     </span>
                   </div>
                   <div className={`grid grid-cols-4 gap-4 w-full max-w-xl `}>
-                    
+
 
                     <span className={`flex flex-col justify-center text-right`}>{budgeted}</span>
                     <span className={`flex flex-col justify-center text-right`}>{activity}</span>
                     <span className={`flex flex-col justify-center text-right`}>{balance}</span>
 
                     <span className={`flex flex-col justify-center text-right`}>{needed}</span>
-                   
-                    
+
+
                   </div>
                 </div>
 
@@ -349,7 +340,16 @@ export default function Budget() {
         })
       }
 
+   
 
+
+        <category.Form
+          className={`mb-0.5 flex p-5 bg-sky-700 `} 
+          method="post" action="/category/new">
+          <input className={`p-2`} ref={nameRef} name="name" placeholder="Name" />
+          <button className={`bg-white text-black text-center p-2 mx-2`} type="submit">Add Category</button>
+        </category.Form>
+ 
 
 
     </section>
