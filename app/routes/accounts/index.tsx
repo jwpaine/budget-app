@@ -2,7 +2,7 @@ import { Link, useMatches } from "@remix-run/react";
 
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, Area, AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 import {
   Form,
@@ -130,8 +130,8 @@ export default function Budget() {
       },
     ];
 
-  
-   
+
+
 
     let cash = 0 as number
 
@@ -139,30 +139,45 @@ export default function Budget() {
       if (account.type != 'loan') {
         //   console.log(`adding cash: ${account.balance}`)
         cash += Number(account.balance)
-      } 
+      }
     });
 
     const graph_data = []
 
-    graph_data.push({name: 'today', pv: cash})
+    graph_data.push({ name: 'today', pv: cash })
 
     data.transactions.map((t) => {
       cash = cash - (Number(t._sum.inflow) - Number(t._sum.outflow))
-     
+
       let dataPoint = {
         name: t.date,
         pv: cash
       }
       graph_data.push(dataPoint)
     })
-    
+
     graph_data.reverse()
 
-    return <LineChart width={300} height={100} data={graph_data}>
-          <Line type="monotone" dataKey="pv" stroke="#8884d8" strokeWidth={2} />
-        </LineChart>
-     
-  
+    return <AreaChart
+      width={500}
+      height={200}
+      data={graph_data}
+      syncId="anyId"
+      margin={{
+        top: 10,
+        right: 30,
+        left: 0,
+        bottom: 0,
+      }}
+    >
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="name" />
+      <YAxis />
+      <Tooltip />
+      <Area type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
+    </AreaChart>
+
+
 
 
   }
@@ -423,16 +438,16 @@ export default function Budget() {
         })
       }
 
-   
 
 
-        <category.Form
-          className={`mb-0.5 flex p-5 bg-sky-700 `} 
-          method="post" action="/category/new">
-          <input className={`p-2`} ref={nameRef} name="name" placeholder="Name" />
-          <button className={`bg-white text-black text-center p-2 mx-2`} type="submit">Add Category</button>
-        </category.Form>
- 
+
+      <category.Form
+        className={`mb-0.5 flex p-5 bg-sky-700 `}
+        method="post" action="/category/new">
+        <input className={`p-2`} ref={nameRef} name="name" placeholder="Name" />
+        <button className={`bg-white text-black text-center p-2 mx-2`} type="submit">Add Category</button>
+      </category.Form>
+
 
 
     </section>
