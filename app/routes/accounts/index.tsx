@@ -2,6 +2,8 @@ import { Link, useMatches } from "@remix-run/react";
 
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
 import {
   Form,
   useCatch,
@@ -18,7 +20,7 @@ import { useOptionalUser } from "~/utils";
 
 import NewTransactionPage from "../../components/transactions/new";
 import { getCategories } from "~/models/category.server";
-import { getTransactions, getUncategorizedTransactions } from "~/models/transaction.server";
+import { getDailyTransactionSums, getTransactions, getUncategorizedTransactions } from "~/models/transaction.server";
 
 // import Graph from "../../components/transactions/graph"
 
@@ -47,7 +49,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const accountId = ""
 
-  const transactions = await getTransactions({ userId, startDate, accountId })
+  const transactions = await getDailyTransactionSums({ userId, startDate, accountId })
 
   return json({ userId, categories, transactions });
 }
@@ -79,9 +81,90 @@ export default function Budget() {
       return
     }
 
-    return data.transactions.map((t) => {
-      return <>{t.inflow}</>
+    // return data.transactions.map((t) => {
+    //   return <div className="flex p-2">{JSON.stringify(t)}</div>
+    // })
+
+    const input_data = [
+      {
+        name: 'Page A',
+        uv: 4000,
+        pv: 2400,
+        amt: 2400,
+      },
+      {
+        name: 'Page B',
+        uv: 3000,
+        pv: 1398,
+        amt: 2210,
+      },
+      {
+        name: 'Page C',
+        uv: 2000,
+        pv: 9800,
+        amt: 2290,
+      },
+      {
+        name: 'Page D',
+        uv: 2780,
+        pv: 3908,
+        amt: 2000,
+      },
+      {
+        name: 'Page E',
+        uv: 1890,
+        pv: 4800,
+        amt: 2181,
+      },
+      {
+        name: 'Page F',
+        uv: 2390,
+        pv: 3800,
+        amt: 2500,
+      },
+      {
+        name: 'Page G',
+        uv: 3490,
+        pv: -10000,
+        amt: 10000,
+      },
+    ];
+
+  
+   
+
+    let cash = 0 as number
+
+    parentData.accounts.map((account) => {
+      if (account.type != 'loan') {
+        //   console.log(`adding cash: ${account.balance}`)
+        cash += Number(account.balance)
+      } 
+    });
+
+    const graph_data = []
+
+    graph_data.push({name: 'today', pv: cash})
+
+    data.transactions.map((t) => {
+      cash = cash - (Number(t._sum.inflow) - Number(t._sum.outflow))
+     
+      let dataPoint = {
+        name: t.date,
+        pv: cash
+      }
+      graph_data.push(dataPoint)
     })
+    
+    graph_data.reverse()
+
+    return <LineChart width={300} height={100} data={graph_data}>
+          <Line type="monotone" dataKey="pv" stroke="#8884d8" strokeWidth={2} />
+        </LineChart>
+     
+  
+
+
   }
 
 
