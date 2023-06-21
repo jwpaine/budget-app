@@ -81,58 +81,6 @@ export default function Budget() {
       return
     }
 
-    // return data.transactions.map((t) => {
-    //   return <div className="flex p-2">{JSON.stringify(t)}</div>
-    // })
-
-    const input_data = [
-      {
-        name: 'Page A',
-        uv: 4000,
-        pv: 2400,
-        amt: 2400,
-      },
-      {
-        name: 'Page B',
-        uv: 3000,
-        pv: 1398,
-        amt: 2210,
-      },
-      {
-        name: 'Page C',
-        uv: 2000,
-        pv: 9800,
-        amt: 2290,
-      },
-      {
-        name: 'Page D',
-        uv: 2780,
-        pv: 3908,
-        amt: 2000,
-      },
-      {
-        name: 'Page E',
-        uv: 1890,
-        pv: 4800,
-        amt: 2181,
-      },
-      {
-        name: 'Page F',
-        uv: 2390,
-        pv: 3800,
-        amt: 2500,
-      },
-      {
-        name: 'Page G',
-        uv: 3490,
-        pv: -10000,
-        amt: 10000,
-      },
-    ];
-
-
-
-
     let cash = 0 as number
 
     parentData.accounts.map((account) => {
@@ -144,38 +92,41 @@ export default function Budget() {
 
     const graph_data = []
 
-    graph_data.push({ name: 'today', pv: cash })
+    graph_data.push({ name: 'today', cash: cash })
 
     data.transactions.map((t) => {
       cash = cash - (Number(t._sum.inflow) - Number(t._sum.outflow))
 
       let dataPoint = {
-        name: t.date,
-        pv: cash
+        name: new Date(t.date).toISOString().slice(0, 10),
+        cash: cash
       }
       graph_data.push(dataPoint)
     })
 
     graph_data.reverse()
 
-    return <AreaChart
-      width={500}
-      height={200}
-      data={graph_data}
-      syncId="anyId"
-      margin={{
-        top: 10,
-        right: 30,
-        left: 0,
-        bottom: 0,
-      }}
-    >
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip />
-      <Area type="monotone" dataKey="pv" stroke="#82ca9d" fill="#82ca9d" />
-    </AreaChart>
+    return <ResponsiveContainer width="100%" height={200}>
+      <AreaChart
+        width={500}
+        height={200}
+        data={graph_data}
+        syncId="anyId"
+        margin={{
+          top: 10,
+          right: 30,
+          left: 0,
+          bottom: 0,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" stroke="#FFFFFF"/>
+        <YAxis stroke="#FFFFFF" />
+        <Tooltip />
+        <Area type="monotone" dataKey="cash" stroke="#82ca9d" fill="#82ca9d" />
+      </AreaChart>
+    </ResponsiveContainer>
+
 
 
 
@@ -220,8 +171,10 @@ export default function Budget() {
 
     return (
       <div>
+        <div className="flex h-200">
 
-        {graphTransactions()}
+          {graphTransactions()}
+        </div>
         <span className="text-white">Cash: {cash.toFixed(2)}</span> <br />
         <span className="text-white">Inflow: {inflow.toFixed(2)}</span> <br />
         <span className="text-white">Outflow: {outflow.toFixed(2)}</span> <br />
