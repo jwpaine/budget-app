@@ -82,6 +82,8 @@ export default function Budget() {
     }
 
     let cash = 0 as number
+    let min = 999999 as number
+    let max = 0 as number
 
     parentData.accounts.map((account) => {
       if (account.type != 'loan') {
@@ -95,7 +97,11 @@ export default function Budget() {
     graph_data.push({ name: 'today', cash: cash })
 
     data.transactions.map((t) => {
-      cash = cash - (Number(t._sum.inflow) - Number(t._sum.outflow))
+      let sum = Number(t._sum.inflow) - Number(t._sum.outflow)
+      cash = cash - sum
+
+      if(max < cash) max = cash
+      if( cash < min) min = cash
 
       let dataPoint = {
         name: new Date(t.date).toISOString().slice(0, 10),
@@ -105,6 +111,9 @@ export default function Budget() {
     })
 
     graph_data.reverse()
+
+    console.log(`min: ${min}`)
+    console.log(`max: ${max}`)
 
     return <ResponsiveContainer width="100%" height={200}>
       <AreaChart
@@ -120,8 +129,8 @@ export default function Budget() {
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" stroke="#FFFFFF"/>
-        <YAxis stroke="#FFFFFF" />
+        <XAxis dataKey="name" stroke="#FFFFFF" />
+        <YAxis type="number" stroke="#FFFFFF" domain={[0, max]}/>
         <Tooltip />
         <Area type="monotone" dataKey="cash" stroke="#82ca9d" fill="#82ca9d" />
       </AreaChart>
@@ -171,14 +180,12 @@ export default function Budget() {
 
     return (
       <div>
-        <div className="flex h-200">
 
-          {graphTransactions()}
-        </div>
         <span className="text-white">Cash: {cash.toFixed(2)}</span> <br />
+        {/* 
         <span className="text-white">Inflow: {inflow.toFixed(2)}</span> <br />
         <span className="text-white">Outflow: {outflow.toFixed(2)}</span> <br />
-        <span className="text-white">Budgeted: {currentBalance.toFixed(2)}</span> <br />
+        <span className="text-white">Budgeted: {currentBalance.toFixed(2)}</span> <br /> */}
         <span className="text-white">to be budgeted: {(cash - currentBalance + outflow - inflow).toFixed(2)}</span>
         {/* <span className="text-white">to be budgeted: {(cash - currentBalance - outflow + inflow).toFixed(2)}</span> */}
         {/* 10710.87 - 11906.23 + 2259.98 - 144 */}
@@ -191,8 +198,14 @@ export default function Budget() {
       <header className="bg-sky-800">
         {user?.email}
 
+        <div className="flex h-200">
 
-        {renderBudgetTotals()}
+          {graphTransactions()}
+          {renderBudgetTotals()}
+        </div>
+
+
+
 
         <div className={`border-bottom my-0.5 flex flex-col border-slate-200 px-3 py-0.5 bg-slate-300`}>
           <div className="flex justify-between">
