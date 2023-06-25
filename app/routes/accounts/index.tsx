@@ -4,6 +4,10 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { LineChart, Line, Area, AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
+
+
+
+
 import {
   Form,
   useCatch,
@@ -115,7 +119,7 @@ export default function Budget() {
     console.log(`min: ${min}`)
     console.log(`max: ${max}`)
 
-    return <ResponsiveContainer width="100%" height={200}>
+    return <ResponsiveContainer width="100%" height={200} > 
       <AreaChart
         width={500}
         height={200}
@@ -124,7 +128,7 @@ export default function Budget() {
         margin={{
           top: 10,
           right: 30,
-          left: 0,
+          left: 10,
           bottom: 0,
         }}
       >
@@ -189,6 +193,7 @@ export default function Budget() {
         <span className="text-white">to be budgeted: {(cash - currentBalance + outflow - inflow).toFixed(2)}</span>
         {/* <span className="text-white">to be budgeted: {(cash - currentBalance - outflow + inflow).toFixed(2)}</span> */}
         {/* 10710.87 - 11906.23 + 2259.98 - 144 */}
+       
       </div>
     )
   }
@@ -198,10 +203,11 @@ export default function Budget() {
       <header className="bg-sky-800">
         {user?.email}
 
-        <div className="flex h-200">
+        <div className="flex h-200 m-2 ">
 
-          {graphTransactions()}
-          {renderBudgetTotals()}
+          {/* {graphTransactions()} */}
+        
+          {/* {renderBudgetTotals()} */}
         </div>
 
 

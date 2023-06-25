@@ -1,5 +1,6 @@
 import { Form, Link, useLoaderData } from "@remix-run/react";
 
+import {Header as StyledHeader} from "./elements"
 
 export default function Header(props) {
 

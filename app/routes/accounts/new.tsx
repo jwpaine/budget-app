@@ -1,7 +1,8 @@
 import type { ActionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import { Form, useActionData, Link } from "@remix-run/react";
 import * as React from "react";
+
 
 import { addAccount } from "~/models/account.server";
 import { requireUserId } from "~/auth.server";
@@ -46,81 +47,112 @@ export default function NewNotePage() {
     }
   }, [actionData]);
 
+  const [accountState, setAccountState] = React.useState('type');
+
+  const [accountType, setAccountType] = React.useState('');
+  const [accountName, setAccountStateName] = React.useState('');
+  const [accountBalance, setAccountBalance] = React.useState(0);
+
+
+
+
   return (
-    <Form
-      method="post"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        width: "100%",
-      }}
-    >
-      <div>
-        <label className="flex w-full flex-col gap-1">
-          <span>Account Name: </span>
-          <input
-            ref={nameRef}
-            name="name"
-            className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
-            aria-invalid={actionData?.errors?.name ? true : undefined}
-            aria-errormessage={
-              actionData?.errors?.name ? "title-error" : undefined
-            }
-          />
-        </label>
-        {actionData?.errors?.name && (
-          <div className="pt-1 text-red-700" id="title-error">
-            {actionData.errors.name}
-          </div>
-        )}
-      </div>
+    <main>
 
-      <div>
-        <label className="flex w-full flex-col gap-1">
-          <span>Account Balance: </span>
-          <input
-            ref={balanceRef}
-            name="balance"
-            className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
-            aria-invalid={actionData?.errors?.balance ? true : undefined}
-            aria-errormessage={
-              actionData?.errors?.balance ? "title-error" : undefined
-            }
-          />
-        </label>
-        {actionData?.errors?.balance && (
-          <div className="pt-1 text-red-700" id="title-error">
-            {actionData.errors.balance}
-          </div>
-        )}
-      </div>
+      <Form
+        method="post"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+          width: "100%",
+        }}
+      >
 
-      <div>
-        <label className="flex w-full flex-col gap-1">
-          <span>Account Type: </span>
-          <select name="type">
-            <option value="checking">Checking</option>
-            <option value="savings">Savings</option>
-            <option value="cash">Cash</option>
-            <option value="loan">Loan / Credit Card</option>
-          </select>
-        </label>
-        {actionData?.errors?.name && (
-          <div className="pt-1 text-red-700" id="title-error">
-            {actionData.errors.name}
-          </div>
-        )}
-      </div>
+        <h3>Add new account</h3>
 
-      <div className="text-right">
-        <button
-          type="submit"
-          className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-400"
-        >
-          Save
-        </button>
-      </div>
-    </Form>
-  );
+        {accountState == 'type' && <div>
+          <h2>Select account type</h2>
+          <button type="button" onClick={() => {
+            console.log("clicked!")
+            setAccountType('Checking')
+            setAccountState('name')
+          }}>Checking</button>
+          <button type="button" onClick={() => {
+
+            setAccountType('Savings')
+            setAccountState('name')
+          }}>Savings</button>
+          <button type="button" onClick={() => {
+
+            setAccountType('Cash')
+            setAccountState('name')
+          }}>Cash</button>
+          <button type="button" onClick={() => {
+
+            setAccountType('Loan')
+            setAccountState('name')
+          }}>Loan</button>
+
+        </div>
+        }
+
+        {accountState == 'name' && <h2>What should the account be called?</h2>}
+        {accountState == 'balance' && <h2>What's the current balance?</h2>}
+
+
+        <input
+          name="type"
+          defaultValue={accountType}
+          hidden={true}
+        />
+
+        <input
+          ref={nameRef}
+          name="name"
+          className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
+          aria-invalid={actionData?.errors?.name ? true : undefined}
+          aria-errormessage={
+            actionData?.errors?.name ? "title-error" : undefined
+          }
+          hidden={accountState != 'name'}
+        />
+
+
+        <input
+          ref={balanceRef}
+          name="balance"
+          className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
+          aria-invalid={actionData?.errors?.balance ? true : undefined}
+          aria-errormessage={
+            actionData?.errors?.balance ? "title-error" : undefined
+          }
+          hidden={accountState != 'balance'}
+        />
+
+
+        {accountState == 'name' && <>
+          <button type="button" onClick={() => {
+            setAccountState('type')
+          }}>Back</button>
+          <button type="button" onClick={() => {
+            setAccountState('balance')
+          }}>Next</button>
+        </>
+        }
+
+        {accountState == 'balance' && <>
+          <button type="button" onClick={() => {
+            setAccountState('name')
+          }}>Back</button>
+          <button type="submit">Add Account</button>
+        </>}
+
+        <button type="button"><Link to="/accounts">Cancel</Link></button>
+
+      </Form>
+    </main>
+  )
+
 }
+
