@@ -56,39 +56,37 @@ export default function NewNotePage() {
 
 
 
+
   return (
-    <main>
+    <section className="w-full">
 
       <Form
         method="post"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-          width: "100%",
-        }}
+        className="flex flex-col w-full justify-center p-10"
+
       >
 
-        <h3>Add new account</h3>
+        <h1 className="text-4xl text-center">What type of account will you be adding?</h1>
 
-        {accountState == 'type' && <div>
-          <h2>Select account type</h2>
-          <button type="button" onClick={() => {
+        {accountState == 'type' && <div className="grid grid-cols-2 gap-4 mt-5 mb-5">
+
+
+          <button className="flex-1 min-h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
             console.log("clicked!")
             setAccountType('Checking')
             setAccountState('name')
           }}>Checking</button>
-          <button type="button" onClick={() => {
+          <button className="flex-1 h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
 
             setAccountType('Savings')
             setAccountState('name')
           }}>Savings</button>
-          <button type="button" onClick={() => {
+          <button className="flex-1 h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
 
             setAccountType('Cash')
             setAccountState('name')
           }}>Cash</button>
-          <button type="button" onClick={() => {
+          <button className="flex-1 h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
 
             setAccountType('Loan')
             setAccountState('name')
@@ -151,7 +149,7 @@ export default function NewNotePage() {
         <button type="button"><Link to="/accounts">Cancel</Link></button>
 
       </Form>
-    </main>
+    </section>
   )
 
 }
