@@ -58,45 +58,48 @@ export default function NewNotePage() {
 
 
   return (
-    <section className="w-full">
+    <section className="flex flex-col w-full items-center ">
 
       <Form
         method="post"
-        className="flex flex-col w-full justify-center p-10"
+        className="flex flex-col w-full max-w-2xl items-center justify-center p-10"
 
       >
 
-        <h1 className="text-4xl text-center">What type of account will you be adding?</h1>
-
-        {accountState == 'type' && <div className="grid grid-cols-2 gap-4 mt-5 mb-5">
 
 
-          <button className="flex-1 min-h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
-            console.log("clicked!")
-            setAccountType('Checking')
-            setAccountState('name')
-          }}>Checking</button>
-          <button className="flex-1 h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
+        {accountState == 'type' && <>
 
-            setAccountType('Savings')
-            setAccountState('name')
-          }}>Savings</button>
-          <button className="flex-1 h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
+          <h1 className="text-4xl text-center">What type of account will you be adding?</h1>
+          <div className="grid grid-cols-2 gap-4 mt-5">
 
-            setAccountType('Cash')
-            setAccountState('name')
-          }}>Cash</button>
-          <button className="flex-1 h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
 
-            setAccountType('Loan')
-            setAccountState('name')
-          }}>Loan</button>
+            <button className="flex-1 min-h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
+              console.log("clicked!")
+              setAccountType('Checking')
+              setAccountState('name')
+            }}>Checking</button>
+            <button className="flex-1 h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
 
-        </div>
-        }
+              setAccountType('Savings')
+              setAccountState('name')
+            }}>Savings</button>
+            <button className="flex-1 h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
 
-        {accountState == 'name' && <h2>What should the account be called?</h2>}
-        {accountState == 'balance' && <h2>What's the current balance?</h2>}
+              setAccountType('Cash')
+              setAccountState('name')
+            }}>Cash</button>
+            <button className="flex-1 h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
+
+              setAccountType('Loan')
+              setAccountState('name')
+            }}>Loan</button>
+
+          </div>
+        </>}
+
+        {accountState == 'name' && <h1 className="text-4xl text-center">Name your {accountType} account</h1>}
+        {accountState == 'balance' && <h1 className="text-4xl text-center">What's the current balance?</h1>}
 
 
         <input
@@ -108,7 +111,7 @@ export default function NewNotePage() {
         <input
           ref={nameRef}
           name="name"
-          className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
+          className="w-full rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
           aria-invalid={actionData?.errors?.name ? true : undefined}
           aria-errormessage={
             actionData?.errors?.name ? "title-error" : undefined
@@ -120,7 +123,7 @@ export default function NewNotePage() {
         <input
           ref={balanceRef}
           name="balance"
-          className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
+          className="w-full rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
           aria-invalid={actionData?.errors?.balance ? true : undefined}
           aria-errormessage={
             actionData?.errors?.balance ? "title-error" : undefined
@@ -128,25 +131,27 @@ export default function NewNotePage() {
           hidden={accountState != 'balance'}
         />
 
+        <div className="flex w-full">
+          {accountState == 'name' && <>
+            <button className="flex-1 rounded bg-slate-600 px-4 mx-2 py-2 text-blue-100 hover:bg-blue-500 active:bg-blue-600" type="button" onClick={() => {
+              setAccountState('type')
+            }}>Back</button>
+            <button className="flex-1 rounded bg-slate-600 px-4 mx-2 py-2 text-blue-100 hover:bg-blue-500 active:bg-blue-600" type="button" onClick={() => {
+              setAccountState('balance')
+            }}>Next</button>
+          </>
+          }
 
-        {accountState == 'name' && <>
-          <button type="button" onClick={() => {
-            setAccountState('type')
-          }}>Back</button>
-          <button type="button" onClick={() => {
-            setAccountState('balance')
-          }}>Next</button>
-        </>
-        }
+          {accountState == 'balance' && <>
+            <button className="flex-1 rounded bg-slate-600 px-4 mx-2 py-2 text-blue-100 hover:bg-blue-500 active:bg-blue-600" type="button" onClick={() => {
+              setAccountState('name')
+            }}>Back</button>
+            <button className="flex-1 rounded bg-slate-600 px-4 mx-2 py-2 text-blue-100 hover:bg-blue-500 active:bg-blue-600" type="submit">Add Account</button>
+          </>}
 
-        {accountState == 'balance' && <>
-          <button type="button" onClick={() => {
-            setAccountState('name')
-          }}>Back</button>
-          <button type="submit">Add Account</button>
-        </>}
+        </div>
 
-        <button type="button"><Link to="/accounts">Cancel</Link></button>
+        <button className="rounded bg-slate-600 px-4 mx-2 py-2 text-blue-100 hover:bg-blue-500 active:bg-blue-600" type="button"><Link to="/accounts">Cancel</Link></button>
 
       </Form>
     </section>

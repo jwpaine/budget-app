@@ -5,16 +5,21 @@ import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { requireUserId } from "~/auth.server";
 import { useUser } from "~/utils";
 import { getAccounts } from "~/models/account.server";
+import React, { useEffect } from "react";
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await requireUserId(request);
 const accounts = await getAccounts({ userId });
+
+
 
   return json({ accounts });
 }
 
 export default function NotesPage() {
   const data = useLoaderData<typeof loader>();
+
+ 
  //  const user = useUser();
 
   // let cash = 0;
@@ -25,10 +30,14 @@ export default function NotesPage() {
   //   v > 0 ? (cash += v) : (dept += v);
   // });
 
+  const [accountsBarOpen, setAccountsBarOpen] = React.useState(true);
+
+  
+
   return (
     <>
       <main className="flex h-full flex-col md:flex-row">
-        <section className="w-full border-r bg-sky-700 md:max-w-sm">
+        <section className={`w-full  border-r bg-sky-700 md:max-w-sm`}>
 
           {data.accounts.length === 0 ? (
             <p className="p-4">No accounts added</p>
@@ -38,7 +47,7 @@ export default function NotesPage() {
                 <NavLink
                   key={account.id}
                   className={({ isActive }) =>
-                    `align-between m-1 block flex justify-between p-2 hover:bg-sky-700`
+                    `align-between w-full block flex justify-between p-2 hover:bg-sky-700`
                   }
                   to={account.id}
                 >
@@ -60,6 +69,7 @@ export default function NotesPage() {
           <Link
             to="new"
             className="align-between flex justify-between p-2 text-xl text-white hover:bg-sky-700"
+            // onClick={() => setAccountsBarOpen(false)}
           >
             + Add Account
           </Link>
