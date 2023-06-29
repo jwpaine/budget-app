@@ -15,5 +15,5 @@ export async function action({ request, params }: ActionArgs) {
 
   const t = await deleteAccount({ id, userId });
 
-  return redirect(`/accounts`);
+  return redirect(`/budget`);
 }

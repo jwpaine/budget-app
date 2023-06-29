@@ -33,7 +33,7 @@ export async function action({ request }: ActionArgs) {
 
   const note = await addAccount({ name, type, balance, userId });
 
-  return redirect(`/accounts`);
+  return redirect(`/budget`);
 }
 
 export default function NewNotePage() {
@@ -151,7 +151,7 @@ export default function NewNotePage() {
 
         </div>
 
-        <button className="rounded bg-slate-600 px-4 mx-2 py-2 text-blue-100 hover:bg-blue-500 active:bg-blue-600" type="button"><Link to="/accounts">Cancel</Link></button>
+        <button className="rounded bg-slate-600 px-4 mx-2 py-2 text-blue-100 hover:bg-blue-500 active:bg-blue-600" type="button"><Link to="/budget">Cancel</Link></button>
 
       </Form>
     </section>

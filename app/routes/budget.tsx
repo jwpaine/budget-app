@@ -148,7 +148,17 @@ export default function Budget() {
 
 
   const renderBudgetTotals = () => {
-    if (!data.accounts || data.accounts.length == 0) return
+    if (!data.accounts || data.accounts.length == 0) {
+      return (
+        <div>
+  
+          <span className="text-white">Total cash: $0.00</span>
+          <span className="text-white ml-5 mr-2">To be budgeted: $0.00</span>
+      
+        </div>
+      )
+    
+    }
 
     let cash = 0 as number
     let dept = 0 as number

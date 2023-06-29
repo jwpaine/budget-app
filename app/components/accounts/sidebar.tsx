@@ -5,12 +5,9 @@ import { Link, NavLink } from "@remix-run/react"
 export default function SideBar(props) {
     const accounts = props.accounts
     return (
-        <section className={`w-full  border-r bg-sky-700 md:max-w-sm`}>
+        <section className={`w-full  border-r bg-sky-700 md:max-w-sm min-w-sm`}>
 
-            {accounts.length === 0 ? (
-                <p className="p-4">No accounts added</p>
-            ) : (
-                <>
+            {accounts.length > 0 && <>
                     {accounts.map((account) => (
                         <NavLink
                             key={account.id}
@@ -31,10 +28,10 @@ export default function SideBar(props) {
                         </NavLink>
                     ))}
                 </>
-            )}
+            }
 
             <Link
-                to="new"
+                to="/accounts/new"
                 className="align-between flex justify-between p-2 text-xl text-white hover:bg-sky-800"
             // onClick={() => setAccountsBarOpen(false)}
             >

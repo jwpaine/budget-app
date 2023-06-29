@@ -187,7 +187,7 @@ export async function authorize({ request, redirectTo }: { request: Request, red
                     session.set("refresh_token", refresh_token);
                     session.set("user", user)
 
-                    return redirect("/accounts", {
+                    return redirect("/budget", {
                         headers: {
                             "Set-Cookie": await sessionStorage.commitSession(session, {
                                 maxAge: true
