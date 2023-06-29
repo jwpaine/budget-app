@@ -28,7 +28,7 @@ import {
 import { Decimal } from "@prisma/client/runtime";
 
 import Transaction from "../../components/Transaction"
-import SideBar from "~/components/accounts/sidebar";
+import SideBar from "../../components/accounts/sidebar"
 
 // import { TransactionContainer } from "../../../theme/components/Core"
 // import { TransactionContainer } from "theme/components/Core";
