@@ -18,5 +18,5 @@ export async function action({ request, params }: ActionArgs) {
 
   const t = await deleteCategory({ id, userId });
 
-  return redirect(`/accounts`);
+  return redirect(`/budget`);
 }

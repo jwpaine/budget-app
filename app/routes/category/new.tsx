@@ -34,5 +34,5 @@ export async function action({ request, params }: ActionArgs) {
     userId,
   });
 
-  return redirect(`/accounts`);
+  return redirect(`/budget`);
 }

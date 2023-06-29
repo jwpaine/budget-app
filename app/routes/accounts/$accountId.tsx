@@ -1,4 +1,5 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import { Link, useMatches, NavLink } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 import Select from "react-virtualized-select";
 
@@ -14,7 +15,7 @@ import {
 import * as React from "react";
 
 
-import { getAccount } from "~/models/account.server";
+import { getAccount, getAccounts } from "~/models/account.server";
 import { requireUserId } from "~/auth.server";
 import { getCategoryNames } from "~/models/category.server";
 import NewTransactionPage from "../../components/transactions/new";
@@ -27,6 +28,7 @@ import {
 import { Decimal } from "@prisma/client/runtime";
 
 import Transaction from "../../components/Transaction"
+import SideBar from "~/components/accounts/sidebar";
 
 // import { TransactionContainer } from "../../../theme/components/Core"
 // import { TransactionContainer } from "theme/components/Core";
@@ -36,6 +38,8 @@ export async function loader({ request, params }: LoaderArgs) {
   // invariant(params.accountId, "Account not found");
 
   const account = await getAccount({ userId, id: params.accountId });
+  const accounts = await getAccounts({ userId });
+
   if (!account) {
     return redirect("/accounts");
   }
@@ -51,7 +55,7 @@ export async function loader({ request, params }: LoaderArgs) {
     return redirect("/accounts");
   }
 
-  return json({ userId, account, transactions, categories });
+  return json({ userId, account, accounts, transactions, categories });
 }
 
 
@@ -261,81 +265,86 @@ export default function AccountDetailsPage() {
   }
 
   return (
-    <section className="flex w-full flex-col">
 
-      <header className="flex flex-col">
+    <main className="flex flex-col md:flex-row">
 
-        <h3>{data.account.name}</h3>
-        <button onClick={() => doReconcile(true)} type="button">Reconcile</button>
-        <button onClick={() => setUpdateAccount(true)} type="button">Settings</button>
-        <button onClick={() => setDoTransfer(true)} type="button">Transfer</button>
+      <SideBar accounts={data.accounts} />
 
-        <h3>Transactions length: {data.transactions.length}</h3>
+      <section className="flex w-full flex-col">
 
-      </header>
+        <header className="flex flex-col">
 
-      {updateAccount && (
-        <div>
-          <account.Form
-            method="post"
-            action="/accounts/update"
-            onSubmit={handleFormSubmit}
-          >
-            <input
-              name="accountId"
-              defaultValue={data.account.id}
-              type="hidden"
-            />
-            <input name="name" defaultValue={data.account.name} />
-            <select name="type">
-              <option value="checking" selected={data.account.type == "checking"} >Checking</option>
-              <option value="savings" selected={data.account.type == "savings"}>Savings</option>
-              <option value="cash" selected={data.account.type == "cash"}>Cash</option>
-              <option value="loan" selected={data.account.type == "loan"}>Loan / Credit Card</option>
-            </select>
-            <button type="submit" className="bg-sky-600">
-              Update
-            </button>
-          </account.Form>
+          <h3>{data.account.name}</h3>
+          <button onClick={() => doReconcile(true)} type="button">Reconcile</button>
+          <button onClick={() => setUpdateAccount(true)} type="button">Settings</button>
+          <button onClick={() => setDoTransfer(true)} type="button">Transfer</button>
 
-          {validateDelete ? (
-            <account.Form method="post" action="/accounts/delete">
+          <h3>Transactions length: {data.transactions.length}</h3>
+
+        </header>
+
+        {updateAccount && (
+          <div>
+            <account.Form
+              method="post"
+              action="/accounts/update"
+              onSubmit={handleFormSubmit}
+            >
               <input
                 name="accountId"
                 defaultValue={data.account.id}
                 type="hidden"
               />
-              <button type="submit" className="bg-red-600">
-                Yes, delete account
-              </button>
-              <button
-                type="button"
-                className="bg-sky-500"
-                onClick={() => setValidateDelete(false)}
-              >
-                Cancel
+              <input name="name" defaultValue={data.account.name} />
+              <select name="type">
+                <option value="checking" selected={data.account.type == "checking"} >Checking</option>
+                <option value="savings" selected={data.account.type == "savings"}>Savings</option>
+                <option value="cash" selected={data.account.type == "cash"}>Cash</option>
+                <option value="loan" selected={data.account.type == "loan"}>Loan / Credit Card</option>
+              </select>
+              <button type="submit" className="bg-sky-600">
+                Update
               </button>
             </account.Form>
-          ) : (
-            <button
-              type="button"
-              className="bg-red-500"
-              onClick={() => setValidateDelete(true)}
-            >
-              Delete account
+
+            {validateDelete ? (
+              <account.Form method="post" action="/accounts/delete">
+                <input
+                  name="accountId"
+                  defaultValue={data.account.id}
+                  type="hidden"
+                />
+                <button type="submit" className="bg-red-600">
+                  Yes, delete account
+                </button>
+                <button
+                  type="button"
+                  className="bg-sky-500"
+                  onClick={() => setValidateDelete(false)}
+                >
+                  Cancel
+                </button>
+              </account.Form>
+            ) : (
+              <button
+                type="button"
+                className="bg-red-500"
+                onClick={() => setValidateDelete(true)}
+              >
+                Delete account
+              </button>
+            )}
+
+            <button onClick={() => setUpdateAccount(false)} type="button">
+              Cancel
             </button>
-          )}
-
-          <button onClick={() => setUpdateAccount(false)} type="button">
-            Cancel
-          </button>
-        </div>
-      )}
+          </div>
+        )}
 
 
 
 
-      {/* <transaction.Form
+        {/* <transaction.Form
         className=" flex flex-wrap justify-center bg-sky-500 p-1"
         method="post"
         action="/transaction/new"
@@ -383,27 +392,32 @@ export default function AccountDetailsPage() {
         </button>
       </transaction.Form> */}
 
-      <Transaction
-        new
-        accountId={data.account.id}
-        onSubmit={handleFormSubmit}
-        categories={data.categories}
-
-      />
-
-      {data.transactions?.map((t) => {
-        return <Transaction onClick={() => {
-          setActiveTransaction(t.id)
-        }}
-          active={t.id == activeTransaction}
+        <Transaction
+          new
           accountId={data.account.id}
-          transaction={t}
           onSubmit={handleFormSubmit}
           categories={data.categories}
 
         />
-      })}
-    </section>
+
+        {data.transactions?.map((t) => {
+          return <Transaction onClick={() => {
+            setActiveTransaction(t.id)
+          }}
+            active={t.id == activeTransaction}
+            accountId={data.account.id}
+            transaction={t}
+            onSubmit={handleFormSubmit}
+            categories={data.categories}
+
+          />
+        })}
+      </section>
+
+
+    </main>
+
+
   );
 }
 

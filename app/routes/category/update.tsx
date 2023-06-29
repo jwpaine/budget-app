@@ -47,7 +47,7 @@ export async function action({ request, params }: ActionArgs) {
       userId,
       currentValue
      });
-     return redirect(`/accounts/${accountId}`);
+     return redirect(`/budget`);
   }
 
  
@@ -65,5 +65,5 @@ export async function action({ request, params }: ActionArgs) {
    userId
   });
 
-  return redirect(`/accounts/${accountId}`);
+  return redirect(`/budget`);
 }

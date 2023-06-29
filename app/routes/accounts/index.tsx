@@ -17,7 +17,7 @@ import {
 } from "@remix-run/react";
 // import invariant from "tiny-invariant";
 import * as React from "react";
-import { getAccount } from "~/models/account.server";
+import { getAccount, getAccounts } from "~/models/account.server";
 import { requireUserId, } from "~/auth.server";
 
 import { useOptionalUser } from "~/utils";
@@ -45,6 +45,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const userId = await requireUserId(request);
   const categories = await getCategories({ userId });
+  const accounts = await getAccounts({ userId });
 
 
   let currentDate = new Date() as Date
@@ -55,7 +56,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const transactions = await getDailyTransactionSums({ userId, startDate, accountId })
 
-  return json({ userId, categories, transactions });
+  return json({ userId, categories, transactions, accounts });
 }
 
 

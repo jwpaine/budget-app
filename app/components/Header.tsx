@@ -9,10 +9,10 @@ export default function Header(props) {
       {props.userId ? (
         <>
           <Link
-            to="/accounts"
+            to="/budget"
             className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 sm:px-8"
           >
-            Accounts
+            My Budget
           </Link>
 
           <Form action="/logout" method="post">
