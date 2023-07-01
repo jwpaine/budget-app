@@ -225,7 +225,7 @@ export default function AccountDetailsPage() {
           {/* <Select options={renderTransferableAccounts()} /> */}
           <select name="fromId">
             {
-              accountsData.accounts.map((a) => {
+              data.accounts.map((a) => {
                 return <option selected={a.id == data.account.id} key={a.id} value={a.id}> {`From: ${a.name} (${a.balance})`}</option>
               })
             }
@@ -233,7 +233,7 @@ export default function AccountDetailsPage() {
 
           <select name="toId">
             {
-              accountsData.accounts.map((a) => {
+              data.accounts.map((a) => {
                 return <option key={a.id} value={a.id}> {`To: ${a.name} (${a.balance})`}</option>
               })
             }
