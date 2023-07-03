@@ -3,6 +3,7 @@ import { useFetcher } from "@remix-run/react";
 
 import * as React from "react";
 
+
 export default function Transaction(props) {
 
     const dateRef = React.useRef<HTMLInputElement>(null);
@@ -16,6 +17,15 @@ export default function Transaction(props) {
     const transaction = useFetcher();
 
     const [uncategorized, setUncategorized] = React.useState(props.transaction && props.transaction.inflow > 0);
+
+    const formatDate = () => {
+        const now = new Date();
+        const dateParts = now.toLocaleDateString().split('/');
+        const year = dateParts[2];
+        const month = String(dateParts[0]).padStart(2, '0');
+        const day = String(dateParts[1]).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
 
 
     const handleInputChange = () => {
@@ -48,7 +58,7 @@ export default function Transaction(props) {
             <input
                 ref={dateRef}
                 name="date"
-                defaultValue={props.transaction ? new Date(props.transaction.date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10)}
+                defaultValue={props.transaction ? new Date(props.transaction.date).toISOString().slice(0, 10) : formatDate()}
                 placeholder="Date"
                 className="m-1"
             />

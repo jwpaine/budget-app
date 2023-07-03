@@ -342,56 +342,6 @@ export default function AccountDetailsPage() {
         )}
 
 
-
-
-        {/* <transaction.Form
-        className=" flex flex-wrap justify-center bg-sky-500 p-1"
-        method="post"
-        action="/transaction/new"
-      >
-        <input name="accountId" defaultValue={data.account.id} type="hidden" />
-        <input
-          ref={dateRef}
-          name="date"
-          defaultValue={new Date().toISOString().slice(0, 10)}
-          placeholder="Date"
-          className="m-1"
-        />
-
-        {transaction.data?.errors.date}
-
-        <input
-          ref={payeeRef}
-          name="payee"
-          placeholder="Payee"
-          className="m-1"
-        />
-
-        {uncategorized ? (
-          <>
-            <span>Inflow: Uncategorized</span>
-          </>
-        ) : (
-          <select name="category">
-            {
-              data.categories?.map((c) => {
-                return <option value={c.id} key={c.id}>{c.name}</option>
-              })
-            }
-          </select>
-        )}
-
-        <input ref={memoRef} name="memo" placeholder="Memo" className="m-1" />
-
-        <input ref={inRef} onChange={() => handleInputChange()} name="inflow" placeholder="In" className="m-1" />
-
-        <input ref={outRef} onChange={() => handleInputChange()} name="outflow" placeholder="Out" className="m-1" />
-
-        <button type="submit" className="rounded bg-sky-800 p-2 text-white">
-          Add Transaction
-        </button>
-      </transaction.Form> */}
-
         <Transaction
           new
           accountId={data.account.id}

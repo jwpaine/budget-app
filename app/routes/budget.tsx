@@ -103,6 +103,7 @@ export default function Budget() {
     data.transactions.map((t) => {
       let sum = Number(t._sum.inflow) - Number(t._sum.outflow)
       cash = cash - sum
+      cash = Number(cash.toFixed(2))
 
       if (max < cash) max = cash
       if (cash < min) min = cash
@@ -117,7 +118,7 @@ export default function Budget() {
     graph_data.reverse()
 
     console.log(`min: ${min}`)
-    console.log(`max: ${max}`)
+    console.log(`max: ${max}`) // here
 
     return <ResponsiveContainer width="100%" height={100} >
       <AreaChart
