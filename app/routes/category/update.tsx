@@ -26,21 +26,16 @@ export async function action({ request, params }: ActionArgs) {
   const id = formData.get("id") as string;
 
   let v = formData.get("currentValue") as string
+  let balance = formData.get("balance") as string
+  let newBalance = formData.get("newBalance") as string
 
-  let sum = v.split("+")
-  let diff = v.split("-")
-
-  if (sum.length > 1 && diff.length > 1) {
-    console.log("canot combine both + and -")
-    return redirect(`/accounts/${accountId}`);
-  }
-
- 
-  const currentValue = sum.length > 1 ? (Number(sum[0]) + Number(sum[1])) : diff.length > 1 ? (Number(diff[0]) - Number(diff[1])) : Number(v)
+  
 
 
-
+  // if budget is "resolved" then simply update current Value
+  
   if(action && action == "setBudget") {
+    let currentValue = Number(v)
     console.log("id-->: ", id)
     const t = await setBudget({
       id,
@@ -50,7 +45,21 @@ export async function action({ request, params }: ActionArgs) {
      return redirect(`/budget`);
   }
 
- 
+  // otherwise, update all values, taking into account the difference between the new balance and the old balance
+
+  let sum = newBalance.split("+")
+  let diff = newBalance.split("-")
+
+  if (sum.length > 1 && diff.length > 1) {
+    console.log("canot combine both + and -")
+    return redirect(`/budget`);
+  }
+
+  let dB = sum.length > 1 ? (Number(sum[0]) + Number(sum[1]) - Number(balance)) : diff.length > 1 ? (Number(diff[0]) - Number(diff[1]) - Number(balance)) : Number(newBalance) - Number(balance)
+
+  console.log("dB: ", dB)
+
+  const currentValue = Number(v) + dB
   const name = (formData.get("name") as string) || "";
   
   const due = new Date(formData.get("due") as string) as Date;

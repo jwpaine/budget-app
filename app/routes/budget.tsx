@@ -152,13 +152,13 @@ export default function Budget() {
     if (!data.accounts || data.accounts.length == 0) {
       return (
         <div>
-  
+
           <span className="text-white">Total cash: $0.00</span>
           <span className="text-white ml-5 mr-2">To be budgeted: $0.00</span>
-      
+
         </div>
       )
-    
+
     }
 
     let cash = 0 as number
@@ -203,7 +203,7 @@ export default function Budget() {
         <span className="text-white">Budgeted: {currentBalance.toFixed(2)}</span> <br /> */}
         <span className="text-white ml-5 mr-2">To be budgeted:</span>
         <span className={`${Number(cash - currentBalance + outflow - inflow) >= 0 ? "text-white" : "rounded bg-gray-100 p-1 text-red-500"} text-m`}>
-            ${(cash - currentBalance + outflow - inflow).toFixed(2)}
+          ${(cash - currentBalance + outflow - inflow).toFixed(2)}
         </span>
 
 
@@ -314,7 +314,26 @@ export default function Budget() {
                       defaultValue={`${budgeted}`}
                       placeholder="Budgeted"
                       className="m-1"
+                      type="hidden"
                     />
+
+                    <input
+
+                      name="balance"
+                      defaultValue={`${balance}`}
+                      className="m-1"
+                      type="hidden"
+                    />
+
+                    <input
+
+                      name="newBalance"
+                      defaultValue={`${balance}`}
+                      className="m-1"
+                      placeholder="New Balance"
+                    />
+
+
 
                     <input
                       name="due"
@@ -414,7 +433,6 @@ export default function Budget() {
                       <span className={`flex flex-col justify-center text-right`}>{budgeted}</span>
                       <span className={`flex flex-col justify-center text-right`}>{activity}</span>
                       <span className={`flex flex-col justify-center text-right`}>{balance}</span>
-
                       <span className={`flex flex-col justify-center text-right`}>{needed}</span>
 
 
