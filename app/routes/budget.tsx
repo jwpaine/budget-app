@@ -220,7 +220,7 @@ export default function Budget() {
         <SideBar accounts={data.accounts} />
 
         <section className="flex w-full flex-col bg-slate-900">
-        <div className="flex h-200 m-2 ">
+          <div className="flex h-200 m-2 ">
             {renderBudgetTotals()}
           </div>
           <div className="flex h-200 m-2 ">
@@ -248,7 +248,7 @@ export default function Budget() {
             {renderBudgetTotals()}
           </div>
           <div className="flex h-200 m-2 ">
-            <button onClick={() => setShowAnalytics(true)} className="rounded-md bg-blue-500 px-4  py-3 ml-2 font-small text-white hover:bg-blue-600 ">Show Stats</button>
+            <button onClick={() => setShowAnalytics(true)} className="rounded-md border border-solid hover:bg-slate-800 border-white px-4 py-3 ml-2 font-small text-white ">📊 View Stats</button>
           </div>
 
           <div className={`border-bottom my-0.5 flex flex-col border-slate-200 px-3 py-0.5 bg-slate-300`}>
@@ -470,10 +470,11 @@ export default function Budget() {
 
 
         <category.Form
-          className={`mb-0.5 flex p-5 bg-sky-700 `}
+          className={`mb-0.5 flex p-2 bg-slate-500 `}
           method="post" action="/category/new">
-          <input className={`p-2`} ref={nameRef} name="name" placeholder="Name" />
-          <button className={`bg-white text-black text-center p-2 mx-2`} type="submit">Add Category</button>
+          <input className={`rounded p-1`} ref={nameRef} name="name" placeholder="Category Name" />
+          <button className="flex items-center justify-center rounded-md border border-transparent bg-white ml-2 px-2 py-1 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 sm:px-8"
+            type="submit">Add Category</button>
         </category.Form>
 
 

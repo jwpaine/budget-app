@@ -62,7 +62,7 @@ export default function Transaction(props: TransactionProps) {
 
     return props.active || props.new ? (
         <transaction.Form
-            className="flex flex-wrap justify-center bg-sky-500 p-1"
+            className="flex flex-wrap justify-center bg-slate-500 p-2"
             method="post"
             action={props.new ? "/transaction/new" : "/transaction/update"}
             onSubmit={() => props.handleFormSubmit()}

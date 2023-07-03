@@ -148,119 +148,179 @@ export default function AccountDetailsPage() {
 
   if (reconcile) {
     return (
-      <div>
-        <h3>Reconcile {data.account.name}</h3>
-        <h3>Current Balance {data.account.balance}</h3>
+      <main className="flex flex-col md:flex-row">
+        <SideBar accounts={data.accounts} />
+        <section className="flex w-full flex-col">
+          <h3>Reconcile {data.account.name}</h3>
+          <h3>Current Balance {data.account.balance}</h3>
 
-        <transaction.Form
-          className="flex flex-wrap"
-          method="post"
-          action="/transaction/new"
-          onSubmit={handleFormSubmit}
-        >
-          <input
-            name="accountId"
-            defaultValue={data.account.id}
-            type="hidden"
-          />
+          <transaction.Form
+            className="flex flex-wrap"
+            method="post"
+            action="/transaction/new"
+            onSubmit={handleFormSubmit}
+          >
+            <input
+              name="accountId"
+              defaultValue={data.account.id}
+              type="hidden"
+            />
 
-          <h3>New balance: </h3>
+            <h3>New balance: </h3>
 
-          <input
-            ref={recRef}
-            name="reconcile"
-            defaultValue={data.account.balance}
-            onChange={handleReconcileChange}
-          />
+            <input
+              ref={recRef}
+              name="reconcile"
+              defaultValue={data.account.balance}
+              onChange={handleReconcileChange}
+            />
 
-          <input ref={inRef} name="inflow" placeholder="In" type="hidden" />
+            <input ref={inRef} name="inflow" placeholder="In" type="hidden" />
 
-          <input ref={outRef} name="outflow" placeholder="Out" type="hidden" />
+            <input ref={outRef} name="outflow" placeholder="Out" type="hidden" />
 
-          <input
-            ref={memoRef}
-            name="memo"
-            defaultValue="Reconciled"
-            type="hidden"
-          />
+            <input
+              ref={memoRef}
+              name="memo"
+              defaultValue="Reconciled"
+              type="hidden"
+            />
 
-          <input
-            ref={dateRef}
-            name="date"
-            defaultValue={new Date().toISOString().slice(0, 10)}
-            type="hidden"
-          />
+            <input
+              ref={dateRef}
+              name="date"
+              defaultValue={new Date().toISOString().slice(0, 10)}
+              type="hidden"
+            />
 
-          <button type="submit"> Reconcile </button>
-        </transaction.Form>
-
-        <button onClick={() => doReconcile(false)}>Cancel</button>
-      </div>
+            <button type="submit"> Reconcile </button>
+          </transaction.Form>
+          <button onClick={() => doReconcile(false)}>Cancel</button>
+        </section>
+      </main>
     );
   }
 
   if (doTransfer) {
     return (
-      <section>
-        <h3>Transfer</h3>
+      <main className="flex flex-col md:flex-row">
+        <SideBar accounts={data.accounts} />
+        <section className="flex w-full flex-col">
+          <transaction.Form
+            className="flex flex-col"
+            method="post"
+            action="/transaction/new"
+            onSubmit={handleFormSubmit}
+          >
+            <input
+              name="accountId"
+              defaultValue={data.account.id}
+              type="hidden"
+            />
 
-        <transaction.Form
-          className="flex flex-col"
-          method="post"
-          action="/transaction/new"
-          onSubmit={handleFormSubmit}
-        >
-          <input
-            name="accountId"
-            defaultValue={data.account.id}
-            type="hidden"
-          />
+            <input
+              name="type"
+              defaultValue="transfer"
+              type="hidden"
+            />
 
-          <input
-            name="type"
-            defaultValue="transfer"
-            type="hidden"
-          />
+            {/* <Select options={renderTransferableAccounts()} /> */}
+            <select name="fromId">
+              {
+                data.accounts.map((a) => {
+                  return <option selected={a.id == data.account.id} key={a.id} value={a.id}> {`From: ${a.name} (${a.balance})`}</option>
+                })
+              }
+            </select>
 
-          {/* <Select options={renderTransferableAccounts()} /> */}
-          <select name="fromId">
-            {
-              data.accounts.map((a) => {
-                return <option selected={a.id == data.account.id} key={a.id} value={a.id}> {`From: ${a.name} (${a.balance})`}</option>
-              })
-            }
-          </select>
-
-          <select name="toId">
-            {
-              data.accounts.map((a) => {
-                return <option key={a.id} value={a.id}> {`To: ${a.name} (${a.balance})`}</option>
-              })
-            }
-          </select>
-
-
-          <input
-            name="value"
-            placeholder="Amount"
-            className="m-1"
-          />
-
-          <input
-            name="date"
-            defaultValue={new Date().toISOString().slice(0, 10)}
-            placeholder="Date"
-            className="m-1"
-          />
+            <select name="toId">
+              {
+                data.accounts.map((a) => {
+                  return <option key={a.id} value={a.id}> {`To: ${a.name} (${a.balance})`}</option>
+                })
+              }
+            </select>
 
 
+            <input
+              name="value"
+              placeholder="Amount"
+              className="m-1"
+            />
 
+            <input
+              name="date"
+              defaultValue={new Date().toISOString().slice(0, 10)}
+              placeholder="Date"
+              className="m-1"
+            />
+            <button type="submit"> Transfer </button>
+            <button type="button" onClick={() => setDoTransfer(false)}> Cancel </button>
+          </transaction.Form>
+        </section>
+      </main>
+    )
+  }
 
-          <button type="submit"> Transfer </button>
-          <button type="button" onClick={() => setDoTransfer(false)}> Cancel </button>
-        </transaction.Form>
+  if (updateAccount) {
+    return (
+      <main className="flex flex-col md:flex-row">
+        <SideBar accounts={data.accounts} />
+        <section className="flex w-full flex-col">
+          <account.Form
+            method="post"
+            action="/accounts/update"
+            onSubmit={handleFormSubmit}
+          >
+            <input
+              name="accountId"
+              defaultValue={data.account.id}
+              type="hidden"
+            />
+            <input name="name" defaultValue={data.account.name} />
+            <select name="type">
+              <option value="checking" selected={data.account.type == "checking"} >Checking</option>
+              <option value="savings" selected={data.account.type == "savings"}>Savings</option>
+              <option value="cash" selected={data.account.type == "cash"}>Cash</option>
+              <option value="loan" selected={data.account.type == "loan"}>Loan / Credit Card</option>
+            </select>
+            <button type="submit" className="bg-sky-600">
+              Update
+            </button>
+          </account.Form>
 
-      </section>
+          {validateDelete ? (
+            <account.Form method="post" action="/accounts/delete">
+              <input
+                name="accountId"
+                defaultValue={data.account.id}
+                type="hidden"
+              />
+              <button type="submit" className="bg-red-600">
+                Yes, delete account
+              </button>
+              <button
+                type="button"
+                className="bg-sky-500"
+                onClick={() => setValidateDelete(false)}
+              >
+                Cancel
+              </button>
+            </account.Form>
+          ) : (
+            <button
+              type="button"
+              className="bg-red-500"
+              onClick={() => setValidateDelete(true)}
+            >
+              Delete account
+            </button>
+          )}
+          <button onClick={() => setUpdateAccount(false)} type="button">
+            Cancel
+          </button>
+        </section>
+      </main>
     )
   }
 
@@ -272,75 +332,22 @@ export default function AccountDetailsPage() {
 
       <section className="flex w-full flex-col">
 
-        <header className="flex flex-col">
+        <header className="bg-slate-900">
 
-          <h3>{data.account.name}</h3>
-          <button onClick={() => doReconcile(true)} type="button">Reconcile</button>
-          <button onClick={() => setUpdateAccount(true)} type="button">Settings</button>
-          <button onClick={() => setDoTransfer(true)} type="button">Transfer</button>
+          <div className="flex h-200 m-2 ">
+            <h1 className="text-white">{data.account.name}</h1>
+          </div>
 
-          <h3>Transactions length: {data.transactions.length}</h3>
+          <div className="flex h-200 m-2 ">
+            <button className="rounded-md border border-solid hover:bg-slate-800 border-white px-4 py-3 ml-2 font-small text-white " onClick={() => doReconcile(true)} type="button">Reconcile</button>
+            <button className="rounded-md border border-solid hover:bg-slate-800 border-white px-4 py-3 ml-2 font-small text-white " onClick={() => setDoTransfer(true)} type="button">Transfer</button>
+            <button className="rounded-md border border-solid hover:bg-slate-800 border-white px-4 py-3 ml-2 font-small text-white " onClick={() => setUpdateAccount(true)} type="button">Settings</button>
+          </div>
+
+
+          {/* <span className="text-white">Total transactions: {data.transactions?.length}</span> */}
 
         </header>
-
-        {updateAccount && (
-          <div>
-            <account.Form
-              method="post"
-              action="/accounts/update"
-              onSubmit={handleFormSubmit}
-            >
-              <input
-                name="accountId"
-                defaultValue={data.account.id}
-                type="hidden"
-              />
-              <input name="name" defaultValue={data.account.name} />
-              <select name="type">
-                <option value="checking" selected={data.account.type == "checking"} >Checking</option>
-                <option value="savings" selected={data.account.type == "savings"}>Savings</option>
-                <option value="cash" selected={data.account.type == "cash"}>Cash</option>
-                <option value="loan" selected={data.account.type == "loan"}>Loan / Credit Card</option>
-              </select>
-              <button type="submit" className="bg-sky-600">
-                Update
-              </button>
-            </account.Form>
-
-            {validateDelete ? (
-              <account.Form method="post" action="/accounts/delete">
-                <input
-                  name="accountId"
-                  defaultValue={data.account.id}
-                  type="hidden"
-                />
-                <button type="submit" className="bg-red-600">
-                  Yes, delete account
-                </button>
-                <button
-                  type="button"
-                  className="bg-sky-500"
-                  onClick={() => setValidateDelete(false)}
-                >
-                  Cancel
-                </button>
-              </account.Form>
-            ) : (
-              <button
-                type="button"
-                className="bg-red-500"
-                onClick={() => setValidateDelete(true)}
-              >
-                Delete account
-              </button>
-            )}
-
-            <button onClick={() => setUpdateAccount(false)} type="button">
-              Cancel
-            </button>
-          </div>
-        )}
-
 
         <Transaction
           new
