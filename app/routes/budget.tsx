@@ -78,6 +78,9 @@ export default function Budget() {
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   const [resolve, setResolve] = React.useState(0);
 
+  // create react hook to toggle analytics on/off:
+  const [showAnalytics, setShowAnalytics] = React.useState(false);
+
   const graphTransactions = () => {
     console.log('graphing transactions')
     if (!data.transactions) {
@@ -141,10 +144,6 @@ export default function Budget() {
       </AreaChart>
     </ResponsiveContainer>
 
-
-
-
-
   }
 
 
@@ -172,7 +171,7 @@ export default function Budget() {
     console.log("all category data: ", data.categories)
 
 
-    data.categories?.map((cat) => {
+    data.categories?.map((cat: any) => {
       // let c = Number(cat.inflow) > 0 ? Number(cat.inflow) : Number(cat.currentValue);
       currentBalance += Number(cat.currentValue)
       inflow += Number(cat.inflow)
@@ -214,6 +213,25 @@ export default function Budget() {
     )
   }
 
+  if (showAnalytics) {
+    return (
+      <main className="flex flex-col md:flex-row ">
+
+        <SideBar accounts={data.accounts} />
+
+        <section className="flex w-full flex-col bg-slate-900">
+        <div className="flex h-200 m-2 ">
+            {renderBudgetTotals()}
+          </div>
+          <div className="flex h-200 m-2 ">
+            {graphTransactions()}
+          </div>
+          <button onClick={() => setShowAnalytics(false)} className="rounded-md bg-blue-500 px-4  py-3 ml-2 font-small text-white hover:bg-blue-600 ">Close</button>
+        </section>
+      </main>
+    )
+  }
+
   return (
     <main className="flex flex-col md:flex-row">
 
@@ -224,10 +242,13 @@ export default function Budget() {
           {user?.email}
 
           <div className="flex h-200 m-2 ">
-            {graphTransactions()}
+
           </div>
           <div className="flex h-200 m-2 ">
             {renderBudgetTotals()}
+          </div>
+          <div className="flex h-200 m-2 ">
+            <button onClick={() => setShowAnalytics(true)} className="rounded-md bg-blue-500 px-4  py-3 ml-2 font-small text-white hover:bg-blue-600 ">Show Stats</button>
           </div>
 
           <div className={`border-bottom my-0.5 flex flex-col border-slate-200 px-3 py-0.5 bg-slate-300`}>
@@ -254,7 +275,7 @@ export default function Budget() {
 
 
         {
-          data.categories?.map((c) => {
+          data.categories?.map((c: any) => {
             let budgeted = Number(c.currentValue).toFixed(2)
             let balance = (Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)).toFixed(2)
             let activity = (Number(c.inflow) - Number(c.outflow)).toFixed(2)
@@ -456,21 +477,9 @@ export default function Budget() {
         </category.Form>
 
 
-
       </section>
 
     </main>
-
-
-
-
-
-
-
-
-
-
-
 
 
   );

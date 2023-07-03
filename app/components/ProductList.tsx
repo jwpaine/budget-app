@@ -1,6 +1,19 @@
 import { NavLink } from "@remix-run/react";
 
-export default function ProductList({ products }) {
+interface Product {
+  // Define the properties of a product
+  id: number;
+  name: string;
+  price: number;
+  mainImage: string;
+}
+
+interface ProductListProps {
+  // Define the types for the props object
+  products: Product[];
+}
+
+export default function ProductList({ products }: ProductListProps) {
   return (
     <div>
       {products.length === 0 ? (

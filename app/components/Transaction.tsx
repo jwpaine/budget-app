@@ -2,9 +2,34 @@ import { useFetcher } from "@remix-run/react";
 // import Select from "react-virtualized-select";
 
 import * as React from "react";
+import { D } from "vitest/dist/types-94cfe4b4";
+
+interface Transaction {
+    id: string;
+    date: Date;
+    payee: string;
+    category: string;
+    memo: string;
+    inflow: number;
+    outflow: number;
+}
+
+interface TransactionProps {
+
+    transaction: Transaction;
+    accountId: string;
+    categories: any;
+    active: boolean;
+    new: boolean;
+    onClick: () => void;
+    onSubmit: () => void;
+    handleFormSubmit: () => void;
 
 
-export default function Transaction(props) {
+}
+
+
+export default function Transaction(props: TransactionProps) {
 
     const dateRef = React.useRef<HTMLInputElement>(null);
     const payeeRef = React.useRef<HTMLInputElement>(null);
@@ -34,13 +59,6 @@ export default function Transaction(props) {
             setUncategorized(inflowValue > 0);
         }
     };
-
-    // const renderPayee = () => {
-    //     return Array.from(new Array(1000), (_, index) => ({
-    //         label: `Item ${index}`,
-    //         value: index
-    //       }));
-    // }
 
     return props.active || props.new ? (
         <transaction.Form
@@ -82,7 +100,7 @@ export default function Transaction(props) {
             ) : (
                 <select name="category">
                     {
-                        props.categories?.map((c) => {
+                        props.categories?.map((c: any) => {
                             return <option selected={props.transaction && props.transaction.category == c.id} value={c.id} key={c.id}>{c.name}</option>
                         })
                     }
