@@ -58,11 +58,12 @@ export default function NewNotePage() {
 
 
   return (
-    <section className="flex flex-col w-full items-center ">
+    <main className="flex flex-col w-full items-center bg-sky-700 h-full">
+
 
       <Form
         method="post"
-        className="flex flex-col w-full max-w-2xl items-center justify-center p-10"
+        className="flex flex-col w-full max-w-sm items-center justify-center p-10"
 
       >
 
@@ -70,36 +71,36 @@ export default function NewNotePage() {
 
         {accountState == 'type' && <>
 
-          <h1 className="text-4xl text-center">What type of account will you be adding?</h1>
+          <h1 className="text-3xl text-white text-center">Select Account Type</h1>
           <div className="grid grid-cols-2 gap-4 mt-5">
 
 
-            <button className="flex-1 min-h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
+            <button className={`rounded flex-1 min-h-500 w-100 p-5 flex flex-col justify-center items-center  ${accountType == "Checking" ? 'bg-sky-100' : 'bg-white'}  hover:bg-slate-100`} type="button" onClick={() => {
               console.log("clicked!")
               setAccountType('Checking')
               setAccountState('name')
-            }}>Checking</button>
-            <button className="flex-1 h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
+            }}><span className="text-4xl">💳</span> <span className="text-xl">Checking</span></button>
+            <button className={`rounded flex-1 min-h-500 w-100 p-5 flex flex-col justify-center items-center  ${accountType == "Savings" ? 'bg-sky-100' : 'bg-white'}  hover:bg-slate-100`} type="button" onClick={() => {
 
               setAccountType('Savings')
               setAccountState('name')
-            }}>Savings</button>
-            <button className="flex-1 h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
+            }}><span className="text-4xl">💰</span> <span className="text-xl">Savings</span></button>
+            <button className={`rounded bg-white flex-1 min-h-500 w-100 p-5 flex flex-col justify-center items-center ${accountType == "Cash" ? 'bg-sky-100' : 'bg-white'} hover:bg-slate-100`} type="button" onClick={() => {
 
               setAccountType('Cash')
               setAccountState('name')
-            }}>Cash</button>
-            <button className="flex-1 h-500 w-100 p-5 flex justify-center align-center border-dotted border-2 border-slate-500" type="button" onClick={() => {
+            }}><span className="text-4xl">💵</span> <span className="text-xl">Cash</span></button>
+            <button className={`rounded bg-white flex-1 min-h-500 w-100 p-5 flex flex-col justify-center items-center  ${accountType == "Loan" ? 'bg-sky-100' : 'bg-white'} hover:bg-slate-100`} type="button" onClick={() => {
 
               setAccountType('Loan')
               setAccountState('name')
-            }}>Loan</button>
+            }}><span className="text-4xl">🏦</span> <span className="text-xl">Loan</span></button>
 
           </div>
         </>}
 
-        {accountState == 'name' && <h1 className="text-4xl text-center">Name your {accountType} account</h1>}
-        {accountState == 'balance' && <h1 className="text-4xl text-center">What's the current balance?</h1>}
+        {accountState == 'name' && <h1 className="text-3xl text-white text-center">Name your {accountType}</h1>}
+        {accountState == 'balance' && <h1 className="text-3xl text-white text-center">Current balance?</h1>}
 
 
         <input
@@ -111,7 +112,7 @@ export default function NewNotePage() {
         <input
           ref={nameRef}
           name="name"
-          className="w-full rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
+          className="w-full rounded-md border-2 border-blue-500 px-3 my-5 text-lg leading-loose"
           aria-invalid={actionData?.errors?.name ? true : undefined}
           aria-errormessage={
             actionData?.errors?.name ? "title-error" : undefined
@@ -123,7 +124,7 @@ export default function NewNotePage() {
         <input
           ref={balanceRef}
           name="balance"
-          className="w-full rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
+          className="w-full rounded-md border-2 border-blue-500 px-3 my-5 text-lg leading-loose"
           aria-invalid={actionData?.errors?.balance ? true : undefined}
           aria-errormessage={
             actionData?.errors?.balance ? "title-error" : undefined
@@ -133,28 +134,31 @@ export default function NewNotePage() {
 
         <div className="flex w-full">
           {accountState == 'name' && <>
-            <button className="flex-1 rounded bg-slate-600 px-4 mx-2 py-2 text-blue-100 hover:bg-blue-500 active:bg-blue-600" type="button" onClick={() => {
-              setAccountState('type')
-            }}>Back</button>
-            <button className="flex-1 rounded bg-slate-600 px-4 mx-2 py-2 text-blue-100 hover:bg-blue-500 active:bg-blue-600" type="button" onClick={() => {
-              setAccountState('balance')
-            }}>Next</button>
+            <button className="flex flex-1 items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 mx-1 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 "
+              type="button" onClick={() => {
+                setAccountState('type')
+              }}>Back</button>
+            <button className="flex flex-1 items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 mx-1 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 "
+              type="button" onClick={() => {
+                setAccountState('balance')
+              }}>Next</button>
           </>
           }
 
           {accountState == 'balance' && <>
-            <button className="flex-1 rounded bg-slate-600 px-4 mx-2 py-2 text-blue-100 hover:bg-blue-500 active:bg-blue-600" type="button" onClick={() => {
-              setAccountState('name')
-            }}>Back</button>
-            <button className="flex-1 rounded bg-slate-600 px-4 mx-2 py-2 text-blue-100 hover:bg-blue-500 active:bg-blue-600" type="submit">Add Account</button>
+            <button className="flex flex-1 items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 mx-1 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 " type="button" onClick={() => {
+                setAccountState('name')
+              }}>Back</button>
+            <button className="flex flex-1 items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 mx-1 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 " type="submit">Add Account</button>
           </>}
 
         </div>
 
-        <button className="rounded bg-slate-600 px-4 mx-2 py-2 text-blue-100 hover:bg-blue-500 active:bg-blue-600" type="button"><Link to="/budget">Cancel</Link></button>
+        <Link className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-1 my-20 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 "
+          to="/budget">Cancel</Link>
 
       </Form>
-    </section>
+    </main>
   )
 
 }
