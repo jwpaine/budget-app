@@ -18,8 +18,7 @@ export async function action({ request, params }: ActionArgs) {
   const formData = await request.formData();
 
   const name = formData.get("name") as string;
-  const maxValue = Number(formData.get("maxValue")) as number || 0;
-  // const due = Number(formData.get("due"));
+  const maxValue = 0;
   const frequency = formData.get("frequency") as string || "M"
 
   const currentValue = 0;

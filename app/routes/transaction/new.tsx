@@ -26,7 +26,11 @@ export async function action({ request, params }: ActionArgs) {
     const fromId = formData.get("fromId") as string;
     const toId = formData.get("toId") as string;
     const originatingAccountId = formData.get("accountId") as string;
-    const value = (Number(formData.get("value")).toFixed(2) || 0) as number;
+
+    let v = formData.get("value") as string
+    const value = Number(v.replace(/[^0-9.]/g, "")).toFixed(2)
+
+
     const date = new Date(formData.get("date") as string) as Date;
 
     console.log(`new transfer: ${fromId} -> ${value} -> ${toId} `)
@@ -39,7 +43,7 @@ export async function action({ request, params }: ActionArgs) {
     let accountId = fromId
     let memo = ""
     let inflow = 0
-    let outflow = value
+    let outflow = Number(value)
     let id = fromId
 
     const t_From = await createTransaction({
@@ -53,18 +57,18 @@ export async function action({ request, params }: ActionArgs) {
       userId,
     });
     // update account balance
-    
+
 
     const a = await incrementAccountBalance({ id, userId, value: -value });
 
     // inflow --------------------------
 
 
-     accountId = toId
-     inflow = value
-     outflow = 0
-     id = toId
-    
+    accountId = toId
+    inflow = Number(value)
+    outflow = 0
+    id = toId
+
 
     const t_To = await createTransaction({
       accountId,
@@ -77,7 +81,7 @@ export async function action({ request, params }: ActionArgs) {
       userId,
     });
     // update account balance
-   
+
 
     const b = await incrementAccountBalance({ id, userId, value });
 
@@ -90,8 +94,12 @@ export async function action({ request, params }: ActionArgs) {
   const payee = (formData.get("payee") as string) || "";
   const category = (formData.get("category") as string) || "";
   const memo = (formData.get("memo") as string) || "";
-  const inflow = (Number(formData.get("inflow")).toFixed(2) || 0) as number;
-  const outflow = (Number(formData.get("outflow")).toFixed(2) || 0) as number;
+
+  let outflow = Number((formData.get("outflow") as string).replace(/[^0-9.]/g, "")) || 0
+  outflow = Math.round(outflow * 1e2) / 1e2
+
+  let inflow = Number((formData.get("inflow") as string).replace(/[^0-9.]/g, "")) || 0
+  inflow = Math.round(inflow * 1e2) / 1e2
 
 
 

@@ -28,8 +28,14 @@ export async function action({ request, params }: ActionArgs) {
   const payee = (formData.get("payee") as string) || "";
   const category = (formData.get("category") as string) || "Uncategorized";
   const memo = (formData.get("memo") as string) || "";
-  const newInflow = Number(formData.get("inflow")) || 0;
-  const newOutflow = Number(formData.get("outflow")) || 0;
+
+  let newInflow = Number((formData.get("inflow") as string).replace(/[^0-9.]/g, "")) || 0
+  newInflow = Math.round(newInflow * 1e2) / 1e2
+  
+  let newOutflow = Number((formData.get("outflow") as string).replace(/[^0-9.]/g, "")) || 0
+  newOutflow = Math.round(newOutflow * 1e2) / 1e2
+
+
 
   const t = await updateTransaction({
     id,

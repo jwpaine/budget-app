@@ -24,19 +24,21 @@ export async function action({ request, params }: ActionArgs) {
   const action = formData.get("action") as string;
 
   const id = formData.get("id") as string;
-
+   // remove all non-numeric characters except decimal
   let v = formData.get("currentValue") as string
-  let balance = formData.get("balance") as string
-  let newBalance = formData.get("newBalance") as string
+
+  let b = formData.get("balance") as string
+  const balance = b.replace(/[^0-9.]/g, "")
+
+  let nB = formData.get("newBalance") as string
+  const newBalance = nB.replace(/[^0-9.]/g, "")
 
   
 
 
   // if budget is "resolved" then simply update current Value
-  
   if(action && action == "setBudget") {
-    let currentValue = Number(v)
-    console.log("id-->: ", id)
+    let currentValue = Number(v.replace(/[^0-9.]/g, ""))
     const t = await setBudget({
       id,
       userId,
@@ -59,7 +61,7 @@ export async function action({ request, params }: ActionArgs) {
 
   console.log("dB: ", dB)
 
-  const currentValue = Number(v) + dB
+  const currentValue = Number(v.replace(/[^0-9.]/g, "")) + dB
   const name = (formData.get("name") as string) || "";
   
   const due = new Date(formData.get("due") as string) as Date;

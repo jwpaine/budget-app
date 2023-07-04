@@ -148,179 +148,210 @@ export default function AccountDetailsPage() {
 
   if (reconcile) {
     return (
-      <main className="flex flex-col md:flex-row">
-        <SideBar accounts={data.accounts} />
-        <section className="flex w-full flex-col">
-          <h3>Reconcile {data.account.name}</h3>
-          <h3>Current Balance {data.account.balance}</h3>
 
-          <transaction.Form
-            className="flex flex-wrap"
-            method="post"
-            action="/transaction/new"
-            onSubmit={handleFormSubmit}
-          >
-            <input
-              name="accountId"
-              defaultValue={data.account.id}
-              type="hidden"
-            />
+      <main className="flex flex-col w-full items-center bg-sky-700 h-full">
 
-            <h3>New balance: </h3>
+        <transaction.Form
+          method="post"
+          action="/transaction/new"
+          onSubmit={handleFormSubmit}
+          className="flex flex-col w-full max-w-lg items-center justify-center p-5"
+        >
+          <h1 className="text-3xl text-white text-center">Reconcile {data.account.name}</h1>
+          <span className="text-white text-center">Current Balance {data.account.balance}</span>
+
+          <input
+            name="accountId"
+            defaultValue={data.account.id}
+            type="hidden"
+          />
+
+          <div className="flex flex-col items-center my-5">
+            <span className="text-white">New Balance</span>
 
             <input
               ref={recRef}
               name="reconcile"
               defaultValue={data.account.balance}
               onChange={handleReconcileChange}
+              className="w-small"
             />
+          </div>
 
-            <input ref={inRef} name="inflow" placeholder="In" type="hidden" />
 
-            <input ref={outRef} name="outflow" placeholder="Out" type="hidden" />
+          <input ref={inRef} name="inflow" placeholder="In" type="hidden" />
 
-            <input
-              ref={memoRef}
-              name="memo"
-              defaultValue="Reconciled"
-              type="hidden"
-            />
+          <input ref={outRef} name="outflow" placeholder="Out" type="hidden" />
 
-            <input
-              ref={dateRef}
-              name="date"
-              defaultValue={new Date().toISOString().slice(0, 10)}
-              type="hidden"
-            />
+          <input
+            ref={memoRef}
+            name="memo"
+            defaultValue="Reconciled"
+            type="hidden"
+          />
 
-            <button type="submit"> Reconcile </button>
-          </transaction.Form>
-          <button onClick={() => doReconcile(false)}>Cancel</button>
-        </section>
+          <input
+            ref={dateRef}
+            name="date"
+            defaultValue={new Date().toISOString().slice(0, 10)}
+            type="hidden"
+          />
+
+          <button type="submit" className="flex flex-1 items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 mx-1 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 ">Reconcile Account</button>
+        </transaction.Form>
+        <button type="button" className="text-white" onClick={() => doReconcile(false)}>Cancel</button>
       </main>
     );
   }
 
   if (doTransfer) {
     return (
-      <main className="flex flex-col md:flex-row">
-        <SideBar accounts={data.accounts} />
-        <section className="flex w-full flex-col">
-          <transaction.Form
-            className="flex flex-col"
-            method="post"
-            action="/transaction/new"
-            onSubmit={handleFormSubmit}
-          >
-            <input
-              name="accountId"
-              defaultValue={data.account.id}
-              type="hidden"
-            />
+      <main className="flex flex-col w-full items-center bg-sky-700 h-full">
 
-            <input
-              name="type"
-              defaultValue="transfer"
-              type="hidden"
-            />
+        <h1 className="text-3xl text-white text-center">Account transfer</h1>
 
-            {/* <Select options={renderTransferableAccounts()} /> */}
-            <select name="fromId">
+        <transaction.Form
+          className="flex flex-col w-full max-w-xs items-center justify-center p-5"
+          method="post"
+          action="/transaction/new"
+          onSubmit={handleFormSubmit}
+        >
+
+          <input
+            name="accountId"
+            defaultValue={data.account.id}
+            type="hidden"
+          />
+
+          <input
+            name="type"
+            defaultValue="transfer"
+            type="hidden"
+          />
+
+
+          <div className="flex flex-col w-full">
+            <span className="text-white">From: </span>
+            <select className="w-full" name="fromId">
               {
                 data.accounts.map((a) => {
-                  return <option selected={a.id == data.account.id} key={a.id} value={a.id}> {`From: ${a.name} (${a.balance})`}</option>
+                  return <option selected={a.id == data.account.id} key={a.id} value={a.id}> {`${a.name} (${a.balance})`}</option>
                 })
               }
             </select>
+          </div>
 
-            <select name="toId">
+          <div className="flex flex-col w-full">
+            <span className="text-white">To: </span>
+            <select className="w-full" name="toId">
               {
                 data.accounts.map((a) => {
-                  return <option key={a.id} value={a.id}> {`To: ${a.name} (${a.balance})`}</option>
+                  return <option key={a.id} value={a.id}> {`${a.name} (${a.balance})`}</option>
                 })
               }
             </select>
+          </div>
 
-
+          <div className="flex flex-col w-full">
+            <span className="text-white">Amount: </span>
             <input
               name="value"
               placeholder="Amount"
-              className="m-1"
+              className=""
             />
+          </div>
 
+          <div className="flex flex-col w-full">
+            <span className="text-white">Date: </span>
             <input
               name="date"
               defaultValue={new Date().toISOString().slice(0, 10)}
               placeholder="Date"
-              className="m-1"
+              className=""
             />
-            <button type="submit"> Transfer </button>
-            <button type="button" onClick={() => setDoTransfer(false)}> Cancel </button>
-          </transaction.Form>
-        </section>
+          </div>
+          <button type="submit" className="flex flex-1 items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 mx-1 my-5 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 " >Transfer</button>
+          <button className="text-white" type="button" onClick={() => setDoTransfer(false)}> Cancel </button>
+        </transaction.Form>
+
       </main>
     )
   }
 
   if (updateAccount) {
-    return (
-      <main className="flex flex-col md:flex-row">
-        <SideBar accounts={data.accounts} />
-        <section className="flex w-full flex-col">
-          <account.Form
-            method="post"
-            action="/accounts/update"
-            onSubmit={handleFormSubmit}
-          >
-            <input
-              name="accountId"
-              defaultValue={data.account.id}
-              type="hidden"
-            />
-            <input name="name" defaultValue={data.account.name} />
-            <select name="type">
-              <option value="checking" selected={data.account.type == "checking"} >Checking</option>
-              <option value="savings" selected={data.account.type == "savings"}>Savings</option>
-              <option value="cash" selected={data.account.type == "cash"}>Cash</option>
-              <option value="loan" selected={data.account.type == "loan"}>Loan / Credit Card</option>
-            </select>
-            <button type="submit" className="bg-sky-600">
-              Update
-            </button>
-          </account.Form>
 
-          {validateDelete ? (
-            <account.Form method="post" action="/accounts/delete">
+    return (
+      <main className="flex flex-col w-full items-center bg-sky-700 h-full">
+
+        {validateDelete ? (
+          <>
+
+            <account.Form
+              method="post"
+              action="/accounts/delete"
+              className="flex flex-col w-full max-w-xs items-center justify-center p-5">
+              <h1 className="text-3xl text-white text-center">Confirm Delete: {data.account.name} </h1>
+
               <input
                 name="accountId"
                 defaultValue={data.account.id}
                 type="hidden"
               />
-              <button type="submit" className="bg-red-600">
-                Yes, delete account
-              </button>
               <button
                 type="button"
-                className="bg-sky-500"
+                className="items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 mx-1 my-5 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 "
                 onClick={() => setValidateDelete(false)}
               >
-                Cancel
+                No, Abort!
               </button>
+              <button type="submit" className="items-center justify-center rounded-md border border-transparent bg-red-500 px-4 py-3 mx-1 my-5 text-base font-medium text-white shadow-sm hover:bg-red-400 ">
+                Yes, delete account
+              </button>
+
             </account.Form>
-          ) : (
-            <button
-              type="button"
-              className="bg-red-500"
-              onClick={() => setValidateDelete(true)}
+          </>
+        ) : (
+          <>
+            <h1 className="text-3xl text-white text-center">{data.account.name} </h1>
+            <h2 className="text-1xl text-white text-center">Settings</h2>
+
+            <account.Form
+              className="flex flex-col w-full max-w-xs items-center justify-center p-5"
+              method="post"
+              action="/accounts/update"
+              onSubmit={handleFormSubmit}
             >
-              Delete account
+              <input
+                name="accountId"
+                defaultValue={data.account.id}
+                type="hidden"
+              />
+              <div className="flex flex-col w-full">
+                <span className="text-white">Account Name:</span>
+                <input name="name" defaultValue={data.account.name} />
+              </div>
+              <div className="flex flex-col w-full">
+                <span className="text-white">Account Type: </span>
+                <select name="type">
+                  <option value="checking" selected={data.account.type == "checking"} >Checking</option>
+                  <option value="savings" selected={data.account.type == "savings"}>Savings</option>
+                  <option value="cash" selected={data.account.type == "cash"}>Cash</option>
+                  <option value="loan" selected={data.account.type == "loan"}>Loan / Credit Card</option>
+                </select>
+              </div>
+              <button type="submit" className="items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 mx-1 my-5 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 " >Update</button>
+            </account.Form>
+
+            <button onClick={() => setValidateDelete(true)} type="button" className="items-center justify-center rounded-md border border-transparent bg-red-500 px-4 py-3 mx-1 my-5 text-base font-medium text-white shadow-sm hover:bg-red-400 ">
+              Delete Account
             </button>
-          )}
-          <button onClick={() => setUpdateAccount(false)} type="button">
-            Cancel
-          </button>
-        </section>
-      </main>
+
+            <button className="text-white" onClick={() => setUpdateAccount(false)} type="button">
+              Cancel
+            </button>
+          </>
+        )}
+      </main >
     )
   }
 
