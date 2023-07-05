@@ -28,10 +28,10 @@ export async function action({ request, params }: ActionArgs) {
   let v = formData.get("currentValue") as string
 
   let b = formData.get("balance") as string
-  const balance = b.replace(/[^0-9.]/g, "")
+  const balance = b ? b.replace(/[^0-9.]/g, "") : 0
 
   let nB = formData.get("newBalance") as string
-  const newBalance = nB.replace(/[^0-9.]/g, "")
+  const newBalance = nB ? nB.replace(/[^0-9.+-]/g, "") : ""
 
   
 
