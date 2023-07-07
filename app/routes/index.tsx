@@ -16,8 +16,17 @@ export async function loader({ request }: LoaderArgs) {
 export default function Index() {
   // const user = useOptionalUser();
   return (
-    <main className="relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">
-      <h1>Main content!</h1>
+    <main className="flex flex-col h-full w-full">
+      <section className="h-96 bg-slate-600">
+        <div className="p-5">
+          <h1 className="text-7xl text-white font-bold">Budgeting Made</h1>
+          <h1 className="text-8xl text-white font-bold">Simple</h1>
+          <h3 className="text-2xl text-white mt-5">Add Accounts. Create Categories. Track spending.</h3>
+        </div>
+        <div>
+          
+        </div>
+      </section>
     </main>
   );
 }

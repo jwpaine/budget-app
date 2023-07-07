@@ -217,7 +217,7 @@ export default function Budget() {
     return (
       <main className="flex flex-col md:flex-row ">
 
-        <SideBar accounts={data.accounts} />
+        {/* <SideBar accounts={data.accounts} /> */}
 
         <section className="flex w-full flex-col bg-slate-900">
           <div className="flex h-200 m-2 ">
@@ -233,12 +233,12 @@ export default function Budget() {
   }
 
   return (
-    <main className="flex flex-col md:flex-row">
+    <main className="flex h-full flex-col md:flex-row">
 
       <SideBar accounts={data.accounts} />
 
       <section className="flex w-full flex-col">
-        <header className="bg-slate-900">
+        <header className="bg-slate-800">
           {user?.email}
 
           <div className="flex h-200 m-2 ">

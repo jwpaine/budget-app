@@ -1,7 +1,5 @@
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
-import { Link, useMatches, NavLink } from "@remix-run/react";
+import type { LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import Select from "react-virtualized-select";
 
 import {
   Form,
@@ -41,7 +39,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const accounts = await getAccounts({ userId });
 
   if (!account) {
-    return redirect("/accounts");
+    return redirect("/budget");
   }
 
   const categories = await getCategoryNames({ userId })
@@ -357,7 +355,7 @@ export default function AccountDetailsPage() {
 
   return (
 
-    <main className="flex flex-col md:flex-row">
+    <main className="flex h-full flex-col md:flex-row">
 
       <SideBar accounts={data.accounts} />
 
