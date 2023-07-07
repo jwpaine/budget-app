@@ -168,7 +168,7 @@ export default function Budget() {
 
     let assigned = 0;
 
-    console.log("all category data: ", data.categories)
+    // console.log("all category data: ", data.categories)
 
 
     data.categories?.map((cat: any) => {
@@ -433,8 +433,8 @@ export default function Budget() {
                     setActiveBudget(c.id)
                   }}
                   className={`mb-0.5 flex flex-col px-3 py-0.5 
-                  ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) == 0 && "bg-slate-200 hover:bg-slate-300"}                                                                                  
-                  ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) > 0 && "bg-emerald-200 hover:bg-emerald-300"} 
+                  ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) == 0 && "bg-gray-800 hover:bg-slate-300"}                                                                                  
+                  ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) > 0 && "bg-emerald-400 hover:bg-emerald-300"} 
                   ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) < 0 && "bg-rose-200 hover:bg-rose-300"} 
                   `}
                   key={c.id}

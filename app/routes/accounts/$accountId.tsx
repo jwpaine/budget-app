@@ -368,9 +368,9 @@ export default function AccountDetailsPage() {
           </div>
 
           <div className="flex h-200 m-2 ">
-            <button className="rounded-md border border-solid hover:bg-slate-800 border-white px-4 py-3 ml-2 font-small text-white " onClick={() => doReconcile(true)} type="button">Reconcile</button>
-            <button className="rounded-md border border-solid hover:bg-slate-800 border-white px-4 py-3 ml-2 font-small text-white " onClick={() => setDoTransfer(true)} type="button">Transfer</button>
-            <button className="rounded-md border border-solid hover:bg-slate-800 border-white px-4 py-3 ml-2 font-small text-white " onClick={() => setUpdateAccount(true)} type="button">Settings</button>
+            <button className="flex items-center justify-center rounded-md border border-slate-500 text-white px-4 py-3 text-base font-medium shadow-sm hover:bg-slate-800 sm:px-8 mr-2" onClick={() => doReconcile(true)} type="button">Reconcile</button>
+            <button className="flex items-center justify-center rounded-md border border-slate-500 text-white px-4 py-3 text-base font-medium shadow-sm hover:bg-slate-800 sm:px-8 mr-2" onClick={() => setDoTransfer(true)} type="button">Transfer</button>
+            <button className="flex items-center justify-center rounded-md border border-slate-500 text-white px-4 py-3 text-base font-medium shadow-sm hover:bg-slate-800 sm:px-8 mr-2" onClick={() => setUpdateAccount(true)} type="button">Settings</button>
           </div>
 
 

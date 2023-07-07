@@ -7,10 +7,10 @@ interface HeaderProps {
 export default function Header(props: HeaderProps) {
 
   return (
-    <header className="flex fuxed top items-center justify-between bg-slate-100 p-4 text-white border-b border-slate-400">
+    <header className="flex fuxed top items-center justify-between bg-black p-2 text-white border-b border-gray-700">
       <Link
         to="/budget"
-        className="flex items-center justify-center rounded-md border border-transparent bg-slate-800 text-white px-4 py-3 text-base font-medium shadow-sm hover:bg-slate-700 sm:px-8"
+        className="flex items-center justify-center rounded-md border border-slate-500 text-white px-4 py-3 text-base font-medium shadow-sm hover:bg-slate-800 sm:px-8"
       >
         {props.userId ? "My Budget" : "Get Started"}
       </Link>
