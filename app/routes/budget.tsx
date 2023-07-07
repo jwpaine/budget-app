@@ -434,7 +434,7 @@ export default function Budget() {
                     setConfirmDelete(false)
                     setActiveBudget(c.id)
                   }}
-                  className={` flex flex-col px-3 bg-gray-800 hover:bg-gray-700
+                  className={` flex justify-between px-3 bg-gray-800 hover:bg-gray-700 p-2 border border-b border-slate-700
                   
                          
             
@@ -442,12 +442,12 @@ export default function Budget() {
                   `}
                   key={c.id}
                 >
-                  <div className="flex justify-between">
+                
                     <div className="flex flex-col w-40">
-                      <span className="text-white text-s">
+                      <span className="text-white text-m font-bold">
                         {c.category || "-"}
                       </span>
-                      <span className="text-xs text-slate-800">
+                      <span className="text-xs text-white">
                         {new Date(c.due).toISOString().slice(0, 10)}
                       </span>
                     </div>
@@ -461,7 +461,7 @@ export default function Budget() {
 
 
                     </div>
-                  </div>
+                
 
                 </div>
             
