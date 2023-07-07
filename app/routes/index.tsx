@@ -1,6 +1,7 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 
+// import {Button} from "../components/Button"
 
 import { getUserId } from "~/auth.server";
 
@@ -24,7 +25,7 @@ export default function Index() {
           <h3 className="text-2xl text-slate-800 mt-5">Add Accounts. Create Categories. Track spending.</h3>
         </div>
         <div>
-          
+            {/* <Button>This is a test button!</Button> */}
         </div>
       </section>
     </main>

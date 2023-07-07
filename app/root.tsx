@@ -10,6 +10,8 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 
+import { cssBundleHref } from "@remix-run/css-bundle";
+
 import tailwindStylesheetUrl from "~/styles/tailwind.css";
 import { getUserId } from "~/auth.server";
 
@@ -18,6 +20,11 @@ import Footer  from "./components/Footer"
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: tailwindStylesheetUrl },
+  
+    // ...(cssBundleHref
+    //   ? [{ rel: "stylesheet", href: cssBundleHref }]
+    //   : []),
+ 
 ];
 
 export const loader = async ({ request }: LoaderArgs) => {

@@ -426,22 +426,25 @@ export default function Budget() {
                 </div>
 
             ) : (
-              <div>
+              // ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) == 0 && "border border"} 
+              // ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) > 0 && "border border-emerald-300"} 
+              // ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) < 0 && "border border-rose-300"} 
                 <div
                   onClick={() => {
                     setConfirmDelete(false)
                     setActiveBudget(c.id)
                   }}
-                  className={`mb-0.5 flex flex-col px-3 py-0.5 
-                  ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) == 0 && "bg-gray-800 hover:bg-slate-300"}                                                                                  
-                  ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) > 0 && "bg-emerald-400 hover:bg-emerald-300"} 
-                  ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) < 0 && "bg-rose-200 hover:bg-rose-300"} 
+                  className={` flex flex-col px-3 bg-gray-800 hover:bg-gray-700
+                  
+                         
+            
+                  
                   `}
                   key={c.id}
                 >
                   <div className="flex justify-between">
                     <div className="flex flex-col w-40">
-                      <span className="text-slac-800 text-s font-bold">
+                      <span className="text-white text-s">
                         {c.category || "-"}
                       </span>
                       <span className="text-xs text-slate-800">
@@ -451,17 +454,17 @@ export default function Budget() {
                     <div className={`grid grid-cols-4 gap-4 w-full max-w-xl `}>
 
 
-                      <span className={`flex flex-col justify-center text-right`}>{budgeted}</span>
-                      <span className={`flex flex-col justify-center text-right`}>{activity}</span>
-                      <span className={`flex flex-col justify-center text-right`}>{balance}</span>
-                      <span className={`flex flex-col justify-center text-right`}>{needed}</span>
+                      <span className={`flex flex-col justify-center text-right text-white`}>{budgeted}</span>
+                      <span className={`flex flex-col justify-center text-right text-white`}>{activity}</span>
+                      <span className={`flex flex-col justify-center text-right ${Number(balance) == 0 && 'text-white'} ${Number(balance) < 0 && 'text-red-500 font-bold border-l-4 border-red-500'} ${Number(balance) > 0 && 'text-emerald-300 font-bold border-l-4 border-emerald-300'}`}>{balance}</span>
+                      <span className={`flex flex-col justify-center text-right text-white`}>{needed}</span>
 
 
                     </div>
                   </div>
 
                 </div>
-              </div>
+            
             )
           })
         }
