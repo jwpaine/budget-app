@@ -34,15 +34,18 @@ export async function action({ request, params }: ActionArgs) {
   const newBalance = nB ? nB.replace(/[^0-9.+-]/g, "") : ""
 
 
-
+  // let budgeted = Number(c.currentValue).toFixed(2)
+  // let balance = (Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)).toFixed(2)
+  // let activity = (Number(c.inflow) - Number(c.outflow)).toFixed(2)
+  // let needed = Number(c.needed)
 
 
   // if budget is "resolved" then simply update current Value
   if (action && action == "setBudget") {
-    let currentValue = Number(v.replace(/[^0-9.]/g, ""))
-    console.log("newBalance: ", newBalance)
-    console.log("balance: ", balance)
-  
+    console.log("setting Budget")
+    let currentValue = Number(v.replace(/[^0-9.]/g, "")) //  = {Number(Number(budgeted) + Math.abs(Number(balance))).toFixed(2)}
+
+
     const t = await setBudget({
       id,
       userId,
@@ -57,60 +60,8 @@ export async function action({ request, params }: ActionArgs) {
   const due = new Date(formData.get("due") as string) as Date;
   const maxValue = Number(formData.get("needed")) || 0;
 
-  // if (newBalance.indexOf("+") == -1 && newBalance.indexOf("-") == -1) {
-  //   const currentValue = Number(newBalance)
-  //   const t = await updateCategory({
-  //     id,
-  //     name,
-  //     currentValue,
-  //     due,
-  //     maxValue,
-  //     userId
-  //   });
 
-  //   return redirect(`/budget`);
-  // }
-
-  // check if newBalance is a real number. If so, declare currentValue as newBalance:
-  // if (!isNaN(Number(newBalance))) {
-  //   console.log("newBalance is a number. Updating category with currentValue: ", newBalance)
-  //   const currentValue = Number(newBalance)
-
-  //   const t = await updateCategory({
-  //     id,
-  //     name,
-  //     currentValue,
-  //     due,
-  //     maxValue,
-  //     userId
-  //   });
-
-  //   return redirect(`/budget`);
-
-  // }
-  console.log("balance: ", balance)
-  console.log("newBalance: ", newBalance)
-  console.log("v: ", v)
-
-  if(!isNaN(Number(newBalance))) {
-
-    const currentValue = Number(v) + Number(newBalance) - Number(balance)
-
-    console.log("newBalance is a number. Updating category with currentValue: ", currentValue)
-
-
-    const t = await updateCategory({
-      id,
-      name,
-      currentValue,
-      due,
-      maxValue,
-      userId
-    });
-  
-    return redirect(`/budget`);
-
-  }
+ 
 
   let sum = newBalance.split("+")
   let diff = newBalance.split("-")
