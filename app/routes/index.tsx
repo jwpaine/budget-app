@@ -17,12 +17,12 @@ export async function loader({ request }: LoaderArgs) {
 export default function Index() {
   // const user = useOptionalUser();
   return (
-    <main className="flex flex-col h-full w-full">
+    <main className="flex flex-col bg-gray-950 h-full w-full">
       <section className="h-96">
         <div className="p-5">
-          <h1 className="text-7xl text-slate-800 font-bold">Budgeting Made</h1>
-          <h1 className="text-8xl text-slate-800 font-bold">Simple</h1>
-          <h3 className="text-2xl text-slate-800 mt-5">Add Accounts. Create Categories. Track spending.</h3>
+          <h1 className="text-7xl text-white font-bold">Budgeting Made</h1>
+          <h1 className="text-8xl text-white font-bold">Simple</h1>
+          <h3 className="text-2xl text-slate-200 mt-5">Add Accounts. Create Categories. Track spending.</h3>
         </div>
         <div>
             {/* <Button>This is a test button!</Button> */}

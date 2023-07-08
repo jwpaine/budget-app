@@ -44,7 +44,7 @@ export default function App() {
       <body className="h-full">
         <Header userId={data.userId} />
         <Outlet />
-        {/* <Footer /> */}
+        {/* <Footer userId={data.userId} /> */}
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

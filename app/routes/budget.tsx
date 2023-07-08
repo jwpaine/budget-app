@@ -251,7 +251,7 @@ export default function Budget() {
             <button onClick={() => setShowAnalytics(true)} className="rounded-md border border-solid hover:bg-slate-800 border-white px-4 py-3 ml-2 font-small text-white ">📊 View Stats</button>
           </div>
 
-          <div className={`border-bottom my-0.5 flex flex-col border-slate-200 px-3 py-0.5 bg-slate-300`}>
+          <div className={`border-bottom my-0.5 flex flex-col px-3 py-0.5 bg-slate-400`}>
             <div className="flex justify-between">
               <div className="flex flex-col w-40">
                 <span className="text-slac-800 text-s font-bold">

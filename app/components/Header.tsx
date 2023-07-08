@@ -7,10 +7,10 @@ interface HeaderProps {
 export default function Header(props: HeaderProps) {
 
   return (
-    <header className="flex fuxed top items-center justify-between bg-black p-2 text-white border-b border-gray-700">
+    <header className="flex fuxed top items-center justify-between bg-gray-950 p-4 text-white ">
       <Link
         to="/budget"
-        className="flex items-center justify-center rounded-md border border-slate-500 text-white px-4 py-3 text-base font-medium shadow-sm hover:bg-slate-800 sm:px-8"
+        className="flex items-center justify-center text-white px-4 py-3 text-base font-medium shadow-sm sm:px-8 hover:font-bold"
       >
         {props.userId ? "My Budget" : "Get Started"}
       </Link>
@@ -19,7 +19,7 @@ export default function Header(props: HeaderProps) {
 
       <Link
         to={`/${props.userId ? "account" : "budget"}`}
-        className="flex items-center justify-center rounded-md bg-sky-600 px-4 py-3 font-medium text-white hover:bg-sky-700  " >
+        className="flex items-center justify-center px-4 py-3 font-medium text-white hover:font-bold" >
        {props.userId ? "My Account" : "Log In"}
       </Link>
 

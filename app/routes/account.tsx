@@ -31,13 +31,13 @@ export default function Budget() {
 
 
   return (
-    <main>
+    <main className="bg-black h-full flex items-center justify-center content-center">
       <h1>My Account</h1>
 
       <Form action="/logout" method="post">
         <button
           type="submit"
-          className="rounded bg-slate-600 px-4 py-2 text-blue-100 hover:bg-blue-500 active:bg-blue-600"
+          className="rounded p-5 text-blue-100 border border-slate-500 hover:font-bold"
         >
           Logout
         </button>

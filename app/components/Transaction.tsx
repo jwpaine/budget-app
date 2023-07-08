@@ -160,22 +160,28 @@ export default function Transaction(props: TransactionProps) {
             </transaction.Form>}
         </transaction.Form>
     ) : (
-        <div
-            className={`mb-0.5 flex flex-col px-3 py-0.5 ${Number(props.transaction.inflow) > 0 ? "bg-emerald-100 hover:bg-emerald-200" : "bg-slate-200 hover:bg-slate-300"} `}
+        // ${Number(props.transaction.inflow) > 0 ? "bg-emerald-100 hover:bg-emerald-200" : "bg-slate-200 hover:bg-slate-300"} 
+        <div  
+                  
+                         
+            
+                  
+                  
+            className={`flex flex-col bg-gray-800 hover:bg-gray-700 p-2 border border-b border-slate-700 `}
             key={props.transaction.id}
             onClick={() => props.onClick()}
         >
             <div className="flex justify-between">
                 <div>
-                    <span className="text-slac-800 text-s font-bold">
+                    <span className="text-white text-s font-bold">
                         {props.transaction.payee || "-"}
                     </span>
 
                     <span
-                        className={`ml-1 rounded order border-slate-400 bg-white p-0.5 mr-2 text-sm text-black`}>
+                        className={`ml-1 rounded order border-slate-400 bg-slate-700 p-1 mr-2 text-sm text-white`}>
                         {/* {t.category} */}
                         {props.transaction.category == "" ? (
-                            <span>Uncategorized</span>
+                            <span className="text-white">Uncategorized</span>
                         ) : (
                             props.categories?.map((c) => {
                                 return props.transaction.category == c.id && c.name
@@ -185,15 +191,15 @@ export default function Transaction(props: TransactionProps) {
 
 
                     </span>
-                    <span className="text-xs text-slate-800">{props.transaction.memo}</span>
+                    <span className="text-xs text-slate-400 text-white">{props.transaction.memo}</span>
                 </div>
-                <span className={`text-black`}>
+                <span className={`${Number(props.transaction.outflow) == 0 ? 'text-emerald-300' : 'text-red-300'}`}>
                     {Number(props.transaction.outflow) == 0 ? `+${props.transaction.inflow}` : `-${props.transaction.outflow}`}
                 </span>
             </div>
             <div className="flex justify-between">
                 <div>
-                    <span className="text-xs text-slate-800">
+                    <span className="text-xs text-slate-100">
                         {new Date(props.transaction.date).toISOString().slice(0, 10)}
                     </span>
                 </div>
