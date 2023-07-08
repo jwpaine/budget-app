@@ -335,24 +335,24 @@ export default function Budget() {
                       defaultValue={`${budgeted}`}
                       placeholder="Budgeted"
                       className="m-1"
-                      type="hidden"
+                   
                     />
 
-                    <input
+                    {/* <input
 
                       name="balance"
                       defaultValue={`${balance}`}
                       className="m-1"
                       type="hidden"
-                    />
+                    /> */}
 
-                    <input
+                    {/* <input
 
                       name="newBalance"
                       defaultValue={`${budgeted}`}
                       className="m-1"
                       placeholder="Budgeted"
-                    />
+                    /> */}
 
 
 
