@@ -5,7 +5,7 @@ import { Link, NavLink } from "@remix-run/react"
 export default function SideBar(props) {
     const accounts = props.accounts
     return (
-        <section className={`w-full h-full border-r border-gray-700 bg-gray-900 pb-4 md:max-w-sm min-w-sm`}>
+        <section className={`w-full lg:h-full border-r border-gray-700 bg-gray-900 pb-4 md:max-w-sm min-w-sm`}>
 
             {accounts.length > 0 && <>
                     {accounts.map((account) => (

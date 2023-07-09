@@ -331,7 +331,7 @@ export default function Budget() {
                     action="/category/update"
                     onSubmit={() => setActiveBudget("")}
                   >
-                    <div className="center flex">
+                    <div className="lg:flex lg:flex-wrap grid grid-cols-2 gap-2 w-full justify-center">
                       <input
                         name="id"
                         defaultValue={c.id}
@@ -346,6 +346,9 @@ export default function Budget() {
                           placeholder="Category Name"
                           className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
                         />
+                      </div>
+
+                      <div className="flex flex-col">
                         <span className="text-white text-center">Needed By Date</span>
                         <input
                           name="due"
@@ -354,6 +357,7 @@ export default function Budget() {
                           className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
                         />
                       </div>
+
                       <div className="flex flex-col">
                         <span className="text-white text-center">Budgeted</span>
                         <input
@@ -364,6 +368,9 @@ export default function Budget() {
                           className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
 
                         />
+                      </div>
+
+                      <div className="flex flex-col">
                         <span className="text-white text-center">Total Needed</span>
                         <input
                           name="needed"
@@ -397,43 +404,43 @@ export default function Budget() {
                     </button>
 
                     {Number(balance) < 0 && (
-                    <category.Form
-                      className="w-full "
-                      method="post"
-                      action="/category/update"
-                      onSubmit={() => setActiveBudget("")}
-                    >
-                      <input
-                        name="action"
-                        defaultValue="setBudget"
-                        type="hidden"
-                      />
-
-                      <input
-                        name="id"
-                        defaultValue={c.id}
-                        type="hidden"
-                      />
-
-                      <input
-                        name="currentValue"
-                        defaultValue={Number(Number(budgeted) + Math.abs(Number(balance))).toFixed(2)}
-                        type="hidden"
-                      />
-
-                      <button
-                        type="submit"
-                        className="rounded w-full bg-emerald-500 p-2 my-1 text-black"
+                      <category.Form
+                        className="w-full "
+                        method="post"
+                        action="/category/update"
+                        onSubmit={() => setActiveBudget("")}
                       >
-                        Resolve Negative Budget
-                      </button>
-                    </category.Form>
-                  )}
+                        <input
+                          name="action"
+                          defaultValue="setBudget"
+                          type="hidden"
+                        />
+
+                        <input
+                          name="id"
+                          defaultValue={c.id}
+                          type="hidden"
+                        />
+
+                        <input
+                          name="currentValue"
+                          defaultValue={Number(Number(budgeted) + Math.abs(Number(balance))).toFixed(2)}
+                          type="hidden"
+                        />
+
+                        <button
+                          type="submit"
+                          className="rounded w-full bg-emerald-500 p-2 my-1 text-black"
+                        >
+                          Resolve Negative Budget
+                        </button>
+                      </category.Form>
+                    )}
 
 
                   </category.Form>
 
-                 
+
                 </div>
 
             ) : (
