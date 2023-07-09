@@ -60,7 +60,7 @@ export default function NewNotePage() {
 
 
   return (
-    <main className="flex flex-col w-full items-center bg-sky-700 h-full">
+    <main className="flex flex-col w-full items-center bg-gray-950 h-full">
 
 
       <Form
@@ -114,7 +114,7 @@ export default function NewNotePage() {
         <input
           ref={nameRef}
           name="name"
-          className="w-full rounded-md border-2 border-blue-500 px-3 my-5 text-lg leading-loose"
+          className="w-full rounded-md px-3 my-5 text-lg leading-loose placeholder-gray-800 focus:outline-none "
           aria-invalid={actionData?.errors?.name ? true : undefined}
           aria-errormessage={
             actionData?.errors?.name ? "title-error" : undefined
@@ -126,7 +126,7 @@ export default function NewNotePage() {
         <input
           ref={balanceRef}
           name="balance"
-          className="w-full rounded-md border-2 border-blue-500 px-3 my-5 text-lg leading-loose"
+          className="w-full rounded-md px-3 my-5 text-lg leading-loose placeholder-gray-800 focus:outline-none "
           aria-invalid={actionData?.errors?.balance ? true : undefined}
           aria-errormessage={
             actionData?.errors?.balance ? "title-error" : undefined

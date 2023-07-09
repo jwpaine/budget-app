@@ -147,7 +147,7 @@ export default function AccountDetailsPage() {
   if (reconcile) {
     return (
 
-      <main className="flex flex-col w-full items-center bg-sky-700 h-full">
+      <main className="flex flex-col w-full items-center bg-gray-950 h-full">
 
         <transaction.Form
           method="post"
@@ -204,7 +204,7 @@ export default function AccountDetailsPage() {
 
   if (doTransfer) {
     return (
-      <main className="flex flex-col w-full items-center bg-sky-700 h-full">
+      <main className="flex flex-col w-full items-center bg-gray-950 h-full">
 
         <h1 className="text-3xl text-white text-center">Account transfer</h1>
 
@@ -279,7 +279,7 @@ export default function AccountDetailsPage() {
   if (updateAccount) {
 
     return (
-      <main className="flex flex-col w-full items-center bg-sky-700 h-full">
+      <main className="flex flex-col w-full items-center bg-gray-950 h-full">
 
         {validateDelete ? (
           <>
@@ -355,7 +355,7 @@ export default function AccountDetailsPage() {
 
   return (
 
-    <main className="flex h-full flex-col md:flex-row">
+    <main className="flex h-full flex-col bg-gray-950 md:flex-row">
 
       <SideBar accounts={data.accounts} />
 

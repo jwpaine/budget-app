@@ -233,7 +233,7 @@ export default function Budget() {
   }
 
   return (
-    <main className="flex h-full flex-col md:flex-row">
+    <main className="flex h-full flex-col bg-gray-950 md:flex-row">
 
       <SideBar accounts={data.accounts} />
 
@@ -251,7 +251,7 @@ export default function Budget() {
             <button onClick={() => setShowAnalytics(true)} className="rounded-md border border-solid hover:bg-slate-800 border-white px-4 py-3 ml-2 font-small text-white ">📊 View Stats</button>
           </div>
 
-          <div className={`border-bottom my-0.5 flex flex-col px-3 py-0.5 bg-slate-400`}>
+          <div className={`border-bottom my-0.5 flex flex-col px-3 py-0.5 bg-slate-300`}>
             <div className="flex justify-between">
               <div className="flex flex-col w-40">
                 <span className="text-slac-800 text-s font-bold">
@@ -309,90 +309,96 @@ export default function Budget() {
                   </button>
                 </category.Form>
                 :
-                <div>
-                  <category.Form
-                    className="flex flex-wrap justify-center bg-sky-300 p-1"
-                    method="post"
-                    action="/category/update"
-                    onSubmit={() => setActiveBudget("")}
-                  >
-                    <input
-                      name="id"
-                      defaultValue={c.id}
-                      type="hidden"
-                    />
-
-                    <input
-                      name="name"
-                      defaultValue={c.category}
-                      placeholder="Category Name"
-                      className="m-1"
-                    />
-
-                    <input
-
-                      name="currentValue"
-                      defaultValue={`${budgeted}`}
-                      placeholder="Budgeted"
-                      className="m-1"
-                   
-                    />
-
-                    {/* <input
-
-                      name="balance"
-                      defaultValue={`${balance}`}
-                      className="m-1"
-                      type="hidden"
-                    /> */}
-
-                    {/* <input
-
-                      name="newBalance"
-                      defaultValue={`${budgeted}`}
-                      className="m-1"
-                      placeholder="Budgeted"
-                    /> */}
-
-
-
-                    <input
-                      name="due"
-                      defaultValue={new Date(c.due).toISOString().slice(0, 10)}
-                      placeholder="Due Date"
-                      className="m-1"
-                    />
-
-                    <input
-                      name="needed"
-                      defaultValue={needed}
-                      placeholder="Needed"
-                      className="m-1"
-                    />
-
-                    <button type="submit" className="rounded bg-sky-800 p-2 text-white">
-                      Update Category
-                    </button>
+                <div className="flex flex-col justify-center items-center bg-gray-600">
+                  <div className="flex w-full p-2 justify-between bg-gray-500">
                     <button
                       type="button"
-                      className="rounded bg-sky-800 p-2 text-white"
-                      onClick={() => setActiveBudget("")}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      className="rounded bg-sky-800 p-2 text-white"
+                      className="rounded bg-red-400 p-2 text-white"
                       onClick={() => setConfirmDelete(true)}
                     >
                       Delete
                     </button>
+                    <div>
+                      <span className="text-white font-bold">Activity: </span>
+                      <span className="mx-2 text-right text-white">{activity}</span>
+                      <span className="text-white font-bold" >Balance: </span>
+                      <span className={`mx-2 text-right ${Number(balance) == 0 && 'text-white'} ${Number(balance) < 0 && 'text-red-500 font-bold'} ${Number(balance) > 0 && 'text-emerald-300 font-bold '}`}>{balance}</span>
+                    </div>
+                  </div>
+                  <category.Form
+                    className="flex flex-col p-2"
+                    method="post"
+                    action="/category/update"
+                    onSubmit={() => setActiveBudget("")}
+                  >
+                    <div className="center flex">
+                      <input
+                        name="id"
+                        defaultValue={c.id}
+                        type="hidden"
+                      />
 
-                  </category.Form>
+                      <div className="flex flex-col">
+                        <span className="text-white text-center">Category Name</span>
+                        <input
+                          name="name"
+                          defaultValue={c.category}
+                          placeholder="Category Name"
+                          className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
+                        />
+                        <span className="text-white text-center">Needed By Date</span>
+                        <input
+                          name="due"
+                          defaultValue={new Date(c.due).toISOString().slice(0, 10)}
+                          placeholder="Due Date"
+                          className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-white text-center">Budgeted</span>
+                        <input
 
-                  {Number(balance) < 0 && (
+                          name="currentValue"
+                          defaultValue={`${budgeted}`}
+                          placeholder="Budgeted"
+                          className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
+
+                        />
+                        <span className="text-white text-center">Total Needed</span>
+                        <input
+                          name="needed"
+                          defaultValue={needed}
+                          placeholder="Needed"
+                          className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
+                        />
+
+                      </div>
+
+                    </div>
+
+
+
+
+
+
+
+
+
+
+                    <button type="submit" className="rounded bg-gray-950 p-2 mt-4 text-white">
+                      Update Category
+                    </button>
+                    <button
+                      type="button"
+                      className="rounded bg-slate-800 p-2 my-1 text-white"
+                      onClick={() => setActiveBudget("")}
+                    >
+                      Cancel
+                    </button>
+
+                    {Number(balance) < 0 && (
                     <category.Form
-                      className="flex flex-wrap justify-center bg-sky-300 p-1"
+                      className="w-full "
                       method="post"
                       action="/category/update"
                       onSubmit={() => setActiveBudget("")}
@@ -417,54 +423,59 @@ export default function Budget() {
 
                       <button
                         type="submit"
-                        className="rounded bg-emerald-600 p-2 text-white"
+                        className="rounded w-full bg-emerald-500 p-2 my-1 text-black"
                       >
-                        Resolve
+                        Resolve Negative Budget
                       </button>
                     </category.Form>
                   )}
+
+
+                  </category.Form>
+
+                 
                 </div>
 
             ) : (
               // ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) == 0 && "border border"} 
               // ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) > 0 && "border border-emerald-300"} 
               // ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) < 0 && "border border-rose-300"} 
-                <div
-                  onClick={() => {
-                    setConfirmDelete(false)
-                    setActiveBudget(c.id)
-                  }}
-                  className={` flex justify-between px-3 bg-gray-800 hover:bg-gray-700 p-2 border border-b border-slate-700
+              <div
+                onClick={() => {
+                  setConfirmDelete(false)
+                  setActiveBudget(c.id)
+                }}
+                className={` flex justify-between px-3 bg-gray-800 hover:bg-gray-700 p-2 border border-b border-slate-700
                   
                          
             
                   
                   `}
-                  key={c.id}
-                >
-                
-                    <div className="flex flex-col w-40">
-                      <span className="text-white text-m font-bold">
-                        {c.category || "-"}
-                      </span>
-                      <span className="text-xs text-white">
-                        {new Date(c.due).toISOString().slice(0, 10)}
-                      </span>
-                    </div>
-                    <div className={`grid grid-cols-4 gap-4 w-full max-w-xl `}>
+                key={c.id}
+              >
+
+                <div className="flex flex-col w-40">
+                  <span className="text-white text-m font-bold">
+                    {c.category || "-"}
+                  </span>
+                  <span className="text-xs text-white">
+                    {new Date(c.due).toISOString().slice(0, 10)}
+                  </span>
+                </div>
+                <div className={`grid grid-cols-4 gap-4 w-full max-w-xl `}>
 
 
-                      <span className={`flex flex-col justify-center text-right text-white`}>{budgeted}</span>
-                      <span className={`flex flex-col justify-center text-right text-white`}>{activity}</span>
-                      <span className={`flex flex-col justify-center text-right ${Number(balance) == 0 && 'text-white'} ${Number(balance) < 0 && 'text-red-500 font-bold border-l-4 border-red-500'} ${Number(balance) > 0 && 'text-emerald-300 font-bold border-l-4 border-emerald-300'}`}>{balance}</span>
-                      <span className={`flex flex-col justify-center text-right text-white`}>{needed}</span>
+                  <span className={`flex flex-col justify-center text-right text-white`}>{budgeted}</span>
+                  <span className={`flex flex-col justify-center text-right text-white`}>{activity}</span>
+                  <span className={`flex flex-col justify-center text-right ${Number(balance) == 0 && 'text-white'} ${Number(balance) < 0 && 'text-red-500 font-bold border-l-4 border-red-500'} ${Number(balance) > 0 && 'text-emerald-300 font-bold border-l-4 border-emerald-300'}`}>{balance}</span>
+                  <span className={`flex flex-col justify-center text-right text-white`}>{needed}</span>
 
-
-                    </div>
-                
 
                 </div>
-            
+
+
+              </div>
+
             )
           })
         }
@@ -473,10 +484,10 @@ export default function Budget() {
 
 
         <category.Form
-          className={`mb-0.5 flex p-2 bg-slate-500 `}
+          className={`mb-0.5 flex p-2 bg-gray-800 `}
           method="post" action="/category/new">
-          <input className={`rounded p-1`} ref={nameRef} name="name" placeholder="Category Name" />
-          <button className="flex items-center justify-center rounded-md border border-transparent bg-white ml-2 px-2 py-1 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 sm:px-8"
+          <input className={`rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none `} ref={nameRef} name="name" placeholder="Category Name" />
+          <button className="flex items-center justify-center rounded-md border border-transparent bg-gray-950 ml-2 px-2 py-1 text-base text-white shadow-sm hover:bg-slate-950 sm:px-8"
             type="submit">Add Category</button>
         </category.Form>
 
