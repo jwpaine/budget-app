@@ -27,6 +27,7 @@ import { Decimal } from "@prisma/client/runtime";
 
 import Transaction from "../../components/Transaction"
 import SideBar from "../../components/accounts/sidebar"
+import { Area, AreaChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 // import { TransactionContainer } from "../../../theme/components/Core"
 // import { TransactionContainer } from "theme/components/Core";
@@ -97,6 +98,8 @@ export default function AccountDetailsPage() {
 
   const [uncategorized, setUncategorized] = React.useState(false);
 
+  const [sortBy, setSortBy ] = React.useState({"filter" : "", "value" : ""});
+
   const accountsData = useRouteData("routes/accounts")
 
 
@@ -114,6 +117,71 @@ export default function AccountDetailsPage() {
   //   })
 
   // }
+
+  const graphTransactions = () => {
+    console.log('graphing transactions')
+    if (!data.transactions) {
+      console.log('no transactions')
+      return
+    }
+
+    let cash = Number(data.account.balance)
+    let min = 999999 as number
+    let max = 0 as number
+
+    // data.accounts.map((account) => {
+    //   if (account.type != 'loan') {
+    //     //   console.log(`adding cash: ${account.balance}`)
+    //     cash += Number(account.balance)
+    //   }
+    // });
+
+    const graph_data = []
+
+    graph_data.push({ name: 'today', cash: cash })
+
+    data.transactions.map((t) => {
+      // let sum = Number(t._sum.inflow) - Number(t._sum.outflow)
+      let v = -Number(t.inflow) + Number(t.outflow)
+      cash = cash + v
+
+      // if (max < cash) max = cash
+      // if (cash < min) min = cash
+
+      let dataPoint = {
+        name: new Date(t.date).toISOString().slice(0, 10),
+        cash: cash
+      }
+      graph_data.push(dataPoint)
+    })
+
+    graph_data.reverse()
+
+    console.log(`min: ${min}`)
+    console.log(`max: ${max}`) // here
+
+    return <ResponsiveContainer width="100%" height={100} >
+      <LineChart
+        width={500}
+        height={200}
+        data={graph_data}
+        syncId="anyId"
+        margin={{
+          top: 10,
+          right: 30,
+          left: 10,
+          bottom: 0,
+        }}
+      >
+        {/* <CartesianGrid strokeDasharray="3 3" /> */}
+        <XAxis dataKey="name" stroke="#FFFFFF" />
+        <YAxis type="number" stroke="#FFFFFF" domain={[0, max]} />
+        <Tooltip />
+        <Line type="monotone" dataKey="cash" stroke="#FFFFFF" strokeWidth={1} dot={false}/>
+      </LineChart>
+    </ResponsiveContainer>
+
+  }
 
 
   const handleInputChange = () => {
@@ -362,7 +430,9 @@ export default function AccountDetailsPage() {
       <section className="flex w-full flex-col">
 
         <header className="bg-slate-900">
-
+        <div className="flex h-200 m-5 ">
+          {graphTransactions()}
+        </div>
           <div className="flex h-200 m-2 ">
             <h1 className="text-white">{data.account.name}</h1>
           </div>
@@ -385,8 +455,14 @@ export default function AccountDetailsPage() {
           categories={data.categories}
 
         />
-
+        {sortBy.filter != "" && <>
+          <span className="text-white">Filtering by {sortBy.filter} : {sortBy.value}</span>
+          <button className="text-white" onClick={() => setSortBy({"filter" : "", "value" : ""})}>Clear Filter</button>
+        </>}
         {data.transactions?.map((t) => {
+          if (sortBy.filter == 'category' && sortBy.value != t.category) return
+          if (sortBy.filter == 'payee' && sortBy.value != t.payee ) return
+
           return <Transaction onClick={() => {
             setActiveTransaction(t.id)
           }}
@@ -395,6 +471,7 @@ export default function AccountDetailsPage() {
             transaction={t}
             onSubmit={handleFormSubmit}
             categories={data.categories}
+           // sortBy={({filter, value} : {filter: string, value: string}) => setSortBy({"filter" : filter, "value" : value})}
 
           />
         })}

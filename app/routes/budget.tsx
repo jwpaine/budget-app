@@ -140,7 +140,7 @@ export default function Budget() {
         <XAxis dataKey="name" stroke="#FFFFFF" />
         <YAxis type="number" stroke="#FFFFFF" domain={[0, max]} />
         <Tooltip />
-        <Area type="monotone" dataKey="cash" fill="#b3e0fe" />
+        <Area type="monotone" dataKey="cash" fill="#b3e0fe" dot={false} />
       </AreaChart>
     </ResponsiveContainer>
 

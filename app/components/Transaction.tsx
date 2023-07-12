@@ -24,6 +24,7 @@ interface TransactionProps {
     onClick: () => void;
     onSubmit: () => void;
     handleFormSubmit: () => void;
+    sortBy: (key: string, order: string) => void;
 
 
 }
@@ -196,7 +197,10 @@ export default function Transaction(props: TransactionProps) {
                     </span>
 
                     <span
-                        className={`ml-1 rounded order border-slate-400 bg-slate-700 p-1 mr-2 text-sm text-white`}>
+                        className={`ml-1 rounded order border-slate-400 bg-slate-700 p-1 mr-2 text-sm text-white`}
+                        // onClick={() => props.sortBy("category", "House")}
+                        >
+                         
                         {/* {t.category} */}
                         {props.transaction.category == "" ? (
                             <span className="text-white">Uncategorized</span>
