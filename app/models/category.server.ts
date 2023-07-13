@@ -57,14 +57,28 @@ export async function setBudget({
 
 }
 
-export function getCategoryNames({ userId }: { userId: User["id"] }) {
+export async function getCategoryNames({ userId }: { userId: User["id"] }) {
+  // first obtain activeBudget from user:
+  const account = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      activeBudget: true,
+    },
+  });
+  if (!account || !account.activeBudget) {
+    return false
+  }
+
+  const budgetId = account.activeBudget as string
   return prisma.category.findMany({
-    where: { userId },
+    where: { userId, budgetId },
     select: { name: true, id: true }
   });
 }
 
-export function getCategories({ userId }: { userId: User["id"] }) {
+export function getCategories({ userId, budgetId }: { userId: User["id"], budgetId: string }) {
 
   const categories = prisma.$queryRaw`
   
@@ -80,28 +94,28 @@ export function getCategories({ userId }: { userId: User["id"] }) {
   FROM "Category" as category 
   LEFT OUTER JOIN "Transaction" as transaction on transaction.category = category.id
   WHERE category."userId" = ${userId}
+  AND category."budgetId" = ${budgetId}
   GROUP BY category.id
   ORDER BY due asc
 
-
   `
 
-//   SELECT 
-//   category.name as category,
-//   category.id as id,
-//   category."currentValue" as "currentValue",
-//   category.due as due,
-//   category."maxValue" as needed,
-//   COALESCE(SUM(transaction.outflow), 0) as outflow,
-//   COALESCE(SUM(transaction.inflow), 0) as inflow
-// FROM "Category" as category 
-// LEFT OUTER JOIN (
-//   SELECT * FROM "Transaction" 
-//   WHERE date >= '2023-06-01' AND date <= '2025-06-30'
-// ) as transaction on transaction.category = category.id
-// WHERE category."userId" = ${userId} 
-// GROUP BY category.id
-// ORDER BY due asc
+  //   SELECT 
+  //   category.name as category,
+  //   category.id as id,
+  //   category."currentValue" as "currentValue",
+  //   category.due as due,
+  //   category."maxValue" as needed,
+  //   COALESCE(SUM(transaction.outflow), 0) as outflow,
+  //   COALESCE(SUM(transaction.inflow), 0) as inflow
+  // FROM "Category" as category 
+  // LEFT OUTER JOIN (
+  //   SELECT * FROM "Transaction" 
+  //   WHERE date >= '2023-06-01' AND date <= '2025-06-30'
+  // ) as transaction on transaction.category = category.id
+  // WHERE category."userId" = ${userId} 
+  // GROUP BY category.id
+  // ORDER BY due asc
 
 
 
@@ -226,7 +240,7 @@ export async function createCategories(categories: {
 }
 
 // , select: {name : true}
-export function createCategory({
+export async function createCategory({
   name,
   userId,
   maxValue,
@@ -241,6 +255,26 @@ export function createCategory({
   currentValue: Number;
   spent: Number;
 }) {
+  // first obtain activeBudget from user:
+  const account = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      activeBudget: true,
+    },
+  });
+
+  // if activeBudget is NOT null, then we can create a category
+  if (!account || !account.activeBudget) {
+    return false;
+  }
+
+  const budgetId = account.activeBudget;
+
+  console.log("Adding category for active budget: ", budgetId);
+
+
   return prisma.category.create({
     data: {
       name,
@@ -249,6 +283,7 @@ export function createCategory({
       frequency,
       currentValue,
       spent,
+      budgetId
     },
   });
 }

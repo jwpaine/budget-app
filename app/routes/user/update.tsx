@@ -8,6 +8,7 @@ import { requireUserId } from "~/auth.server";
 import NewTransactionPage from "../../components/transactions/new";
 
 import { updateAccount } from "~/models/account.server";
+import { setActiveBudget } from "~/models/user.server";
 
 export async function action({ request, params }: ActionArgs) {
   //  invariant(params.accountId, "noteId not found");
@@ -15,13 +16,16 @@ export async function action({ request, params }: ActionArgs) {
 
   const formData = await request.formData();
 
-  const id = formData.get("accountId") as string;
-  const name = formData.get("name") as string;
-  const type = formData.get("type") as string;
+  const budgetId = formData.get("budgetId") as string
+
+  if (budgetId) {
+
+    const t = await setActiveBudget({ userId, budgetId });
+
+    return redirect(`/budget`);
+
+  }
 
 
-  const t = await updateAccount({ id, userId, name, type });
-  
-
-  return redirect(`/accounts/${id}`);
 }
+

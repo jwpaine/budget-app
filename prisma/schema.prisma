@@ -14,31 +14,21 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   accounts  Account[]
-  notes     Note[]
-  password  Password?
+
+  activeBudget String ?
 }
 
-model Password {
-  hash   String
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
+model Budget {
+  id           String        @id @default(cuid())
+  userId       String
+  name         String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  
+  accounts Account[]
+  categories Category[]
 
-model Note {
-  id        String   @id @default(cuid())
-  title     String
-  body      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
 
-model Product {
-  id        Int     @id @default(autoincrement())
-  name      String
-  price     Decimal
-  mainImage String
 }
 
 model Account {
@@ -50,7 +40,10 @@ model Account {
   name         String
   balance      Decimal       @db.Decimal(10, 2)
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  budgetId     String
+  budget       Budget       @relation(fields: [budgetId], references: [id], onDelete: Cascade)
   transactions Transaction[]
+
 }
 
 model Transaction {
@@ -75,6 +68,9 @@ model Category {
   name         String
   currentValue Decimal
   maxValue     Decimal
+  budgetId     String
+  budget       Budget       @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
 }
 
 

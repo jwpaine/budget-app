@@ -30,6 +30,7 @@ import { getDailyTransactionSums, getTransactions, getUncategorizedTransactions 
 
 import { Decimal } from "@prisma/client/runtime";
 import SideBar from "~/components/accounts/sidebar";
+import { getUserById } from "~/models/user.server";
 
 // import {
 //   generateTransactionCategories
@@ -44,8 +45,15 @@ export const useRouteData = (routeId: string) => {
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
-  const categories = await getCategories({ userId });
-  const accounts = await getAccounts({ userId });
+
+
+  const account = await getUserById(userId)
+
+  const budgetId = account.activeBudget
+
+  const categories = await getCategories({ userId, budgetId });
+  const accounts = await getAccounts({ userId, budgetId });
+
 
 
   let currentDate = new Date() as Date
@@ -55,7 +63,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const accountId = ""
   const transactions = await getDailyTransactionSums({ userId, startDate, accountId })
 
-  return json({ userId, categories, transactions, accounts });
+  return json({ account, userId, categories, transactions, accounts });
 }
 
 
@@ -226,6 +234,7 @@ export default function Budget() {
           <div className="flex h-200 m-2 ">
             {graphTransactions()}
           </div>
+          
           <button onClick={() => setShowAnalytics(false)} className="rounded-md bg-blue-500 px-4  py-3 ml-2 font-small text-white hover:bg-blue-600 ">Close</button>
         </section>
       </main>
@@ -247,6 +256,12 @@ export default function Budget() {
           <div className="flex h-200 m-2 ">
             {renderBudgetTotals()}
           </div>
+
+          <div className="flex h-200 m-2 ">
+            <p className="text-white">Current Budget: {data.account?.activeBudget}</p>
+          </div>
+
+
           <div className="flex h-200 m-2 ">
             <button onClick={() => setShowAnalytics(true)} className="rounded-md border border-solid hover:bg-slate-800 border-white px-4 py-3 ml-2 font-small text-white ">📊 View Stats</button>
           </div>

@@ -1,4 +1,5 @@
 import type { User, Account } from "@prisma/client";
+import { S } from "vitest/dist/types-94cfe4b4";
 
 import { prisma } from "~/db.server";
 
@@ -14,24 +15,46 @@ export function getAccount({
   });
 }
 
-export function getAccounts({ userId }: { userId: User["id"] }) {
+export function getAccounts({ userId, budgetId }: { userId: User["id"], budgetId: string }) {
   return prisma.account.findMany({
-    where: { userId },
+    where: { userId, budgetId },
     orderBy: { balance: "desc" },
   });
 }
 
-export function addAccount({
+export async function addAccount({
   name,
   balance,
   userId,
   type
 }: Pick<Account, "id"> & { userId: User["id"]; id: string; name: string, type: string, balance: number}) {
+    // first obtain activeBudget from user:
+    const account = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        activeBudget: true,
+      },
+    });
+
+    if(!account || !account.activeBudget) {
+      return false
+    }
+
+    const budgetId = account.activeBudget as string
+
   return prisma.account.create({
     data: {
       name,
       balance,
       type,
+   
+      budget: {
+        connect: {
+          id: budgetId
+        }
+      },
       user: {
         connect: {
           id: userId,

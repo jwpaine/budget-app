@@ -7,6 +7,29 @@ import { initUserCategories } from "./category.server";
 
 export type { User } from "@prisma/client";
 
+export async function setActiveBudget({ userId, budgetId }: { userId: User["id"], budgetId: string }) {
+  // make sure userId is present on budget with budgetId:
+  const budget = await prisma.budget.findMany({
+    where: {
+      id: budgetId,
+      userId: userId
+    }
+  })
+
+  if(!budget) {
+    return false
+  }
+
+  return prisma.user.update({
+    where: {
+      id: userId,
+    },
+
+    data: {
+      activeBudget: budgetId 
+    }
+  })
+}
 
 export async function getUserById(id: User["id"]) {
   try {
@@ -22,6 +45,7 @@ export async function getUserByEmail(email: User["email"]) {
 
 export async function createUser(email: User["email"], id: User["id"]) {
   let userId = id
+
   const createUser = await prisma.user.create({
     data: {
       email,
@@ -30,7 +54,8 @@ export async function createUser(email: User["email"], id: User["id"]) {
   });
 
   if (createUser) {
-    return await initUserCategories({userId}) 
+   // return await initUserCategories({userId}) 
+   return createUser
   }
   return false
 }
