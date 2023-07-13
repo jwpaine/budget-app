@@ -42,7 +42,6 @@ export async function getUserById(id: User["id"]) {
         budgets: true
       }
     });
-    console.log("Retrieved user: ", user)
     return user
   } catch(e) {
     return null

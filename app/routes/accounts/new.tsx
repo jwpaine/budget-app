@@ -17,8 +17,8 @@ export async function action({ request }: ActionArgs) {
   console.log("received type: ", type)
 
 
-  // remove all non-numeric characters except decimal
-  let balance = Number((formData.get("balance") as string).replace(/[^0-9.]/g, ""))
+  // remove all non-numeric characters except decimal and minus
+  let balance = Number((formData.get("balance") as string).replace(/[^0-9.-]/g, ""))
   balance = Math.round(balance * 1e2) / 1e2
 
 

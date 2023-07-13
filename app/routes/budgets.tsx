@@ -36,6 +36,11 @@ export default function Budgets() {
   // react hook for setting activeBudget:
   const [activeBudget, setActiveBudget] = React.useState("");
 
+  // add use effect that sets activeBudget to data.account.activeBudget:
+  React.useEffect(() => {
+    setActiveBudget(data.account.activeBudget)
+  }, [data.account.activeBudget])
+
   return (
     <main className="flex flex-col w-full items-center bg-gray-950 h-full">
 
@@ -43,7 +48,7 @@ export default function Budgets() {
 
       <div className="flex flex-wrap">
         {data.account.budgets?.map((budget) => {
-          return <button key={budget.id} className={`rounded flex-1 min-h-500 w-100 p-5 flex flex-col justify-center items-center  ${budget.id == activeBudget || budget.id == data.account.activeBudget ? 'bg-sky-100' : 'bg-white'}  hover:bg-slate-100`} type="button" onClick={() => {
+          return <button key={budget.id} className={`rounded flex-1 min-h-500 w-100 p-5 flex flex-col justify-center items-center  ${budget.id == activeBudget  ? 'bg-sky-100' : 'bg-white'}  hover:bg-slate-100`} type="button" onClick={() => {
             console.log("clicked!")
             setActiveBudget(budget.id)
           }}><span className="text-xl text-black">{budget.name}</span></button>
