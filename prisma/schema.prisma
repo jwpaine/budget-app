@@ -14,7 +14,7 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   accounts  Account[]
-
+  budgets Budget[]
   activeBudget String ?
 }
 
@@ -27,6 +27,7 @@ model Budget {
   
   accounts Account[]
   categories Category[]
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
 
 }

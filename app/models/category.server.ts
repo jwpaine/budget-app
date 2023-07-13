@@ -118,11 +118,10 @@ export function getCategories({ userId, budgetId }: { userId: User["id"], budget
   // ORDER BY due asc
 
 
-
   return categories
 }
 
-export async function initUserCategories({ userId }: { userId: User["id"] }) {
+export async function initUserCategories({ userId, budgetId }: { userId: User["id"], budgetId: string}) {
 
   const categories = [
     {
@@ -133,6 +132,7 @@ export async function initUserCategories({ userId }: { userId: User["id"] }) {
       name: '🏠 Mortgage',
       currentValue: 0,
       maxValue: 1200,
+      budgetId: budgetId
 
     },
     {
@@ -143,6 +143,7 @@ export async function initUserCategories({ userId }: { userId: User["id"] }) {
       name: '📱 Phone',
       currentValue: 0,
       maxValue: 120,
+      budgetId: budgetId
     },
 
 
@@ -154,6 +155,7 @@ export async function initUserCategories({ userId }: { userId: User["id"] }) {
       name: '🎥 Netflix',
       currentValue: 0,
       maxValue: 16.61,
+      budgetId: budgetId
 
     },
     {
@@ -164,6 +166,7 @@ export async function initUserCategories({ userId }: { userId: User["id"] }) {
       name: '🚗 Car Insurance',
       currentValue: 0,
       maxValue: 90,
+      budgetId: budgetId
 
     },
     {
@@ -174,6 +177,7 @@ export async function initUserCategories({ userId }: { userId: User["id"] }) {
       name: '🏋Gym',
       currentValue: 0,
       maxValue: 45,
+      budgetId: budgetId
 
     },
     {
@@ -184,6 +188,7 @@ export async function initUserCategories({ userId }: { userId: User["id"] }) {
       name: '🥕 Grocery',
       currentValue: 0,
       maxValue: 500,
+      budgetId: budgetId
 
     },
 
@@ -195,6 +200,7 @@ export async function initUserCategories({ userId }: { userId: User["id"] }) {
       name: '🔌 Electric',
       currentValue: 0,
       maxValue: 150,
+      budgetId: budgetId
 
     },
 
@@ -206,6 +212,7 @@ export async function initUserCategories({ userId }: { userId: User["id"] }) {
       name: '🍺 Fun',
       currentValue: 0,
       maxValue: 50,
+      budgetId: budgetId
 
     }
   ];
@@ -232,14 +239,15 @@ export async function createCategories(categories: {
   frequency: string,
   currentValue: number,
   spent: number,
-  due: Date
+  due: Date,
+  budgetId: string
 }[]) {
   return prisma.category.createMany({
     data: categories,
   });
 }
 
-// , select: {name : true}
+
 export async function createCategory({
   name,
   userId,

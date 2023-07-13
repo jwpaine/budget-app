@@ -28,6 +28,7 @@ import { Decimal } from "@prisma/client/runtime";
 import Transaction from "../../components/Transaction"
 import SideBar from "../../components/accounts/sidebar"
 import { Area, AreaChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { getUserById } from "~/models/user.server";
 
 // import { TransactionContainer } from "../../../theme/components/Core"
 // import { TransactionContainer } from "theme/components/Core";
@@ -37,13 +38,26 @@ export async function loader({ request, params }: LoaderArgs) {
   // invariant(params.accountId, "Account not found");
 
   const account = await getAccount({ userId, id: params.accountId });
-  const accounts = await getAccounts({ userId });
 
-  if (!account) {
+  
+  const user = await getUserById(userId)
+
+  const budgetId = user?.activeBudget
+
+  if (!account || !budgetId) {
     return redirect("/budget");
   }
 
-  const categories = await getCategoryNames({ userId })
+ 
+
+  console.log("using budgetId: ", budgetId)
+
+  const accounts = await getAccounts({ userId, budgetId });
+
+  console.log("obtained accounts: ", accounts)
+
+
+  const categories = await getCategoryNames({ userId, budgetId })
 
   const transactions = await getTransactions({
     userId,

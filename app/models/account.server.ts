@@ -15,7 +15,7 @@ export function getAccount({
   });
 }
 
-export function getAccounts({ userId, budgetId }: { userId: User["id"], budgetId: string }) {
+export async function getAccounts({ userId, budgetId }: { userId: User["id"], budgetId: string }) {
   return prisma.account.findMany({
     where: { userId, budgetId },
     orderBy: { balance: "desc" },

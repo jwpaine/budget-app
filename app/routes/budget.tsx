@@ -51,10 +51,12 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const budgetId = account.activeBudget
 
+  console.log("using budgetId: ", budgetId)
+
   const categories = await getCategories({ userId, budgetId });
   const accounts = await getAccounts({ userId, budgetId });
 
-
+  console.log("obtained accounts: ", accounts)
 
   let currentDate = new Date() as Date
   currentDate.setDate(currentDate.getDate() - 30);
@@ -258,7 +260,11 @@ export default function Budget() {
           </div>
 
           <div className="flex h-200 m-2 ">
-            <p className="text-white">Current Budget: {data.account?.activeBudget}</p>
+            <p className="text-white">Current Budget: {
+              data.account?.budgets.map((budget) => {
+                if (budget.id == data.account?.activeBudget) return budget.name
+              })
+            }</p>
           </div>
 
 

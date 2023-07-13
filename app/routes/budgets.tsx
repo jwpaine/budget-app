@@ -7,17 +7,20 @@ import * as React from "react";
 import { addAccount } from "~/models/account.server";
 import { requireUserId } from "~/auth.server";
 import { getBudgets } from "~/models/budget.server";
+import { getUserById } from "~/models/user.server";
 
 
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
 
-  const budgets = await getBudgets({ userId });
+  const user = await getBudgets({ userId });
 
-  console.log('obtained budgets: ', budgets)
+  const account = await getUserById(userId)
+
+  
 
 
-  return json({ userId, budgets });
+  return json({ userId, account });
 }
 
 
@@ -39,8 +42,8 @@ export default function Budgets() {
       <h1 className="text-3xl text-white">My Budgets</h1>
 
       <div className="flex flex-wrap">
-        {data.budgets?.map((budget) => {
-          return <button key={budget.id} className={`rounded flex-1 min-h-500 w-100 p-5 flex flex-col justify-center items-center  ${budget.id == activeBudget ? 'bg-sky-100' : 'bg-white'}  hover:bg-slate-100`} type="button" onClick={() => {
+        {data.account.budgets?.map((budget) => {
+          return <button key={budget.id} className={`rounded flex-1 min-h-500 w-100 p-5 flex flex-col justify-center items-center  ${budget.id == activeBudget || budget.id == data.account.activeBudget ? 'bg-sky-100' : 'bg-white'}  hover:bg-slate-100`} type="button" onClick={() => {
             console.log("clicked!")
             setActiveBudget(budget.id)
           }}><span className="text-xl text-black">{budget.name}</span></button>

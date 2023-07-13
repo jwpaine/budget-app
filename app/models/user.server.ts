@@ -33,7 +33,17 @@ export async function setActiveBudget({ userId, budgetId }: { userId: User["id"]
 
 export async function getUserById(id: User["id"]) {
   try {
-    return prisma.user.findUnique({ where: { id } });
+    // use prisma.user.findUnique({ where: { id } }); to find user, but join budget on budget id = user.activeBudget to get budget name:
+    const user = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        budgets: true
+      }
+    });
+    console.log("Retrieved user: ", user)
+    return user
   } catch(e) {
     return null
   }
@@ -46,16 +56,31 @@ export async function getUserByEmail(email: User["email"]) {
 export async function createUser(email: User["email"], id: User["id"]) {
   let userId = id
 
+  // create default budget for user:
+  const budget = await prisma.budget.create({
+    data: {
+      name: "Default",
+      userId
+    }
+  })
+
+  if(!budget) {
+    return false
+  }
+
+  const budgetId = budget.id
+
   const createUser = await prisma.user.create({
     data: {
       email,
-      id
+      id,
+      activeBudget: budgetId
     },
   });
 
   if (createUser) {
-   // return await initUserCategories({userId}) 
-   return createUser
+   return await initUserCategories({userId, budgetId}) 
+ //  return createUser
   }
   return false
 }
