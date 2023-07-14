@@ -39,7 +39,7 @@ export async function action({ request, params }: ActionArgs) {
   const currentValue = sum.length > 1 ? (Number(sum[0]) + Number(sum[1])) : diff.length > 1 ? (Number(diff[0]) - Number(diff[1])) : Number(v)
 
 
-
+  // @TODO ALWAYS setBudget if only currentValue is updated (not name, due, maxValue)
   if(action && action == "setBudget") {
     console.log("id-->: ", id)
     const t = await setBudget({
@@ -55,7 +55,7 @@ export async function action({ request, params }: ActionArgs) {
   
   const due = new Date(formData.get("due") as string) as Date;
   const maxValue = Number(formData.get("needed")) || 0;
-
+ 
   const t = await updateCategory({
    id,
    name,

@@ -38,7 +38,7 @@ export async function updateCategory({
   }
   // add category adjustment entry per the following model:
 
-  return prisma.categoryAdjustment.create({  
+  return prisma.categoryAdjustment.create({
     data: {
       userId,
       categoryId: id,
@@ -69,10 +69,10 @@ export async function setBudget({
     },
   });
 
-  if(!category) {
+  if (!category) {
     return false
   }
-  return prisma.categoryAdjustment.create({  
+  return prisma.categoryAdjustment.create({
     data: {
       userId,
       categoryId: id,
@@ -106,9 +106,25 @@ export async function getCategoryNames({ userId }: { userId: User["id"] }) {
 
 export function getCategories({ userId, budgetId }: { userId: User["id"], budgetId: string }) {
 
+  // const categories = prisma.$queryRaw`
+
+  // SELECT 
+  //   category.name as category,
+  //   category.id as id,
+  //   category."currentValue" as "currentValue",
+  //   category.due as due,
+  //   category."maxValue" as needed,
+  //   COALESCE(SUM(transaction.outflow), 0) as outflow,
+  //   COALESCE(SUM(transaction.inflow), 0) as inflow
+  // FROM "Category" as category 
+  // LEFT OUTER JOIN "Transaction" as transaction on transaction.category = category.id
+  // WHERE category."userId" = ${userId}
+  // AND category."budgetId" = ${budgetId}
+  // GROUP BY category.id
+  // ORDER BY due asc
+  // `
+
   const categories = prisma.$queryRaw`
-  
- 
   SELECT 
     category.name as category,
     category.id as id,
@@ -116,15 +132,21 @@ export function getCategories({ userId, budgetId }: { userId: User["id"], budget
     category.due as due,
     category."maxValue" as needed,
     COALESCE(SUM(transaction.outflow), 0) as outflow,
-    COALESCE(SUM(transaction.inflow), 0) as inflow
+    COALESCE(SUM(transaction.inflow), 0) as inflow,
+    adjustment.value as adjustment
   FROM "Category" as category 
   LEFT OUTER JOIN "Transaction" as transaction on transaction.category = category.id
+  LEFT OUTER JOIN (
+    SELECT DISTINCT ON ("categoryId") "categoryId", value
+    FROM "CategoryAdjustment"
+    ORDER BY "categoryId", "createdAt" DESC
+  ) as adjustment on adjustment."categoryId" = category.id
   WHERE category."userId" = ${userId}
-  AND category."budgetId" = ${budgetId}
-  GROUP BY category.id
-  ORDER BY due asc
+    AND category."budgetId" = ${budgetId}
+  GROUP BY category.id, adjustment.value
+  ORDER BY due ASC
+`;
 
-  `
 
   //   SELECT 
   //   category.name as category,
@@ -147,7 +169,7 @@ export function getCategories({ userId, budgetId }: { userId: User["id"], budget
   return categories
 }
 
-export async function initUserCategories({ userId, budgetId }: { userId: User["id"], budgetId: string}) {
+export async function initUserCategories({ userId, budgetId }: { userId: User["id"], budgetId: string }) {
 
   const categories = [
     {
