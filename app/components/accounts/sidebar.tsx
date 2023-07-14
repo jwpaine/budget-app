@@ -42,9 +42,13 @@ export default function SideBar(props) {
                 to="/budgets"
                 className="flex items-center justify-center rounded-md border border-slate-500 text-white px-4 py-1 mt-5 mx-4 text-base font-medium shadow-sm hover:bg-slate-800 sm:px-8"
             >
-                View All Budgets
+                Manage Budgets
             </Link>
 
+            <Link
+                to="/data"
+                className="flex items-center justify-center rounded-md border border-slate-500 text-white px-4 py-1 mt-5 mx-4 text-base font-medium shadow-sm hover:bg-slate-800 sm:px-8"
+            >Reports</Link>
 
         </section>
     )

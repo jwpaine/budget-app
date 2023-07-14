@@ -23,7 +23,7 @@ import { requireUserId, } from "~/auth.server";
 import { useOptionalUser } from "~/utils";
 
 import NewTransactionPage from "../components/transactions/new";
-import { getCategories } from "~/models/category.server";
+import { getCategories } from "../models/category.server";
 import { getDailyTransactionSums, getTransactions, getUncategorizedTransactions } from "~/models/transaction.server";
 
 // import Graph from "../../components/transactions/graph"
@@ -43,6 +43,23 @@ export const useRouteData = (routeId: string) => {
   return data || undefined
 }
 
+export async function action({ request, params }: ActionArgs) {
+
+  console.log("post request received")
+
+  const formData = await request.formData();
+
+  const userId = await requireUserId(request);
+
+  const budgetId = formData.get("budgetId") as string;
+  const startDate = formData.get("startDate") as string;
+
+  const categories = await getCategories({ userId, budgetId, startDate });
+
+  return json({ categories });
+
+}
+
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
 
@@ -53,19 +70,16 @@ export async function loader({ request, params }: LoaderArgs) {
 
   console.log("using budgetId: ", budgetId)
 
-  const categories = await getCategories({ userId, budgetId });
+  // const currentDate = new Date();
+  // currentDate.setDate(1);
+  // const startDate = currentDate.toISOString().slice(0, 10);
+
+  // const categories = await getCategories({ userId, budgetId, startDate });
   const accounts = await getAccounts({ userId, budgetId });
 
-  console.log("obtained accounts: ", accounts)
+  // console.log("obtained accounts: ", accounts)
 
-  let currentDate = new Date() as Date
-  currentDate.setDate(currentDate.getDate() - 30);
-  let startDate = new Date(currentDate.toISOString().slice(0, 10)) as Date
-
-  const accountId = ""
-  const transactions = await getDailyTransactionSums({ userId, startDate, accountId })
-
-  return json({ account, userId, categories, transactions, accounts });
+  return json({ account, userId, accounts });
 }
 
 
@@ -84,6 +98,8 @@ export default function Budget() {
   const errors = actionData?.errors;
   const category = useFetcher();
 
+  const categories = useFetcher()
+
   const [activeBudget, setActiveBudget] = React.useState("");
   const [confirmDelete, setConfirmDelete] = React.useState(false);
   const [resolve, setResolve] = React.useState(0);
@@ -91,70 +107,149 @@ export default function Budget() {
   // create react hook to toggle analytics on/off:
   const [showAnalytics, setShowAnalytics] = React.useState(false);
 
-  const graphTransactions = () => {
-    console.log('graphing transactions')
-    if (!data.transactions) {
-      console.log('no transactions')
-      return
+  const [budgetWindow, setBudgetWindow ] = React.useState("");
+
+
+
+  React.useEffect(() => {
+    // Define an async function inside useEffect
+    async function fetchData() {
+      // Set date to the first day in the current month:
+      const currentDate = new Date();
+      currentDate.setDate(1);
+      const formattedDate = currentDate.toISOString().slice(0, 10);
+      setBudgetWindow(formattedDate);
+  
+      // Fetch categories for the new budget window
+      const categories = await fetchCategories(formattedDate);
+      // categories.setData(categories);
     }
+  
+    // Call the async function
+    fetchData();
+  }, []);
 
-    let cash = 0 as number
-    let min = 999999 as number
-    let max = 0 as number
 
-    data.accounts.map((account) => {
-      if (account.type != 'loan') {
-        //   console.log(`adding cash: ${account.balance}`)
-        cash += Number(account.balance)
-      }
-    });
 
-    const graph_data = []
+const advanceBudgetWindow = async () => {
+  // advance date by one month:
+  const date = new Date(budgetWindow) as Date;
+  date.setUTCMonth(date.getUTCMonth() + 1);
+  date.setUTCDate(1); // Set the date to the first day of the month
+  const newBudgetWindow = date.toISOString().slice(0, 10);
+  setBudgetWindow(newBudgetWindow);
 
-    graph_data.push({ name: 'today', cash: cash })
+  // Fetch categories for the new budget window
+  const categories = await fetchCategories(newBudgetWindow);
+//  data.categories.setData(categories);
+};
 
-    data.transactions.map((t) => {
-      let sum = Number(t._sum.inflow) - Number(t._sum.outflow)
-      cash = cash - sum
-      cash = Number(cash.toFixed(2))
+const regressBudgetWindow = async () => {
+  // regress date by one month:
+  const date = new Date(budgetWindow) as Date;
+  date.setUTCMonth(date.getUTCMonth() - 1);
+  date.setUTCDate(1); // Set the date to the first day of the month
+  const newBudgetWindow = date.toISOString().slice(0, 10);
+  setBudgetWindow(newBudgetWindow);
 
-      if (max < cash) max = cash
-      if (cash < min) min = cash
+  // Fetch categories for the new budget window
+  const categories = await fetchCategories(newBudgetWindow);
+//  categories.setData(categories);
+};
 
-      let dataPoint = {
-        name: new Date(t.date).toISOString().slice(0, 10),
-        cash: cash
-      }
-      graph_data.push(dataPoint)
-    })
+async function fetchCategories(startDate: string) {
+  console.log("getting categories 11");
 
-    graph_data.reverse()
+  const response = await categories.submit(
+    {
+      budgetId: data.account.activeBudget,
+      startDate: startDate,
+    },
+    { method: "post", action: "/budget" }
+  );
 
-    console.log(`min: ${min}`)
-    console.log(`max: ${max}`) // here
+  return response
 
-    return <ResponsiveContainer width="100%" height={100} >
-      <AreaChart
-        width={500}
-        height={200}
-        data={graph_data}
-        syncId="anyId"
-        margin={{
-          top: 10,
-          right: 30,
-          left: 10,
-          bottom: 0,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" stroke="#FFFFFF" />
-        <YAxis type="number" stroke="#FFFFFF" domain={[0, max]} />
-        <Tooltip />
-        <Area type="monotone" dataKey="cash" fill="#b3e0fe" dot={false} />
-      </AreaChart>
-    </ResponsiveContainer>
+  // const c = await response.json();
+  // return c;
+}
 
-  }
+
+
+
+
+  /*
+              <button className="text-black bg-white" onClick={() => regressBudgetWindow()}>Previous Month</button>
+           <span className="text-white">Current Window: {budgetWindow} </span>
+           <button className="text-black bg-white" onClick={() => advanceBudgetWindow()}>Next Month</button>
+           */
+
+
+
+  // const graphTransactions = () => {
+  //   console.log('graphing transactions')
+  //   if (!data.transactions) {
+  //     console.log('no transactions')
+  //     return
+  //   }
+
+  //   let cash = 0 as number
+  //   let min = 999999 as number
+  //   let max = 0 as number
+
+  //   data.accounts.map((account) => {
+  //     if (account.type != 'loan') {
+  //       //   console.log(`adding cash: ${account.balance}`)
+  //       cash += Number(account.balance)
+  //     }
+  //   });
+
+  //   const graph_data = []
+
+  //   graph_data.push({ name: 'today', cash: cash })
+
+  //   data.transactions.map((t) => {
+  //     let sum = Number(t._sum.inflow) - Number(t._sum.outflow)
+  //     cash = cash - sum
+  //     cash = Number(cash.toFixed(2))
+
+  //     if (max < cash) max = cash
+  //     if (cash < min) min = cash
+
+  //     let dataPoint = {
+  //       name: new Date(t.date).toISOString().slice(0, 10),
+  //       cash: cash
+  //     }
+  //     graph_data.push(dataPoint)
+  //   })
+
+  //   graph_data.reverse()
+
+  //   console.log(`min: ${min}`)
+  //   console.log(`max: ${max}`) // here
+
+  //   return <ResponsiveContainer width="100%" height={100} >
+  //     <AreaChart
+  //       width={500}
+  //       height={200}
+  //       data={graph_data}
+  //       syncId="anyId"
+  //       margin={{
+  //         top: 10,
+  //         right: 30,
+  //         left: 10,
+  //         bottom: 0,
+  //       }}
+  //     >
+  //       <CartesianGrid strokeDasharray="3 3" />
+  //       <XAxis dataKey="name" stroke="#FFFFFF" />
+  //       <YAxis type="number" stroke="#FFFFFF" domain={[0, max]} />
+  //       <Tooltip />
+  //       <Area type="monotone" dataKey="cash" fill="#b3e0fe" dot={false} />
+  //     </AreaChart>
+  //   </ResponsiveContainer>
+
+  // }
 
 
   const renderBudgetTotals = () => {
@@ -180,8 +275,7 @@ export default function Budget() {
 
     // console.log("all category data: ", data.categories)
 
-
-    data.categories?.map((cat: any) => {
+    categories?.data?.categories?.map((cat: any) => {
       // let c = Number(cat.inflow) > 0 ? Number(cat.inflow) : Number(cat.currentValue);
       currentBalance += Number(cat.currentValue)
       inflow += Number(cat.inflow)
@@ -233,9 +327,9 @@ export default function Budget() {
           <div className="flex h-200 m-2 ">
             {renderBudgetTotals()}
           </div>
-          <div className="flex h-200 m-2 ">
+          {/* <div className="flex h-200 m-2 ">
             {graphTransactions()}
-          </div>
+          </div> */}
           
           <button onClick={() => setShowAnalytics(false)} className="rounded-md bg-blue-500 px-4  py-3 ml-2 font-small text-white hover:bg-blue-600 ">Close</button>
         </section>
@@ -267,10 +361,15 @@ export default function Budget() {
             }</p>
           </div>
 
-
           <div className="flex h-200 m-2 ">
-            <button onClick={() => setShowAnalytics(true)} className="rounded-md border border-solid hover:bg-slate-800 border-white px-4 py-3 ml-2 font-small text-white ">📊 View Stats</button>
+            <button className="text-black bg-white" onClick={() => regressBudgetWindow()}>Previous Month</button>
+           <span className="text-white">Current Window: {budgetWindow} </span>
+           <span className="text-white">action data: {JSON.stringify(actionData)}</span>
+           <button className="text-black bg-white" onClick={() => advanceBudgetWindow()}>Next Month</button>
           </div>
+
+
+          
 
           <div className={`border-bottom my-0.5 flex flex-col px-3 py-0.5 bg-slate-300`}>
             <div className="flex justify-between">
@@ -294,9 +393,9 @@ export default function Budget() {
 
         </header>
 
-
+            // uncomment
         {
-          data.categories?.map((c: any) => {
+          categories?.data?.categories?.map((c: any) => {
             let budgeted = Number(c.currentValue).toFixed(2)
             let balance = (Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)).toFixed(2)
             let activity = (Number(c.inflow) - Number(c.outflow)).toFixed(2)
@@ -405,14 +504,6 @@ export default function Budget() {
                     </div>
 
 
-
-
-
-
-
-
-
-
                     <button type="submit" className="rounded bg-gray-950 p-2 mt-4 text-white">
                       Update Category
                     </button>
@@ -421,7 +512,7 @@ export default function Budget() {
                       className="rounded bg-slate-800 p-2 my-1 text-white"
                       onClick={() => setActiveBudget("")}
                     >
-                      Cancel
+                      Close
                     </button>
 
                     {Number(balance) < 0 && (

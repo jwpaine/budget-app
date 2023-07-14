@@ -104,25 +104,9 @@ export async function getCategoryNames({ userId }: { userId: User["id"] }) {
   });
 }
 
-export function getCategories({ userId, budgetId }: { userId: User["id"], budgetId: string }) {
+export function getCategories({ userId, budgetId, startDate }: { userId: User["id"], budgetId: string, startDate: string }) {
 
-  // const categories = prisma.$queryRaw`
-
-  // SELECT 
-  //   category.name as category,
-  //   category.id as id,
-  //   category."currentValue" as "currentValue",
-  //   category.due as due,
-  //   category."maxValue" as needed,
-  //   COALESCE(SUM(transaction.outflow), 0) as outflow,
-  //   COALESCE(SUM(transaction.inflow), 0) as inflow
-  // FROM "Category" as category 
-  // LEFT OUTER JOIN "Transaction" as transaction on transaction.category = category.id
-  // WHERE category."userId" = ${userId}
-  // AND category."budgetId" = ${budgetId}
-  // GROUP BY category.id
-  // ORDER BY due asc
-  // `
+  console.log("getting categories for budgetId: ", budgetId, " and userId: ", userId, " and startDate: ", startDate)
 
   const categories = prisma.$queryRaw`
   SELECT 

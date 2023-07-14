@@ -54,16 +54,21 @@ export function getTransactions({
 
 export function getDailyTransactionSums({
   userId,
-  startDate
+  startDate,
+  budgetId
 }: {
   userId: User["id"];
   startDate: Date;
+  budgetId: string;
 }) {
   if (startDate) {
     return prisma.transaction.groupBy({
       by: ["date"],
       where: {
         userId,
+        account: {
+          budgetId
+        },
         date: {
           gte: startDate
         }
@@ -76,6 +81,11 @@ export function getDailyTransactionSums({
     });
   }
 }
+
+
+
+
+
 
 
 
