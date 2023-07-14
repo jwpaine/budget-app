@@ -18,7 +18,7 @@ export async function updateCategory({
   due: Date
 }) {
 
-  await prisma.category.updateMany({
+  const updateCategory = await prisma.category.updateMany({
     where: {
       id,
       userId,
@@ -33,6 +33,20 @@ export async function updateCategory({
     },
   });
 
+  if (!updateCategory) {
+    return false
+  }
+  // add category adjustment entry per the following model:
+
+  return prisma.categoryAdjustment.create({  
+    data: {
+      userId,
+      categoryId: id,
+      value: currentValue,
+      window: new Date() // @TODO need to pass window from client
+    }
+  })
+
 }
 
 export async function setBudget({
@@ -45,7 +59,7 @@ export async function setBudget({
   userId: User["id"]
 }) {
 
-  await prisma.category.updateMany({
+  const category = await prisma.category.updateMany({
     where: {
       id,
       userId,
@@ -54,6 +68,18 @@ export async function setBudget({
       currentValue
     },
   });
+
+  if(!category) {
+    return false
+  }
+  return prisma.categoryAdjustment.create({  
+    data: {
+      userId,
+      categoryId: id,
+      value: currentValue,
+      window: new Date()  // @TODO need to pass window from client
+    }
+  })
 
 }
 
