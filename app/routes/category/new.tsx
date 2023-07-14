@@ -24,6 +24,10 @@ export async function action({ request, params }: ActionArgs) {
   const currentValue = 0;
   const spent = 0;
 
+
+  const due = new Date(new Date().toISOString().slice(0, 10))
+
+
   const t = await createCategory({
     name,
     maxValue,
@@ -31,6 +35,7 @@ export async function action({ request, params }: ActionArgs) {
     spent,
     frequency,
     userId,
+    due
   });
 
   return redirect(`/budget`);

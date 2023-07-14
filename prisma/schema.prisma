@@ -71,7 +71,19 @@ model Category {
   maxValue     Decimal
   budgetId     String
   budget       Budget       @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  
+  adjustment CategoryAdjustment[]
 
+}
+
+model CategoryAdjustment {
+  id  String  @id @default(cuid())
+  userId      String
+  categoryId  String
+  value       Decimal
+  createdAt   DateTime      @default(now())
+  window       DateTime      @default(now())
+  category Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
 
 

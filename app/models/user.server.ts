@@ -16,7 +16,7 @@ export async function setActiveBudget({ userId, budgetId }: { userId: User["id"]
     }
   })
 
-  if(!budget) {
+  if (!budget) {
     return false
   }
 
@@ -26,7 +26,7 @@ export async function setActiveBudget({ userId, budgetId }: { userId: User["id"]
     },
 
     data: {
-      activeBudget: budgetId 
+      activeBudget: budgetId
     }
   })
 }
@@ -43,7 +43,7 @@ export async function getUserById(id: User["id"]) {
       }
     });
     return user
-  } catch(e) {
+  } catch (e) {
     return null
   }
 }
@@ -55,31 +55,48 @@ export async function getUserByEmail(email: User["email"]) {
 export async function createUser(email: User["email"], id: User["id"]) {
   let userId = id
 
+  console.log("creating default budget for user: ", userId)
+
   // create default budget for user:
-  const budget = await prisma.budget.create({
-    data: {
-      name: "Default",
-      userId
-    }
-  })
-
-  if(!budget) {
-    return false
-  }
-
-  const budgetId = budget.id
 
   const createUser = await prisma.user.create({
     data: {
       email,
-      id,
-      activeBudget: budgetId
+      id
     },
   });
 
   if (createUser) {
-   return await initUserCategories({userId, budgetId}) 
- //  return createUser
+    
+    const budget = await prisma.budget.create({
+      data: {
+        name: "Default",
+        userId
+      }
+    })
+
+    if (!budget) {
+      return false
+    }
+
+  
+    const budgetId = budget.id
+    // update user's activeBudget to be the newly created budget:
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: userId
+      },
+      data: {
+        activeBudget: budgetId
+      }
+    })
+
+    if (!updatedUser) {
+      return false
+    }
+
+    return initUserCategories({ userId, budgetId })
+
   }
   return false
 }

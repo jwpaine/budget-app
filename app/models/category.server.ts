@@ -255,6 +255,7 @@ export async function createCategory({
   frequency,
   currentValue,
   spent,
+  due
 }: {
   name: String;
   userId: User["id"];
@@ -262,6 +263,7 @@ export async function createCategory({
   frequency: String;
   currentValue: Number;
   spent: Number;
+  due: Date
 }) {
   // first obtain activeBudget from user:
   const account = await prisma.user.findUnique({
@@ -291,7 +293,8 @@ export async function createCategory({
       frequency,
       currentValue,
       spent,
-      budgetId
+      budgetId,
+      due
     },
   });
 }
