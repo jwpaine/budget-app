@@ -66,7 +66,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const account = await getUserById(userId)
 
-  const budgetId = account.activeBudget
+  const budgetId = account?.activeBudget
 
   console.log("using budgetId: ", budgetId)
 
@@ -247,29 +247,32 @@ export default function Budget() {
 
   // }
 
+  const renderCalendar = () => {
+    let [year, month, day] = budgetWindow.split('-');
+    let date = new Date(Number(year), Number(month) - 1, Number(day));
+    let monthString = date.toLocaleDateString('en-US', { month: 'long' });
+    let yearString = date.toLocaleDateString('en-US', { year: 'numeric' });
+    return { monthString, yearString }
+  };
+
 
   const renderBudgetTotals = () => {
-    if (!data.accounts || data.accounts.length == 0) {
-      return (
-        <div>
 
-          <span className="text-white">Total cash: $0.00</span>
-          <span className="text-white ml-5 mr-2">To be budgeted: $0.00</span>
-
-        </div>
-      )
-
-    }
 
     let cash = 0 as number
     let dept = 0 as number
     let inflow = 0 as number
     let outflow = 0 as number
     let currentBalance = 0 as number
+    let toBudget = 0 as number
 
     let assigned = 0;
 
-    // console.log("all category data: ", data.categories)
+    if (!data.accounts || data.accounts.length == 0) {
+      return { cash, toBudget }
+    }
+
+
 
     categories?.data?.categories?.map((cat: any) => {
       // let c = Number(cat.inflow) > 0 ? Number(cat.inflow) : Number(cat.currentValue);
@@ -291,47 +294,12 @@ export default function Budget() {
 
     });
 
-
-    return (
-      <div>
-
-        <span className="text-white">Total cash: ${cash.toFixed(2)}</span>
-        {/* 
-        <span className="text-white">Inflow: {inflow.toFixed(2)}</span> <br />
-        <span className="text-white">Outflow: {outflow.toFixed(2)}</span> <br />
-        <span className="text-white">Budgeted: {currentBalance.toFixed(2)}</span> <br /> */}
-        <span className="text-white ml-5 mr-2">To be budgeted:</span>
-        <span className={`${Number(cash - currentBalance + outflow - inflow) >= 0 ? "text-white" : "rounded bg-gray-100 p-1 text-red-500"} text-m`}>
-          ${(cash - currentBalance + outflow - inflow).toFixed(2)}
-        </span>
-
-
-        {/* <span className="text-white">to be budgeted: {(cash - currentBalance - outflow + inflow).toFixed(2)}</span> */}
-        {/* 10710.87 - 11906.23 + 2259.98 - 144 */}
-
-      </div>
-    )
+    // set cash to two decimal places:
+    cash = Math.round(cash * 1e2) / 1e2
+    toBudget = Math.round((cash - currentBalance + outflow - inflow) * 1e2) / 1e2
+    return { cash, toBudget }
   }
 
-  if (showAnalytics) {
-    return (
-      <main className="flex flex-col md:flex-row ">
-
-        {/* <SideBar accounts={data.accounts} /> */}
-
-        <section className="flex w-full flex-col bg-slate-900">
-          <div className="flex h-200 m-2 ">
-            {renderBudgetTotals()}
-          </div>
-          {/* <div className="flex h-200 m-2 ">
-            {graphTransactions()}
-          </div> */}
-
-          <button onClick={() => setShowAnalytics(false)} className="rounded-md bg-blue-500 px-4  py-3 ml-2 font-small text-white hover:bg-blue-600 ">Close</button>
-        </section>
-      </main>
-    )
-  }
 
   return (
     <main className="flex h-full flex-col bg-gray-950 md:flex-row">
@@ -339,26 +307,41 @@ export default function Budget() {
       <SideBar accounts={data.accounts} />
 
       <section className="flex w-full flex-col">
-        <header className="bg-slate-800">
+        <header className="bg-black">
 
+          <div className="flex h-200 w-full justify-between p-2">
+            <button className="text-slate-300 p-2" onClick={() => regressBudgetWindow()}>Previous Month</button>
 
-          <div className="flex h-200 m-2 p-2 ">
-            {renderBudgetTotals()}
+            <div className="flex flex-col">
+              <span className="text-white text-4xl text-center"> {renderCalendar().monthString}</span>
+              <span className="text-white text-center"> {renderCalendar().yearString}</span>
+            </div>
+
+            <button className="text-slate-300  p-2" onClick={() => advanceBudgetWindow()}>Next Month</button>
           </div>
 
-          <div className="flex h-200 m-2 p-2">
+
+          <div className="flex h-200 p-2 justify-between items-center w-full flex-col md:flex-row">
+        
+              <span className="text-white text-2xl">Total Cash: {renderBudgetTotals().cash}</span>
+              <div className="flex justify-center items-center">
+                <span className="text-white text-3xl">
+                  To Be Budgeted:
+                </span>
+                <span className={`bg-black p-2 text-3xl ${renderBudgetTotals().toBudget > 0 ? 'text-emerald-400' : renderBudgetTotals().toBudget < 0 ? 'text-red-400' : 'text-white'}`}>{renderBudgetTotals().toBudget}</span>
+              </div>
+
+        
+
+          </div>
+
+          {/* <div className="flex h-200 m-2 p-2">
             <p className="text-white">Current Budget: {
               data.account?.budgets.map((budget) => {
                 if (budget.id == data.account?.activeBudget) return budget.name
               })
             }</p>
-          </div>
-
-          <div className="flex h-200 m-2 w-full justify-between p-2">
-            <button className="text-black bg-white p-2" onClick={() => regressBudgetWindow()}>Previous Month</button>
-            <span className="text-white"> {budgetWindow} </span>
-            <button className="text-black bg-white p-2" onClick={() => advanceBudgetWindow()}>Next Month</button>
-          </div>
+          </div> */}
 
 
 
@@ -385,7 +368,6 @@ export default function Budget() {
 
         </header>
 
-            // uncomment
         {
           categories?.data?.categories?.map((c: any) => {
             let budgeted = Number(c.currentValue).toFixed(2)
@@ -523,58 +505,58 @@ export default function Budget() {
                       Close
                     </button>
 
-                  
+
 
 
                   </categories.Form>
 
                   {Number(balance) < 0 && (
-                      <categories.Form
-                        className="w-full "
-                        method="post"
-                        action="/category/update"
-                        onSubmit={() => {
-                          setActiveBudget("")
-                        }}
+                    <categories.Form
+                      className="w-full "
+                      method="post"
+                      action="/category/update"
+                      onSubmit={() => {
+                        setActiveBudget("")
+                      }}
+                    >
+                      <input
+                        name="action"
+                        defaultValue="setBudget"
+                        type="hidden"
+                      />
+
+                      <input
+                        name="budgetId"
+                        defaultValue={data.account.activeBudget}
+                        type="hidden"
+                      />
+
+                      <input
+                        name="id"
+                        defaultValue={c.id}
+                        type="hidden"
+                      />
+
+                      <input
+                        name="window"
+                        defaultValue={budgetWindow}
+                        type="hidden"
+                      />
+
+                      <input
+                        name="currentValue"
+                        defaultValue={Number(Number(budgeted) + Math.abs(Number(balance))).toFixed(2)}
+                        type="hidden"
+                      />
+
+                      <button
+                        type="submit"
+                        className="rounded w-full bg-emerald-500 p-2 my-1 text-black"
                       >
-                        <input
-                          name="action"
-                          defaultValue="setBudget"
-                          type="hidden"
-                        />
-
-                        <input
-                          name="budgetId"
-                          defaultValue={data.account.activeBudget}
-                          type="hidden"
-                        />
-
-                        <input
-                          name="id"
-                          defaultValue={c.id}
-                          type="hidden"
-                        />
-
-                        <input
-                          name="window"
-                          defaultValue={budgetWindow}
-                          type="hidden"
-                        />
-
-                        <input
-                          name="currentValue"
-                          defaultValue={Number(Number(budgeted) + Math.abs(Number(balance))).toFixed(2)}
-                          type="hidden"
-                        />
-
-                        <button
-                          type="submit"
-                          className="rounded w-full bg-emerald-500 p-2 my-1 text-black"
-                        >
-                          Resolve Negative Budget
-                        </button>
-                      </categories.Form>
-                    )}
+                        Resolve Negative Budget
+                      </button>
+                    </categories.Form>
+                  )}
 
 
                 </div>
