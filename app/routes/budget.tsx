@@ -322,16 +322,20 @@ export default function Budget() {
 
 
           <div className="flex h-200 p-2 justify-between items-center w-full flex-col md:flex-row">
-        
-              <span className="text-white text-2xl">Total Cash: {renderBudgetTotals().cash}</span>
-              <div className="flex justify-center items-center">
-                <span className="text-white text-3xl">
-                  To Be Budgeted:
-                </span>
-                <span className={`bg-black p-2 text-3xl ${renderBudgetTotals().toBudget > 0 ? 'text-emerald-400' : renderBudgetTotals().toBudget < 0 ? 'text-red-400' : 'text-white'}`}>{renderBudgetTotals().toBudget}</span>
-              </div>
+            <div className="flex justify-center items-center">
+              <span className="text-white text-xl mr-2">
+                Total Cash:
+              </span>
+              <span className={`text-xl ${renderBudgetTotals().cash > 0 ? 'text-emerald-400' : renderBudgetTotals().cash < 0 ? 'text-red-400' : 'text-white'}`}>${renderBudgetTotals().cash}</span>
+            </div>
+            <div className="flex justify-center items-center">
+              <span className="text-white text-xl">
+                To Be Budgeted:
+              </span>
+              <span className={`bg-black p-2 text-xl ${renderBudgetTotals().toBudget > 0 ? 'text-emerald-400' : renderBudgetTotals().toBudget < 0 ? 'text-red-400' : 'text-white'}`}>${renderBudgetTotals().toBudget}</span>
+            </div>
 
-        
+
 
           </div>
 
@@ -377,8 +381,8 @@ export default function Budget() {
 
             return activeBudget == c.id ? (
               confirmDelete ?
-                <category.Form
-                  className="flex flex-wrap justify-center bg-sky-700 p-1"
+                <categories.Form
+                  className="flex flex-col justify-center items-center bg-gray-600 p-1"
                   method="post"
                   action="/category/delete"
                   onSubmit={() => {
@@ -386,22 +390,32 @@ export default function Budget() {
                     setConfirmDelete(false)
                   }
                   }>
-                  <h3>Remove category {c.category}?</h3>
+                  <h3 className="text-white text-center text-xl">Remove category {c.category}?</h3>
                   <input name="id" defaultValue={c.id} type="hidden" />
-                  <button
-                    type="submit"
-                    className="bg-red-400 px-2 py-1 text-slate-800"
-                  >
-                    Confirm Delete
-                  </button>
-                  <button
-                    type="button"
-                    className="bg-green-400 px-2 py-1 text-slate-800"
-                    onClick={() => setConfirmDelete(false)}
-                  >
-                    Cancel
-                  </button>
-                </category.Form>
+                  <input
+                    name="window"
+                    defaultValue={budgetWindow}
+                    hidden />
+                  <input
+                    name="budgetId"
+                    defaultValue={data?.account?.activeBudget || ""}
+                    hidden />
+                  <div className="flex w-full lg:max-w-xs p-2">
+                    <button
+                      type="submit"
+                      className="bg-red-400 px-2 py-1 text-slate-800 flex-1 mr-2"
+                    >
+                      Confirm Delete
+                    </button>
+                    <button
+                      type="button"
+                      className="bg-emerald-400 px-2 py-1 text-slate-800 flex-1"
+                      onClick={() => setConfirmDelete(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </categories.Form>
                 :
                 <div className="flex flex-col justify-center items-center bg-gray-600">
                   <div className="flex w-full p-2 justify-between bg-gray-500">
@@ -562,9 +576,9 @@ export default function Budget() {
                 </div>
 
             ) : (
-              // ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) == 0 && "border border"} 
-              // ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) > 0 && "border border-emerald-300"} 
-              // ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) < 0 && "border border-rose-300"} 
+              // ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) == 0 && "border border"}
+              // ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) > 0 && "border border-emerald-300"}
+              // ${Number(c.inflow) - Number(c.outflow) + Number(c.currentValue) < 0 && "border border-rose-300"}
               <div
                 onClick={() => {
                   setConfirmDelete(false)
@@ -608,18 +622,26 @@ export default function Budget() {
 
 
 
-        <category.Form
+        <categories.Form
           className={`mb-0.5 flex p-2 bg-gray-800 `}
           method="post" action="/category/new">
           <input className={`rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none `} ref={nameRef} name="name" placeholder="Category Name" />
+          <input
+            name="window"
+            defaultValue={budgetWindow}
+            hidden />
+          <input
+            name="budgetId"
+            defaultValue={data?.account?.activeBudget || ""}
+            hidden />
           <button className="flex items-center justify-center rounded-md border border-transparent bg-gray-950 ml-2 px-2 py-1 text-base text-white shadow-sm hover:bg-slate-950 sm:px-8"
             type="submit">Add Category</button>
-        </category.Form>
+        </categories.Form>
 
 
       </section>
 
-    </main>
+    </main >
 
 
   );

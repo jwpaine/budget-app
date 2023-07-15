@@ -7,7 +7,7 @@ import { getAccount } from "~/models/account.server";
 import { requireUserId } from "~/auth.server";
 import NewTransactionPage from "../../components/transactions/new";
 
-import { createCategory } from "~/models/category.server";
+import { createCategory, getCategories } from "~/models/category.server";
 import { incrementAccountBalance } from "~/models/account.server";
 import { Decimal } from "@prisma/client/runtime";
 
@@ -20,7 +20,8 @@ export async function action({ request, params }: ActionArgs) {
   const name = formData.get("name") as string;
   const maxValue = 0;
   const frequency = formData.get("frequency") as string || "M"
-
+  const startDate = formData.get("window") as string
+  const budgetId = formData.get("budgetId") as string
   const currentValue = 0;
   const spent = 0;
 
@@ -38,5 +39,9 @@ export async function action({ request, params }: ActionArgs) {
     due
   });
 
-  return redirect(`/budget`);
+  const categories = await getCategories({ userId, budgetId, startDate });
+
+  return json({ categories });
+
+
 }
