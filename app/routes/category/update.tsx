@@ -8,6 +8,7 @@ import { requireUserId } from "~/auth.server";
 import NewTransactionPage from "../../components/transactions/new";
 
 import {
+  getCategories,
   setBudget,
   updateCategory
 } from "~/models/category.server";
@@ -20,10 +21,11 @@ export async function action({ request, params }: ActionArgs) {
 
   const formData = await request.formData();
   const accountId = formData.get("accountId") as string;
-
   const action = formData.get("action") as string;
-
   const id = formData.get("id") as string;
+  const window = new Date(formData.get("window") as string) as Date;
+  const budgetId = formData.get("budgetId") as string;
+  const startDate = formData.get("window") as string
 
   let v = formData.get("currentValue") as string
 
@@ -45,9 +47,12 @@ export async function action({ request, params }: ActionArgs) {
     const t = await setBudget({
       id,
       userId,
-      currentValue
+      currentValue,
+      window
      });
-     return redirect(`/budget`);
+     const categories = await getCategories({ userId, budgetId, startDate });
+
+      return json({ categories });
   }
 
  
@@ -62,8 +67,14 @@ export async function action({ request, params }: ActionArgs) {
    currentValue,
    due,
    maxValue,
-   userId
+   userId,
+   window
   });
+ 
 
-  return redirect(`/budget`);
+  const categories = await getCategories({ userId, budgetId, startDate });
+
+  return json({ categories });
+
+ // return redirect(`/budget`);
 }

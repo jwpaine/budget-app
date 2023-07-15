@@ -8,14 +8,16 @@ export async function updateCategory({
   name,
   currentValue,
   maxValue,
-  due
+  due,
+  window
 }: {
   id: string;
   name: string,
   currentValue: number,
   maxValue: number,
   userId: User["id"]
-  due: Date
+  due: Date,
+  window: Date
 }) {
 
   const updateCategory = await prisma.category.updateMany({
@@ -43,7 +45,7 @@ export async function updateCategory({
       userId,
       categoryId: id,
       value: currentValue,
-      window: new Date() // @TODO need to pass window from client
+      window: window
     }
   })
 
@@ -52,11 +54,13 @@ export async function updateCategory({
 export async function setBudget({
   id,
   userId,
-  currentValue
+  currentValue,
+  window
 }: {
   id: string;
   currentValue: number,
-  userId: User["id"]
+  userId: User["id"],
+  window: Date
 }) {
 
   const category = await prisma.category.updateMany({
@@ -77,7 +81,7 @@ export async function setBudget({
       userId,
       categoryId: id,
       value: currentValue,
-      window: new Date()  // @TODO need to pass window from client
+      window: window
     }
   })
 
@@ -106,23 +110,89 @@ export async function getCategoryNames({ userId }: { userId: User["id"] }) {
 
 export function getCategories({ userId, budgetId, startDate }: { userId: User["id"], budgetId: string, startDate: string }) {
 
-  console.log("getting categories for budgetId: ", budgetId, " and userId: ", userId, " and startDate: ", startDate)
+  console.log("getting categories for budgetId: ", budgetId)
 
-  const categories = prisma.$queryRaw`
+
+  console.log("startDate: ", startDate)
+
+  const startOfMonth = new Date(startDate); // Create a Date object from the startDate
+  const endOfMonth = new Date(startOfMonth.getTime()); // Create a copy of the startOfMonth date
+  endOfMonth.setUTCMonth(endOfMonth.getUTCMonth() + 1); // Set the month to the next month
+  endOfMonth.setUTCDate(0); // Set the date to 0 to get the last day of the current month
+  
+  const endDate = endOfMonth.toISOString().slice(0, 10); // Format the end date as a string in "YYYY-MM-DD" format
+  
+  console.log(endDate); // Output: 2023-07-31
+
+
+//   const categories = prisma.$queryRaw`
+//   SELECT 
+//     category.name as category,
+//     category.id as id,
+//     category."currentValue" as "currentValue",
+//     category.due as due,
+//     category."maxValue" as needed,
+//     COALESCE(SUM(transaction.outflow), 0) as outflow,
+//     COALESCE(SUM(transaction.inflow), 0) as inflow,
+//     adjustment.value as adjustment
+//   FROM "Category" as category 
+//   LEFT OUTER JOIN "Transaction" as transaction on transaction.category = category.id
+//   LEFT OUTER JOIN (
+//     SELECT DISTINCT ON ("categoryId") "categoryId", value
+//     FROM "CategoryAdjustment"
+//     ORDER BY "categoryId", "createdAt" DESC
+//   ) as adjustment on adjustment."categoryId" = category.id
+//   WHERE category."userId" = ${userId}
+//     AND category."budgetId" = ${budgetId}
+//   GROUP BY category.id, adjustment.value
+//   ORDER BY due ASC
+// `;
+
+// revised #1
+// const categories = prisma.$queryRaw`
+//   SELECT 
+//     category.name as category,
+//     category.id as id,
+//     category."currentValue" as "currentValue",
+//     category.due as due,
+//     category."maxValue" as needed,
+//     COALESCE(SUM(transaction.outflow), 0) as outflow,
+//     COALESCE(SUM(transaction.inflow), 0) as inflow,
+//     adjustment.value as adjustment
+//   FROM "Category" as category 
+//   LEFT OUTER JOIN "Transaction" as transaction on transaction.category = category.id 
+//     AND transaction.date >= ${startDate}::date 
+//     AND transaction.date <= ${endDate}::date
+//   LEFT OUTER JOIN (
+//     SELECT DISTINCT ON ("categoryId") "categoryId", value
+//     FROM "CategoryAdjustment"
+//     ORDER BY "categoryId", "createdAt" DESC
+//   ) as adjustment on adjustment."categoryId" = category.id
+//   WHERE category."userId" = ${userId}
+//     AND category."budgetId" = ${budgetId}
+//   GROUP BY category.id, adjustment.value
+//   ORDER BY due ASC
+// `;
+
+const categories = prisma.$queryRaw`
   SELECT 
     category.name as category,
     category.id as id,
-    category."currentValue" as "currentValue",
+
     category.due as due,
     category."maxValue" as needed,
     COALESCE(SUM(transaction.outflow), 0) as outflow,
     COALESCE(SUM(transaction.inflow), 0) as inflow,
-    adjustment.value as adjustment
+    adjustment.value as "currentValue"
   FROM "Category" as category 
-  LEFT OUTER JOIN "Transaction" as transaction on transaction.category = category.id
+  LEFT OUTER JOIN "Transaction" as transaction on transaction.category = category.id 
+  AND transaction.date >= ${startDate}::date 
+AND transaction.date <= ${endDate}::date
   LEFT OUTER JOIN (
     SELECT DISTINCT ON ("categoryId") "categoryId", value
     FROM "CategoryAdjustment"
+    WHERE "window" >= ${startDate}::date
+AND "window" <= ${endDate}::date
     ORDER BY "categoryId", "createdAt" DESC
   ) as adjustment on adjustment."categoryId" = category.id
   WHERE category."userId" = ${userId}
@@ -130,6 +200,11 @@ export function getCategories({ userId, budgetId, startDate }: { userId: User["i
   GROUP BY category.id, adjustment.value
   ORDER BY due ASC
 `;
+
+
+
+
+
 
 
   //   SELECT 

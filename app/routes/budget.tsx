@@ -107,7 +107,7 @@ export default function Budget() {
   // create react hook to toggle analytics on/off:
   const [showAnalytics, setShowAnalytics] = React.useState(false);
 
-  const [budgetWindow, setBudgetWindow ] = React.useState("");
+  const [budgetWindow, setBudgetWindow] = React.useState("");
 
 
 
@@ -119,62 +119,58 @@ export default function Budget() {
       currentDate.setDate(1);
       const formattedDate = currentDate.toISOString().slice(0, 10);
       setBudgetWindow(formattedDate);
-  
+
       // Fetch categories for the new budget window
       const categories = await fetchCategories(formattedDate);
       // categories.setData(categories);
     }
-  
+
     // Call the async function
     fetchData();
   }, []);
 
 
 
-const advanceBudgetWindow = async () => {
-  // advance date by one month:
-  const date = new Date(budgetWindow) as Date;
-  date.setUTCMonth(date.getUTCMonth() + 1);
-  date.setUTCDate(1); // Set the date to the first day of the month
-  const newBudgetWindow = date.toISOString().slice(0, 10);
-  setBudgetWindow(newBudgetWindow);
+  const advanceBudgetWindow = async () => {
+    // advance date by one month:
+    const date = new Date(budgetWindow) as Date;
+    date.setUTCMonth(date.getUTCMonth() + 1);
+    date.setUTCDate(1); // Set the date to the first day of the month
+    const newBudgetWindow = date.toISOString().slice(0, 10);
+    setBudgetWindow(newBudgetWindow);
 
-  // Fetch categories for the new budget window
-  const categories = await fetchCategories(newBudgetWindow);
-//  data.categories.setData(categories);
-};
+    // Fetch categories for the new budget window
+    fetchCategories(newBudgetWindow);
+    //  data.categories.setData(categories);
+  };
 
-const regressBudgetWindow = async () => {
-  // regress date by one month:
-  const date = new Date(budgetWindow) as Date;
-  date.setUTCMonth(date.getUTCMonth() - 1);
-  date.setUTCDate(1); // Set the date to the first day of the month
-  const newBudgetWindow = date.toISOString().slice(0, 10);
-  setBudgetWindow(newBudgetWindow);
+  const regressBudgetWindow = () => {
+    // regress date by one month:
+    const date = new Date(budgetWindow) as Date;
+    date.setUTCMonth(date.getUTCMonth() - 1);
+    date.setUTCDate(1); // Set the date to the first day of the month
+    const newBudgetWindow = date.toISOString().slice(0, 10);
+    setBudgetWindow(newBudgetWindow);
 
-  // Fetch categories for the new budget window
-  const categories = await fetchCategories(newBudgetWindow);
-//  categories.setData(categories);
-};
-
-async function fetchCategories(startDate: string) {
-  console.log("getting categories 11");
-
-  const response = await categories.submit(
-    {
-      budgetId: data.account.activeBudget,
-      startDate: startDate,
-    },
-    { method: "post", action: "/budget" }
-  );
-
-  return response
-
-  // const c = await response.json();
-  // return c;
-}
+    // Fetch categories for the new budget window
+    fetchCategories(newBudgetWindow);
+    //  categories.setData(categories);
+  };
 
 
+  const fetchCategories = async (startDate: string) => {
+    console.log("getting categories!");
+
+    const response = await categories.submit(
+      {
+        budgetId: data.account.activeBudget,
+        startDate: startDate,
+      },
+      { method: "post", action: "/budget" }
+    );
+
+
+  }
 
 
 
@@ -330,7 +326,7 @@ async function fetchCategories(startDate: string) {
           {/* <div className="flex h-200 m-2 ">
             {graphTransactions()}
           </div> */}
-          
+
           <button onClick={() => setShowAnalytics(false)} className="rounded-md bg-blue-500 px-4  py-3 ml-2 font-small text-white hover:bg-blue-600 ">Close</button>
         </section>
       </main>
@@ -344,16 +340,13 @@ async function fetchCategories(startDate: string) {
 
       <section className="flex w-full flex-col">
         <header className="bg-slate-800">
-          {user?.email}
 
-          <div className="flex h-200 m-2 ">
 
-          </div>
-          <div className="flex h-200 m-2 ">
+          <div className="flex h-200 m-2 p-2 ">
             {renderBudgetTotals()}
           </div>
 
-          <div className="flex h-200 m-2 ">
+          <div className="flex h-200 m-2 p-2">
             <p className="text-white">Current Budget: {
               data.account?.budgets.map((budget) => {
                 if (budget.id == data.account?.activeBudget) return budget.name
@@ -361,15 +354,14 @@ async function fetchCategories(startDate: string) {
             }</p>
           </div>
 
-          <div className="flex h-200 m-2 ">
-            <button className="text-black bg-white" onClick={() => regressBudgetWindow()}>Previous Month</button>
-           <span className="text-white">Current Window: {budgetWindow} </span>
-           <span className="text-white">action data: {JSON.stringify(actionData)}</span>
-           <button className="text-black bg-white" onClick={() => advanceBudgetWindow()}>Next Month</button>
+          <div className="flex h-200 m-2 w-full justify-between p-2">
+            <button className="text-black bg-white p-2" onClick={() => regressBudgetWindow()}>Previous Month</button>
+            <span className="text-white"> {budgetWindow} </span>
+            <button className="text-black bg-white p-2" onClick={() => advanceBudgetWindow()}>Next Month</button>
           </div>
 
 
-          
+
 
           <div className={`border-bottom my-0.5 flex flex-col px-3 py-0.5 bg-slate-300`}>
             <div className="flex justify-between">
@@ -445,11 +437,13 @@ async function fetchCategories(startDate: string) {
                       <span className={`mx-2 text-right ${Number(balance) == 0 && 'text-white'} ${Number(balance) < 0 && 'text-red-500 font-bold'} ${Number(balance) > 0 && 'text-emerald-300 font-bold '}`}>{balance}</span>
                     </div>
                   </div>
-                  <category.Form
+                  <categories.Form
                     className="flex flex-col p-2"
                     method="post"
                     action="/category/update"
-                    onSubmit={() => setActiveBudget("")}
+                    onSubmit={() => {
+                      setActiveBudget("")
+                    }}
                   >
                     <div className="lg:flex lg:flex-wrap grid grid-cols-2 gap-2 w-full justify-center">
                       <input
@@ -457,6 +451,20 @@ async function fetchCategories(startDate: string) {
                         defaultValue={c.id}
                         type="hidden"
                       />
+
+                      <input
+                        name="window"
+                        defaultValue={budgetWindow}
+                        type="hidden"
+                      />
+
+                      <input
+                        name="budgetId"
+                        defaultValue={data.account.activeBudget}
+                        type="hidden"
+                      />
+
+
 
                       <div className="flex flex-col">
                         <span className="text-white text-center">Category Name</span>
@@ -515,12 +523,19 @@ async function fetchCategories(startDate: string) {
                       Close
                     </button>
 
-                    {Number(balance) < 0 && (
-                      <category.Form
+                  
+
+
+                  </categories.Form>
+
+                  {Number(balance) < 0 && (
+                      <categories.Form
                         className="w-full "
                         method="post"
                         action="/category/update"
-                        onSubmit={() => setActiveBudget("")}
+                        onSubmit={() => {
+                          setActiveBudget("")
+                        }}
                       >
                         <input
                           name="action"
@@ -529,8 +544,20 @@ async function fetchCategories(startDate: string) {
                         />
 
                         <input
+                          name="budgetId"
+                          defaultValue={data.account.activeBudget}
+                          type="hidden"
+                        />
+
+                        <input
                           name="id"
                           defaultValue={c.id}
+                          type="hidden"
+                        />
+
+                        <input
+                          name="window"
+                          defaultValue={budgetWindow}
                           type="hidden"
                         />
 
@@ -546,11 +573,8 @@ async function fetchCategories(startDate: string) {
                         >
                           Resolve Negative Budget
                         </button>
-                      </category.Form>
+                      </categories.Form>
                     )}
-
-
-                  </category.Form>
 
 
                 </div>
