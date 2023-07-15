@@ -321,19 +321,12 @@ export default function Budget() {
           </div>
 
 
-          <div className="flex h-200 p-2 justify-between items-center w-full flex-col md:flex-row">
-            <div className="flex justify-center items-center">
-              <span className="text-white text-xl mr-2">
-                Total Cash:
-              </span>
-              <span className={`text-xl ${renderBudgetTotals().cash > 0 ? 'text-emerald-400' : renderBudgetTotals().cash < 0 ? 'text-red-400' : 'text-white'}`}>${renderBudgetTotals().cash}</span>
-            </div>
-            <div className="flex justify-center items-center">
-              <span className="text-white text-xl">
-                To Be Budgeted:
-              </span>
-              <span className={`bg-black p-2 text-xl ${renderBudgetTotals().toBudget > 0 ? 'text-emerald-400' : renderBudgetTotals().toBudget < 0 ? 'text-red-400' : 'text-white'}`}>${renderBudgetTotals().toBudget}</span>
-            </div>
+          <div className="flex h-200 p-2 justify-between lg:justify-center items-center w-full">
+
+            <span className="text-white text-xl mr-2">
+              To Be Budgeted:
+            </span>
+            <span className={`bg-slate-800 rounded p-2 text-xl ${renderBudgetTotals().toBudget > 0 ? 'text-emerald-400' : renderBudgetTotals().toBudget < 0 ? 'text-red-400' : 'text-white'}`}>${renderBudgetTotals().toBudget}</span>
 
 
 
@@ -606,7 +599,13 @@ export default function Budget() {
 
                   <span className={`flex flex-col justify-center text-right text-white`}>{budgeted}</span>
                   <span className={`flex flex-col justify-center text-right text-white`}>{activity}</span>
-                  <span className={`flex flex-col justify-center text-right ${Number(balance) == 0 && 'text-white'} ${Number(balance) < 0 && 'text-red-500 font-bold border-l-4 border-red-500'} ${Number(balance) > 0 && 'text-emerald-300 font-bold border-l-4 border-emerald-300'}`}>{balance}</span>
+                  <span className={`
+                    flex flex-col justify-center text-right 
+                    ${Number(balance) == 0 && 'text-white'} 
+                    ${Number(balance) < 0 && 'text-red-500 font-bold border-l-4 border-red-500'} 
+                    ${Number(balance) > 0 && Number(balance) >= Number(needed) && 'text-emerald-300 font-bold border-l-4 border-emerald-300'} 
+                    ${Number(balance) > 0 && Number(balance) < Number(needed) && 'text-orange-300 font-bold border-l-4 border-orange-300'}
+                  `}>{balance}</span>
                   <span className={`flex flex-col justify-center text-right text-white`}>{needed}</span>
 
 
