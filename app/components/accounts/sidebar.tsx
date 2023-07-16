@@ -81,7 +81,7 @@ export default function SideBar(props) {
 
             <Link
                 to="/accounts/new"
-                className="flex items-center justify-center rounded-md border border-slate-500 text-white px-4 py-1 mt-5 mx-4 text-base font-medium shadow-sm bg-slate-800 hover:bg-slate-700 sm:px-8"
+                className={`flex items-center justify-center rounded-md border border-slate-500 px-4 py-1 mt-5 mx-4 text-base font-medium shadow-sm ${accounts?.length == 0 ? 'bg-emerald-400 text-black hover:bg-emerald-300' : 'bg-slate-800 text-white hover:bg-slate-700'}  sm:px-8`}
             >
                 + Add Account
             </Link>

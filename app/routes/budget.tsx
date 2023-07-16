@@ -115,13 +115,14 @@ export default function Budget() {
     // Define an async function inside useEffect
     async function fetchData() {
       // Set date to the first day in the current month:
-      const currentDate = new Date();
-      currentDate.setDate(1);
-      const formattedDate = currentDate.toISOString().slice(0, 10);
-      setBudgetWindow(formattedDate);
+      const date = new Date() as Date
+  
+      date.setUTCMonth(date.getUTCMonth());
+      date.setUTCDate(1); // Set the date to the first day of the month
+      const newBudgetWindow = date.toISOString().slice(0, 10);
+      setBudgetWindow(newBudgetWindow);
 
-      // Fetch categories for the new budget window
-      const categories = await fetchCategories(formattedDate);
+      const categories = await fetchCategories(newBudgetWindow);
       // categories.setData(categories);
     }
 
