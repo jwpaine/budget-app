@@ -18,7 +18,9 @@ export async function action({ request }: ActionArgs) {
 
 
   // remove all non-numeric characters except decimal and minus
-  let balance = Number((formData.get("balance") as string).replace(/[^0-9.-]/g, ""))
+  let balance = Number((formData.get("balance") as string).replace(/[^0-9.]/g, ""))
+  // replace '-' with "" only if it is NOT the first character:
+  balance = Number(balance.toString().replace(/-/, (balance.toString().indexOf('-') == 0 ? "" : "-")))
   balance = Math.round(balance * 1e2) / 1e2
 
 
@@ -26,11 +28,14 @@ export async function action({ request }: ActionArgs) {
     return json({ errors: { name: "Name is required" } }, { status: 400 });
   }
 
+  console.log("\balance type ", typeof balance)
+
   if (typeof balance !== "number") {
-    return json(
-      { errors: { balance: "Balance must be a number" } },
-      { status: 400 }
-    );
+    return redirect(`accounts/new`)
+    // return json(
+    //   { errors: { balance: "Balance must be a number" } },
+    //   { status: 400 }
+    // );
   }
 
   const note = await addAccount({ name, type, balance, userId });

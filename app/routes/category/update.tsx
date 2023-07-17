@@ -29,6 +29,12 @@ export async function action({ request, params }: ActionArgs) {
 
   let v = formData.get("currentValue") as string
 
+  console.log("v: ", v)
+  // remove anything accept for numbers, +, and - from v:
+  v = v.replace(/[^0-9+-.]/g, '')
+
+  console.log("v after replace: ", v)
+
   let sum = v.split("+")
   let diff = v.split("-")
 
@@ -37,8 +43,13 @@ export async function action({ request, params }: ActionArgs) {
     return redirect(`/accounts/${accountId}`);
   }
 
+  console.log("sum 0, 1: ", sum[0], sum[1])
+  console.log("diff 0, 1: ", diff[0], diff[1])
+
  
   const currentValue = sum.length > 1 ? (Number(sum[0]) + Number(sum[1])) : diff.length > 1 ? (Number(diff[0]) - Number(diff[1])) : Number(v)
+
+  console.log("currentValue: ", currentValue)
 
 
   // @TODO ALWAYS setBudget if only currentValue is updated (not name, due, maxValue)
@@ -52,14 +63,16 @@ export async function action({ request, params }: ActionArgs) {
      });
      const categories = await getCategories({ userId, budgetId, startDate });
 
-      return json({ categories });
+     return json({ categories });
   }
 
  
   const name = (formData.get("name") as string) || "";
   
   const due = new Date(formData.get("due") as string) as Date;
-  const maxValue = Number(formData.get("needed")) || 0;
+  let max = formData.get("needed") as string
+  const maxValue = Number(max.replace(/[^0-9+-.]/g, '')) || 0 as number
+
  
   const t = await updateCategory({
    id,

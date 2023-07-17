@@ -11,8 +11,8 @@ export async function action({ request, params }: ActionArgs) {
 
         let date = new Date(); 
                   
-        let billing_cycle_anchor = new Date(date.getFullYear(), date.getMonth(), 0); 
-        billing_cycle_anchor.setMonth(billing_cycle_anchor.getMonth())
+        // let billing_cycle_anchor = new Date(date.getFullYear(), date.getMonth(), 1); 
+        // billing_cycle_anchor.setMonth(billing_cycle_anchor.getMonth())
         
          let sub_data = {
                 customer: customer.id,
