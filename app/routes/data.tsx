@@ -60,7 +60,7 @@ export default function Budgets() {
         let max = 0 as number
     
         data.accounts.map((account) => {
-          if (account.type != 'loan') {
+          if (account.type != 'Loan') {
             //   console.log(`adding cash: ${account.balance}`)
             cash += Number(account.balance)
           }

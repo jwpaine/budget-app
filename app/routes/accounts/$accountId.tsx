@@ -413,10 +413,10 @@ export default function AccountDetailsPage() {
               <div className="flex flex-col w-full">
                 <span className="text-white">Account Type: </span>
                 <select name="type">
-                  <option value="checking" selected={data.account.type == "checking"} >Checking</option>
-                  <option value="savings" selected={data.account.type == "savings"}>Savings</option>
-                  <option value="cash" selected={data.account.type == "cash"}>Cash</option>
-                  <option value="loan" selected={data.account.type == "loan"}>Loan / Credit Card</option>
+                  <option value="checking" selected={data.account.type == "Checking"} >Checking</option>
+                  <option value="savings" selected={data.account.type == "Savings"}>Savings</option>
+                  <option value="cash" selected={data.account.type == "Cash"}>Cash</option>
+                  <option value="loan" selected={data.account.type == "Loan"}>Loan / Credit Card</option>
                 </select>
               </div>
               <button type="submit" className="items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 mx-1 my-5 text-base font-medium text-blue-700 shadow-sm hover:bg-blue-50 " >Update</button>

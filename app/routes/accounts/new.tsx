@@ -23,6 +23,11 @@ export async function action({ request }: ActionArgs) {
   balance = Number(balance.toString().replace(/-/, (balance.toString().indexOf('-') == 0 ? "" : "-")))
   balance = Math.round(balance * 1e2) / 1e2
 
+  // if account type is "Loan", make balance negative:
+  if (type == "Loan") {
+    balance = balance * -1
+  }
+
 
   if (typeof name !== "string") {
     return json({ errors: { name: "Name is required" } }, { status: 400 });
@@ -87,16 +92,19 @@ export default function NewNotePage() {
               setAccountType('Checking')
               setAccountState('name')
             }}><span className="text-4xl">💳</span> <span className="text-xl">Checking</span></button>
+
             <button className={`rounded flex-1 min-h-500 w-100 p-5 flex flex-col justify-center items-center  ${accountType == "Savings" ? 'bg-sky-100' : 'bg-white'}  hover:bg-slate-100`} type="button" onClick={() => {
 
               setAccountType('Savings')
               setAccountState('name')
             }}><span className="text-4xl">💰</span> <span className="text-xl">Savings</span></button>
+
             <button className={`rounded bg-white flex-1 min-h-500 w-100 p-5 flex flex-col justify-center items-center ${accountType == "Cash" ? 'bg-sky-100' : 'bg-white'} hover:bg-slate-100`} type="button" onClick={() => {
 
               setAccountType('Cash')
               setAccountState('name')
             }}><span className="text-4xl">💵</span> <span className="text-xl">Cash</span></button>
+
             <button className={`rounded bg-white flex-1 min-h-500 w-100 p-5 flex flex-col justify-center items-center  ${accountType == "Loan" ? 'bg-sky-100' : 'bg-white'} hover:bg-slate-100`} type="button" onClick={() => {
 
               setAccountType('Loan')

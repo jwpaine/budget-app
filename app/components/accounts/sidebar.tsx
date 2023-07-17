@@ -19,12 +19,14 @@ export default function SideBar(props) {
 
 
         accounts.map((account) => {
-            if (account.type != 'loan') {
+            if (account.type != 'Loan') {
                 //   console.log(`adding cash: ${account.balance}`)
                 cash += Number(account.balance)
             } else {
                 //    console.log(`adding dept: ${account.balance}`)
-                debt += Number(account.balance)
+              //  debt += Number(account.balance)
+              // increase debt by absolute value of balance:
+                debt += Math.abs(Number(account.balance))
             }
 
 

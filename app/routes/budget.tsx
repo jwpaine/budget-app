@@ -284,7 +284,7 @@ export default function Budget() {
     });
 
     data.accounts.map((account) => {
-      if (account.type != 'loan') {
+      if (account.type != 'Loan') {
         //   console.log(`adding cash: ${account.balance}`)
         cash += Number(account.balance)
       } else {
