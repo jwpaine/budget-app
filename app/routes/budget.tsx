@@ -248,9 +248,9 @@ export default function Budget() {
 
   // }
 
-  const renderCalendar = () => {
+  const renderCalendar = (step: number) => {
     let [year, month, day] = budgetWindow.split('-');
-    let date = new Date(Number(year), Number(month) - 1, Number(day));
+    let date = new Date(Number(year), Number(month) - step, Number(day));
     let monthString = date.toLocaleDateString('en-US', { month: 'long' });
     let yearString = date.toLocaleDateString('en-US', { year: 'numeric' });
     return { monthString, yearString }
@@ -311,14 +311,14 @@ export default function Budget() {
         <header className="bg-black">
 
           <div className="flex h-200 w-full justify-between p-2">
-            <button className="text-slate-300 p-2" onClick={() => regressBudgetWindow()}>Previous Month</button>
+            <button className="text-slate-300 p-2" onClick={() => regressBudgetWindow()}> {renderCalendar(2).monthString}</button>
 
             <div className="flex flex-col">
-              <span className="text-white text-4xl text-center"> {renderCalendar().monthString}</span>
-              <span className="text-white text-center"> {renderCalendar().yearString}</span>
+              <span className="text-white text-4xl text-center"> {renderCalendar(1).monthString}</span>
+              <span className="text-white text-center"> {renderCalendar(1).yearString}</span>
             </div>
 
-            <button className="text-slate-300  p-2" onClick={() => advanceBudgetWindow()}>Next Month</button>
+            <button className="text-slate-300  p-2" onClick={() => advanceBudgetWindow()}> {renderCalendar(0).monthString}</button>
           </div>
 
 
