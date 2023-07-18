@@ -3,14 +3,13 @@ name: Azure Container Apps Deploy
 on:
   push:
     branches:
-      - main
+      - prod
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     
-
     steps:
       - uses: actions/checkout@v3
 
