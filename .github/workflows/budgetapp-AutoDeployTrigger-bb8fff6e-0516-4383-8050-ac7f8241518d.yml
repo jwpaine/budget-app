@@ -28,8 +28,8 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: budgetappr1ae0.azurecr.io
-          username: ${{ secrets.BUDGETAPP_REGISTRY_USERNAME }}
-          password: ${{ secrets.BUDGETAPP_REGISTRY_PASSWORD }}
+          username: ${{ secrets.AZURE_REGISTRY_USER}}
+          password: ${{ secrets.AZURE_REGISTRY_PASSWORD }}
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
@@ -48,7 +48,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.BUDGETAPP_AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
 
       - name: Deploy to containerapp
