@@ -20,12 +20,13 @@ jobs:
       - name: Clean the target directory
         run: rm -rf ${{ github.workspace }}/src/*
 
+      - name: Copy application files to the target directory
+        run: rsync -av --chown=runner:runner ${{ github.workspace }}/src/ /home/runner/work/budget-app/budget-app/src/
+
       - name: Build and deploy Container App
         uses: azure/container-apps-deploy-action@v1
         with:
-          appSourcePath: ${{ github.workspace }}/src
+          appSourcePath: /home/runner/work/budget-app/budget-app/src
           acrName: budgetappr1ae0
           containerAppName: budgetapp
           resourceGroup: rg-budgetapp
-
-          
