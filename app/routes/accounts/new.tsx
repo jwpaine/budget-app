@@ -11,10 +11,15 @@ export async function action({ request }: ActionArgs) {
   const userId = await requireUserId(request);
 
   const formData = await request.formData();
-  const name = formData.get("name") as string
+  let name = formData.get("name") as string
   const type = formData.get("type") as string
 
   console.log("received type: ", type)
+
+  if (type == "Checking") name = "💳 " + name
+  if (type == "Savings") name = "💰 " + name
+  if (type == "Cash") name = "💵 " + name
+  if (type == "Loan") name = "🏦 " + name
 
 
   // remove all non-numeric characters except decimal and minus

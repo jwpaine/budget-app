@@ -176,30 +176,42 @@ export function getCategories({ userId, budgetId, startDate }: { userId: User["i
 
 const categories = prisma.$queryRaw`
   SELECT 
-    category.name as category,
-    category.id as id,
-
-    category.due as due,
-    category."maxValue" as needed,
-    COALESCE(SUM(transaction.outflow), 0) as outflow,
-    COALESCE(SUM(transaction.inflow), 0) as inflow,
-    adjustment.value as "currentValue"
-  FROM "Category" as category 
-  LEFT OUTER JOIN "Transaction" as transaction on transaction.category = category.id 
-  AND transaction.date >= ${startDate}::date 
-AND transaction.date <= ${endDate}::date
+    category.name AS category,
+    category.id AS id,
+    category.due AS due,
+    category."maxValue" AS needed,
+    COALESCE(SUM(transaction.outflow), 0) AS outflow,
+    COALESCE(SUM(transaction.inflow), 0) AS inflow,
+    adjustment.value AS "currentValue"
+  FROM "Category" AS category 
+  LEFT JOIN (
+    SELECT *
+    FROM "Transaction" AS tr
+    WHERE tr."accountId" NOT IN (
+      SELECT "id"
+      FROM "Account"
+      WHERE "type" = 'Loan'
+    )
+    AND tr.date >= ${startDate}::date 
+    AND tr.date <= ${endDate}::date
+  ) AS transaction ON transaction.category = category.id
   LEFT OUTER JOIN (
     SELECT DISTINCT ON ("categoryId") "categoryId", value
     FROM "CategoryAdjustment"
     WHERE "window" >= ${startDate}::date
-AND "window" <= ${endDate}::date
+    AND "window" <= ${endDate}::date
     ORDER BY "categoryId", "createdAt" DESC
-  ) as adjustment on adjustment."categoryId" = category.id
+  ) AS adjustment ON adjustment."categoryId" = category.id
   WHERE category."userId" = ${userId}
     AND category."budgetId" = ${budgetId}
   GROUP BY category.id, adjustment.value
   ORDER BY due ASC
 `;
+
+
+
+
+
 
 
 

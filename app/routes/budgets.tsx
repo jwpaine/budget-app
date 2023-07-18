@@ -46,36 +46,43 @@ export default function Budgets() {
 
       <h1 className="text-3xl text-white">My Budgets</h1>
 
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap my-10">
         {data.account.budgets?.map((budget) => {
-          return <button key={budget.id} className={`rounded flex-1 min-h-500 w-100 p-5 flex flex-col justify-center items-center  ${budget.id == activeBudget  ? 'bg-sky-100' : 'bg-white'}  hover:bg-slate-100`} type="button" onClick={() => {
+          return <button key={budget.id} className={`rounded flex-1 min-h-500 w-100 p-5 m-2 flex flex-col justify-center items-center  ${budget.id == activeBudget  ? 'bg-sky-100' : 'bg-white'}  hover:bg-slate-100`} type="button" onClick={() => {
             console.log("clicked!")
             setActiveBudget(budget.id)
-          }}><span className="text-xl text-black">{budget.name}</span></button>
+          }}><span className="text-3xl text-black">{budget.name}</span>
+            
+            <span className="text-xl text-black">Created: {budget.createdAt.slice(0, 10)}</span>
+
+          </button>
         })}
 
+        </div>
+
         <user.Form
-          className="flex flex-wrap justify-center bg-sky-700 p-1"
+          className="flex flex-wrap justify-center p-1"
           method="post"
           action="/user/update"
         >
 
           <input name="budgetId" defaultValue={activeBudget} hidden={true} />
-          <button type="submit" className="w-full lg:w-40 rounded bg-gray-950 p-2 my-1 mx-1 text-white" disabled={activeBudget == ""}>Change Budget</button>
+          <button type="submit" className={`text-xl rounded-md ${activeBudget == data.account.activeBudget ? 'bg-slate-300 hover:bg-slate-300' : 'bg-white'} px-4 py-3 mx-1 font-medium text-blue-700 hover:bg-blue-50 `}
+               disabled={activeBudget == data.account.activeBudget}>Switch Budget</button>
         </user.Form>
 
 
-      </div>
-
+    
 
       <budget.Form
-        className="flex flex-wrap justify-center bg-sky-700 p-1"
+        className="flex flex-wrap justify-center p-1 mt-10"
         method="post"
         action="/budget/new"
       >
 
-        <input className="bg-white" name="name" placeholder="Budget Name" />
-        <button type="submit" className="w-full lg:w-40 rounded bg-gray-950 p-2 my-1 mx-1 text-white">Add Budget</button>
+        <input className="bg-white rounded p-2" name="name" placeholder="Budget Name" />
+        <button type="submit" className="flex flex-1 items-center justify-center rounded-md  bg-white px-4 py-3 mx-1 text-base font-medium text-blue-700 hover:bg-blue-50 "
+              >Add Budget</button>
       </budget.Form>
 
     </main>

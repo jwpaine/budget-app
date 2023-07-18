@@ -3,13 +3,12 @@ name: Azure Container Apps Deploy
 on:
   push:
     branches:
-      - prod
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    
     steps:
       - uses: actions/checkout@v3
 
@@ -18,12 +17,15 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Clean the target directory
+        run: rm -rf ${{ github.workspace }}/src/*
+
       - name: Build and deploy Container App
         uses: azure/container-apps-deploy-action@v1
-        
         with:
           appSourcePath: ${{ github.workspace }}/src
           acrName: budgetappr1ae0
           containerAppName: budgetapp
           resourceGroup: rg-budgetapp
+
           
