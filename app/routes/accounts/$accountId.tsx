@@ -40,7 +40,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const account = await getAccount({ userId, id: params.accountId });
 
   
-  const user = await getUserById(userId)
+  const user = await getUserById({id: userId, budgets: true, subscription: true})
 
   const budgetId = user?.activeBudget
 

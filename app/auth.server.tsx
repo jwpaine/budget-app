@@ -89,10 +89,11 @@ async function createUserSession({
 
         const user = await getUser({access_token})
 
-        const localUser = await getUserById(user.username)
+        const localUser = await getUserById({id: user.username})
 
         if(!localUser) {
             console.log("Local user does NOT exist: ", user.username)
+            return // early
             const createLocalUser = await createUser(user.email, user.username)
 
         } else {

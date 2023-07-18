@@ -30,11 +30,9 @@ export async function loader({ request, params }: LoaderArgs) {
   // if not stripe key, panic:
   if (!stripeKey) {
     throw new Error("STRIPE_KEY must be set");
-  } else {
-    console.log('stripe key: ', stripeKey)
   }
   // const account = await getAccount({ userId });
-  const user = await getUserById(userId);
+  const user = await getUserById({ id: userId, budgets: true, subscription: true });
 
   return json({ userId, user, stripeKey });
 }
@@ -59,7 +57,7 @@ export default function Budget() {
     const r = subscription.submit(
       {
         //stripe customer
-        id: response.id, 
+        id: response.id,
         created: response.created,
         email: response.email,
         // card metadata
@@ -91,18 +89,41 @@ export default function Budget() {
       <h1>My Account</h1>
       <div className="p-2">
         <p className="text-white">Currently logged in as: {data?.user?.email}</p>
-        {/* <p className="text-white">{JSON.stringify(data?.user)} </p> */}
+
+
+
       </div>
 
-      <div className="p-2">
-       <span className="text-white">No Active Subscription. Subscribe to unlock more features.</span>
-        {renderStripeCheckout()}
-       
-      </div>
+      {data?.user?.subscription?.status == "active" ? (<div className="flex flex-col p-2">
+        <span className="text-white">You are subscribed!</span>
+
+        <span className="text-white">Default Payment Method: {data.user.subscription.cardBrand} **** **** **** {data.user.subscription.cardLast}</span>
+
+        <div className="flex my-5">
+          <button
+            className="rounded p-2 w-fit text-blue-100 border border-emerald-900 hover:border-emerald-800"
+          >
+            Update Payment Method
+          </button>
+          <button
+            className="rounded p-2 w-fit text-blue-100 border border-red-900 hover:border-red-800 ml-2"
+          >
+            Cancel Subscription
+          </button>
+        </div>
+
+
+      </div>) : (
+        <div className="flex flex-col p-2">
+          <span className="text-white">You are not subscribed :(</span>
+          {renderStripeCheckout()}
+        </div>
+      )
+      }
       <Form action="/logout" method="post" className="p-2">
         <button
           type="submit"
-          className="rounded p-5 text-blue-100 border border-slate-500 hover:font-bold"
+          className="rounded p-5 text-blue-100 border border-slate-500 hover:border-slate-400"
         >
           Logout
         </button>

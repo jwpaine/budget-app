@@ -31,7 +31,8 @@ export async function setActiveBudget({ userId, budgetId }: { userId: User["id"]
   })
 }
 
-export async function getUserById(id: User["id"]) {
+export async function getUserById({id, budgets, subscription} : {id: User["id"], budgets?: boolean, subscription?: boolean}) {
+  console.log("Looking up user by Id: ", id)
   try {
     // use prisma.user.findUnique({ where: { id } }); to find user, but join budget on budget id = user.activeBudget to get budget name:
     const user = await prisma.user.findUnique({
@@ -39,7 +40,8 @@ export async function getUserById(id: User["id"]) {
         id,
       },
       include: {
-        budgets: true
+        budgets: budgets ? true : false,
+        subscription: subscription ? true : false
       }
     });
     return user
@@ -48,6 +50,8 @@ export async function getUserById(id: User["id"]) {
   }
 }
 
+
+// unused so far
 export async function getUserByEmail(email: User["email"]) {
   return prisma.user.findUnique({ where: { email } });
 }

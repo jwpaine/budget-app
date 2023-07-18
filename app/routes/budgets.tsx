@@ -15,7 +15,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const user = await getBudgets({ userId });
 
-  const account = await getUserById(userId)
+  const account = await getUserById({id: userId, budgets: true});
 
   
 
