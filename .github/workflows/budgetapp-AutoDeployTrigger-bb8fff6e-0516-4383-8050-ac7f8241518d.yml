@@ -8,9 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: 
-      image: alpine:latest
-      options: --user root
+
     
 
     steps:
@@ -23,8 +21,10 @@ jobs:
 
       - name: Build and deploy Container App
         uses: azure/container-apps-deploy-action@v1
+        
         with:
           appSourcePath: ${{ github.workspace }}/src
           acrName: budgetappr1ae0
           containerAppName: budgetapp
           resourceGroup: rg-budgetapp
+          
