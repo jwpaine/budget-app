@@ -18,15 +18,15 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Clean the target directory
-        run: rm -rf ${{ github.workspace }}/src/*
+        run: rm -rf ${{ github.workspace }}/temp-src && mkdir -p ${{ github.workspace }}/temp-src
 
-      - name: Copy application files to the target directory
-        run: rsync -av --chown=runner:runner ${{ github.workspace }}/src/ /home/runner/work/budget-app/budget-app/src/
+      - name: Copy application files to temporary directory
+        run: rsync -av --chown=runner:runner ${{ github.workspace }}/src/ ${{ github.workspace }}/temp-src/
 
       - name: Build and deploy Container App
         uses: azure/container-apps-deploy-action@v1
         with:
-          appSourcePath: /home/runner/work/budget-app/budget-app/src
+          appSourcePath: ${{ github.workspace }}/temp-src
           acrName: budgetappr1ae0
           containerAppName: budgetapp
           resourceGroup: rg-budgetapp
