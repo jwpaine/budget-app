@@ -32,7 +32,7 @@ export async function loader({ request, params }: LoaderArgs) {
     throw new Error("STRIPE_KEY must be set");
   }
   // const account = await getAccount({ userId });
-  const user = await getUserById({ id: userId, budgets: true, subscription: true });
+  const user = await getUserById({ id: userId, budgets: true, customer: true });
 
   return json({ userId, user, stripeKey });
 }
@@ -73,12 +73,24 @@ export default function Budget() {
 
   }
 
+  const cancelSubscription = async () => {
+    const r = subscription.submit(
+      {
+
+      },
+      { method: "post", action: "/subscription/cancel" }
+    );
+  }
+
   const renderStripeCheckout = () => {
     return <StripeCheckout
       token={handleStripeToken}
       stripeKey={data.stripeKey}
       amount={0}
       name="dollargrad.com"
+      description="Subscribe for $7/month"
+      // set button text from "Pay With Card" to "Subscribe":
+      panelLabel="Subscribe"
     // billingAddress="true"
     />
   }
@@ -94,10 +106,10 @@ export default function Budget() {
 
       </div>
 
-      {data?.user?.subscription?.status == "active" ? (<div className="flex flex-col p-2">
+      {data?.user?.customer?.subscriptionStatus == "active" && (<div className="flex flex-col p-2">
         <span className="text-white">You are subscribed!</span>
 
-        <span className="text-white">Default Payment Method: {data.user.subscription.cardBrand} **** **** **** {data.user.subscription.cardLast}</span>
+        <span className="text-white">Default Payment Method: {data.user.customer.cardBrand} **** **** **** {data.user.customer.cardLast}</span>
 
         <div className="flex my-5">
           <button
@@ -107,18 +119,19 @@ export default function Budget() {
           </button>
           <button
             className="rounded p-2 w-fit text-blue-100 border border-red-900 hover:border-red-800 ml-2"
+            onClick={() => cancelSubscription()}
           >
             Cancel Subscription
           </button>
         </div>
-
-
-      </div>) : (
-        <div className="flex flex-col p-2">
-          <span className="text-white">You are not subscribed :(</span>
-          {renderStripeCheckout()}
         </div>
       )
+      }
+      {/* customer never created */ }
+      {!data?.user?.customer?.subscriptionId && <div className="flex flex-col p-2">
+        <span className="text-white">You are not subscribed :(</span>
+        {renderStripeCheckout()}
+      </div>
       }
       <Form action="/logout" method="post" className="p-2">
         <button

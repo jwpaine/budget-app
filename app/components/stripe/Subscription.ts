@@ -1,7 +1,7 @@
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
-export const Create = async ({ customer, plan }: { customer: any, plan: any }) => {
+export const Create = async ({ customerId, plan }: { customer: any, plan: any }) => {
 
     console.log('creating subscription')
 
@@ -11,7 +11,7 @@ export const Create = async ({ customer, plan }: { customer: any, plan: any }) =
     // billing_cycle_anchor.setMonth(billing_cycle_anchor.getMonth())
 
     let sub_data = {
-        customer: customer.id,
+        customer: customerId,
         items: [
             {
                 plan: plan.id
@@ -33,3 +33,17 @@ export const Create = async ({ customer, plan }: { customer: any, plan: any }) =
 export const getSubscription = async ({ id }: { id: string }) => {
     return await stripe.subscriptions.retrieve(id)
 }
+
+// cancel stripe subscription:
+export const Cancel = async ({ id }: { id: string }) => {
+
+    // cancel subscription:
+    const subscription = await stripe.subscriptions.del(id);
+  
+    if (subscription.error) {
+      console.log(`subscription cancellation error: ${subscription.error}`)
+      return { error: subscription.error }
+    }
+    return subscription
+  }
+  

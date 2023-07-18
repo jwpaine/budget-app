@@ -93,7 +93,7 @@ async function createUserSession({
 
         if(!localUser) {
             console.log("Local user does NOT exist: ", user.username)
-            return // early
+          
             const createLocalUser = await createUser(user.email, user.username)
 
         } else {
