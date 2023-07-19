@@ -96,10 +96,15 @@ export async function action({ request, params }: ActionArgs) {
   const memo = (formData.get("memo") as string) || "";
 
   let outflow = Number((formData.get("outflow") as string).replace(/[^0-9.]/g, "")) || 0
-  outflow = Math.round(outflow * 1e2) / 1e2
+  outflow = Math.abs(Math.round(outflow * 1e2) / 1e2)
 
   let inflow = Number((formData.get("inflow") as string).replace(/[^0-9.]/g, "")) || 0
-  inflow = Math.round(inflow * 1e2) / 1e2
+  inflow = Math.abs(Math.round(inflow * 1e2) / 1e2)
+
+  if(inflow > 0 && outflow > 0) {
+    console.log("both inflow and outflow are > 0, this is not allowed")
+    return redirect(`/accounts/${accountId}`);
+  }
 
 
 

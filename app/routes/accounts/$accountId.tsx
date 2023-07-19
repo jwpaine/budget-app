@@ -191,9 +191,10 @@ export default function AccountDetailsPage() {
         <XAxis dataKey="name" stroke="#FFFFFF" />
         <YAxis type="number" stroke="#FFFFFF" domain={[0, max]} />
         <Tooltip />
-        <Line type="monotone" dataKey="cash" stroke="#FFFFFF" strokeWidth={1} dot={false}/>
+        <Line type="monotone" dataKey="cash" stroke="#FFFFFF" fill="#b3e0fe" strokeWidth={1} dot={false}/>
       </LineChart>
     </ResponsiveContainer>
+    
 
   }
 
