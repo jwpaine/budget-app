@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Transaction" ALTER COLUMN "payee" DROP NOT NULL,
+ALTER COLUMN "category" DROP NOT NULL,
+ALTER COLUMN "memo" DROP NOT NULL;

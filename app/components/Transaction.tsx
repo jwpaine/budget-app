@@ -61,123 +61,165 @@ export default function Transaction(props: TransactionProps) {
         }
     };
 
-    return props.active || props.new ? (
-        <transaction.Form
-            className="flex flex-wrap justify-center bg-slate-500 p-2"
-            method="post"
-            action={props.new ? "/transaction/new" : "/transaction/update"}
-            onSubmit={() => props.handleFormSubmit()}
-        >
-            <div className="lg:flex lg:flex-wrap grid grid-cols-2 gap-2 w-full justify-center">
-                <input
-                    name="accountId"
-                    defaultValue={props.accountId}
-                    type="hidden"
-                />
-                {props.transaction && <input name="id" defaultValue={props.transaction.id} type="hidden" />}
-
-                <div className="flex flex-col">
-                    <span className="text-white text-center">Transaction Date</span>
+    if (props.active && props.transaction.type == "R") return (
+        <div>
+            <div className="flex w-full p-2 justify-between bg-gray-500">
+                <transaction.Form method="post" className="w-full lg:w-36 mx-1" action="/transaction/delete">
+                    <input name="transactionId" defaultValue={props.transaction.id} type="hidden" />
                     <input
-                        ref={dateRef}
-                        name="date"
-                        defaultValue={props.transaction ? new Date(props.transaction.date).toISOString().slice(0, 10) : formatDate()}
-                        placeholder="Date"
-                        className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
+                        name="accountId"
+                        defaultValue={props.accountId}
+                        type="hidden"
                     />
-                </div>
-                <div className="flex flex-col">
-                    <span className="text-white text-center">Payee</span>
-                    <input
-                        ref={payeeRef}
-                        name="payee"
-                        defaultValue={props.transaction ? props.transaction.payee : ""}
-                        placeholder="Payee"
-                        className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
-                    />
-                </div>
-
-                <div className="flex flex-col">
-                    <span className="text-white text-center">Category Name</span>
-                    {uncategorized ? (
-                        <input
-                            defaultValue="Uncategorized"
-                            placeholder="Category"
-                            className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
-                            disabled={true}
-                        />
-                    ) : (
-
-                        <select name="category" className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none ">
-                            {
-                                props.categories?.map((c: any) => {
-                                    return <option selected={props.transaction && props.transaction.category == c.id} value={c.id} key={c.id}>{c.name}</option>
-                                })
-                            }
-                        </select>
-                    )}
-                </div>
-                <div className="flex flex-col">
-                    <span className="text-white text-center">Memo</span>
-                    <input
-                        ref={memoRef}
-                        name="memo"
-                        defaultValue={props.transaction ? props.transaction.memo : ""}
-                        placeholder="Memo"
-                        className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
-                    />
-                </div>
-                <div className="flex flex-col">
-                    <span className="text-white text-center">Inflow</span>
-                    <input
-                        ref={inRef}
-                        name="inflow"
-                        defaultValue={props.transaction ? props.transaction.inflow : ""}
-                        placeholder="In"
-                        className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
-                        onChange={() => handleInputChange()}
-                    />
-                </div>
-                <div className="flex flex-col">
-                    <span className="text-white text-center">Outflow</span>
-                    <input
-                        ref={outRef}
-                        name="outflow"
-                        defaultValue={props.transaction ? props.transaction.outflow : ""}
-                        placeholder="Out"
-                        className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
-                        onChange={() => handleInputChange()}
-                    />
+                    <button
+                        type="submit"
+                        className="rounded bg-red-400 p-2 text-white"
+                    >
+                        Delete
+                    </button>
+                </transaction.Form>
+                <div><span className="text-white">Reconciled: </span>
+                    <span className="text-white bg-slate-600 rounded">FOO</span>
                 </div>
             </div>
-            <div className="flex flex-col w-full lg:flex-wrap lg:flex-row full-width justify-center mt-2 items-center">
-            <button type="submit" className="w-full lg:w-40 rounded bg-gray-950 p-2 my-1 mx-1 text-white">
-                {props.transaction ? "Update Transaction" : "Add Transaction"}
-            </button>
-            {props.transaction && <button
-                type="button"
-                className="w-full lg:w-36  mx-1 rounded bg-slate-800 p-2 my-1 text-white"
-                onClick={() => props.onSubmit()}
-            >
-                Cancel
-            </button>}
-            {props.transaction && <transaction.Form method="post" className="w-full lg:w-36 mx-1" action="/transaction/delete">
-                <input name="transactionId" defaultValue={props.transaction.id} type="hidden" />
-                <input
-                    name="accountId"
-                    defaultValue={props.accountId}
-                    type="hidden"
-                />
+            <div className="flex justify-center bg-gray-600 items-center p-2">
+                <span className="text-white">Reconciled transactions may only be deleted</span>
                 <button
-                    type="submit"
-                    
-                className="w-full rounded bg-red-500 p-2 my-1 text-white "
+                    type="button"
+                    className="w-full lg:w-36  mx-1 rounded bg-slate-800 p-2 my-1 text-white"
+                    onClick={() => props.onSubmit()}
                 >
-                    Delete
+                    Close
                 </button>
-            </transaction.Form>}
             </div>
-        </transaction.Form>
+        </div>
+    )
+
+    return props.active || props.new ? (
+        <div>
+            {props.transaction && <div className="flex w-full p-2 justify-between bg-gray-500">
+                <transaction.Form method="post" className="w-full lg:w-36 mx-1" action="/transaction/delete">
+                    <input name="transactionId" defaultValue={props.transaction.id} type="hidden" />
+                    <input
+                        name="accountId"
+                        defaultValue={props.accountId}
+                        type="hidden"
+                    />
+                    <button
+                        type="submit"
+                        className="rounded bg-red-400 p-2 text-white"
+                    >
+                        Delete
+                    </button>
+                </transaction.Form>
+
+            </div>}
+            <transaction.Form
+                className="flex flex-wrap justify-center bg-gray-600 p-2"
+                method="post"
+                action={props.new ? "/transaction/new" : "/transaction/update"}
+                onSubmit={() => props.handleFormSubmit()}>
+
+                <div className="lg:flex lg:flex-wrap grid grid-cols-2 gap-2 w-full justify-center">
+
+                    <input
+                        name="accountId"
+                        defaultValue={props.accountId}
+                        type="hidden"
+                    />
+                    {props.transaction && <input name="id" defaultValue={props.transaction.id} type="hidden" />}
+
+                    <div className="flex flex-col">
+                        <span className="text-white text-center">Transaction Date</span>
+                        <input
+                            ref={dateRef}
+                            name="date"
+                            defaultValue={props.transaction ? new Date(props.transaction.date).toISOString().slice(0, 10) : formatDate()}
+                            placeholder="Date"
+                            className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
+                        />
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-white text-center">Payee</span>
+                        <input
+                            ref={payeeRef}
+                            name="payee"
+                            defaultValue={props.transaction ? props.transaction.payee : ""}
+                            placeholder="Payee"
+                            className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
+                        />
+                    </div>
+
+                    <div className="flex flex-col">
+                        <span className="text-white text-center">Category Name</span>
+                        {uncategorized ? (
+                            <input
+                                defaultValue="Uncategorized"
+                                placeholder="Category"
+                                className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
+                                disabled={true}
+                            />
+                        ) : (
+
+                            <select name="category" className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none ">
+                                {
+                                    props.categories?.map((c: any) => {
+                                        return <option selected={props.transaction && props.transaction.category == c.id} value={c.id} key={c.id}>{c.name}</option>
+                                    })
+                                }
+                            </select>
+                        )}
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-white text-center">Memo</span>
+                        <input
+                            ref={memoRef}
+                            name="memo"
+                            defaultValue={props.transaction ? props.transaction.memo : ""}
+                            placeholder="Memo"
+                            className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
+                        />
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-white text-center">Inflow</span>
+                        <input
+                            ref={inRef}
+                            name="inflow"
+                            defaultValue={props.transaction ? props.transaction.inflow : ""}
+                            placeholder="In"
+                            className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
+                            onChange={() => handleInputChange()}
+                        />
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-white text-center">Outflow</span>
+                        <input
+                            ref={outRef}
+                            name="outflow"
+                            defaultValue={props.transaction ? props.transaction.outflow : ""}
+                            placeholder="Out"
+                            className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
+                            onChange={() => handleInputChange()}
+                        />
+                    </div>
+                </div>
+                <div className="flex flex-col w-full lg:flex-wrap lg:flex-row full-width justify-center mt-2 items-center">
+                    <button type="submit" className="w-full lg:w-40 rounded bg-gray-950 p-2 my-1 mx-1 text-white">
+                        {props.transaction ? "Update Transaction" : "Add Transaction"}
+                    </button>
+                    {props.transaction && <button
+                        type="button"
+                        className="w-full lg:w-36  mx-1 rounded bg-slate-800 p-2 my-1 text-white"
+                        onClick={() => props.onSubmit()}
+                    >
+                        Close
+                    </button>}
+
+                </div>
+            </transaction.Form>
+
+        </div>
+
     ) : (
         // ${Number(props.transaction.inflow) > 0 ? "bg-emerald-100 hover:bg-emerald-200" : "bg-slate-200 hover:bg-slate-300"}
         <div
@@ -192,25 +234,16 @@ export default function Transaction(props: TransactionProps) {
         >
             <div className="flex justify-between">
                 <div>
-                    <span className="text-white text-s font-bold">
+                    {props.transaction.type != "R" && <span className="text-white text-s font-bold">
                         {props.transaction.payee || "-"}
-                    </span>
+                    </span>}
 
-                    <span
-                        className={`ml-1 rounded order border-slate-400 bg-slate-700 p-1 mr-2 text-sm text-white`}
-                        // onClick={() => props.sortBy("category", "House")}
-                        >
-                         
-                        {/* {t.category} */}
-                        {props.transaction.category == "" ? (
-                            <span className="text-white">Uncategorized</span>
-                        ) : (
-                            props.categories?.map((c) => {
-                                return props.transaction.category == c.id && c.name
-                                return <option selected={props.transaction.category == c.id} value={c.id} key={c.id}>{c.name}</option>
-                            })
-                        )}
+                    <span className={`ml-1 rounded order border-slate-400 bg-slate-700 p-1 mr-2 text-sm text-white`}>
 
+                        {props.transaction.type == "R" ? "Reconciled" : !props.transaction.category ? "Uncategorized" : props.categories?.map((c) => {
+                            return props.transaction.category == c.id && c.name
+                            return <option selected={props.transaction.category == c.id} value={c.id} key={c.id}>{c.name}</option>
+                        })}
 
                     </span>
                     <span className="text-xs text-slate-400 text-white">{props.transaction.memo}</span>

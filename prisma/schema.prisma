@@ -53,13 +53,15 @@ model Transaction {
   id        String   @id @default(cuid())
   accountId String
   date      DateTime
-  payee     String
-  category  String
-  memo      String
+  payee     String ?
+  category  String ?
+  memo      String ?
   inflow    Decimal  @db.Decimal(10, 2)
   outflow   Decimal  @db.Decimal(10, 2)
   userId    String
   account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  type      String ?
+
 }
 
 model Category {
