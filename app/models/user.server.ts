@@ -46,6 +46,7 @@ export async function getUserById({id, budgets, customer} : {id: User["id"], bud
     });
     return user
   } catch (e) {
+    console.log(e)
     return null
   }
 }

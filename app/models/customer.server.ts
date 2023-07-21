@@ -19,20 +19,13 @@ Create async function createSubscription, which accepts the following parameters
 
 */
 
-export const Create = async ({ id, userId, subscriptionId, subscriptionStatus, cardBrand, cardExpMonth, cardExpYear, cardId, cardLast }: { id: string, userId: User["id"], status: string, type: string, customerId: string, cardBrand: string, cardExpMonth: number, cardExpYear: number, cardId: string, cardLast: string }) => {
-
+export const Create = async ({ id, userId}: { id: string, userId: User["id"]}) => {
+  console.log("creating customer")
   // create subscription column in database:
   return await prisma.customer.create({
     data: {
       userId,
       id,
-      subscriptionId,
-      subscriptionStatus,
-      cardBrand,
-      cardExpMonth,
-      cardExpYear,
-      cardId,
-      cardLast,
       user: {
         connect: {
           id: userId,
@@ -55,7 +48,8 @@ export const Create = async ({ id, userId, subscriptionId, subscriptionStatus, c
   cardLast
 }) */
 
-export const Update = async ({ id, userId, subscriptionId, subscriptionStatus, cardBrand, cardExpMonth, cardExpYear, cardId, cardLast }: { id: string, userId: User["id"], subscriptionId: string, subscriptionStatus: string, cardBrand: string, cardExpMonth: number, cardExpYear: number, cardId: string, cardLast: string }) => { 
+export const Update = async ({ id, userId, subscriptionId, subscriptionStatus, }: { id: string, userId: User["id"], subscriptionId: string, subscriptionStatus: string }) => { 
+  console.log("update customer")
   // update customer record with the parameters passed:
   return await prisma.customer.update({
     where: {
@@ -65,17 +59,7 @@ export const Update = async ({ id, userId, subscriptionId, subscriptionStatus, c
     data: {
      // userId,
       subscriptionId,
-      subscriptionStatus,
-      cardBrand,
-      cardExpMonth,
-      cardExpYear,
-      cardId,
-      cardLast,
-      // user: {
-      //   connect: {
-      //     id: userId,
-      //   },
-      // },
+      subscriptionStatus
     },
   });
 }
@@ -84,6 +68,7 @@ export const Update = async ({ id, userId, subscriptionId, subscriptionStatus, c
 // set subscriptionStatus for customerid
 export const SetSubscriptionCancelled = async ({ id } : { id: string }) => {
   // update customer record, setting subscriptionStatus to subscriptionStatus, for customer with id of id:
+  console.log("marking subscription as cancelled")
   return await prisma.customer.update({
     where: {
       id,

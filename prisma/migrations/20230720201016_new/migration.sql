@@ -1,15 +1,4 @@
 -- CreateTable
-CREATE TABLE "User" (
-    "id" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "activeBudget" TEXT NOT NULL,
-
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Budget" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
@@ -39,12 +28,13 @@ CREATE TABLE "Transaction" (
     "id" TEXT NOT NULL,
     "accountId" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
-    "payee" TEXT NOT NULL,
-    "category" TEXT NOT NULL,
-    "memo" TEXT NOT NULL,
+    "payee" TEXT,
+    "category" TEXT,
+    "memo" TEXT,
     "inflow" DECIMAL(10,2) NOT NULL,
     "outflow" DECIMAL(10,2) NOT NULL,
     "userId" TEXT NOT NULL,
+    "type" TEXT,
 
     CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
 );
@@ -64,8 +54,48 @@ CREATE TABLE "Category" (
     CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "CategoryAdjustment" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "categoryId" TEXT NOT NULL,
+    "value" DECIMAL(65,30) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "window" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "CategoryAdjustment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "activeBudget" TEXT,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Customer" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "subscriptionId" TEXT,
+    "subscriptionStatus" TEXT,
+
+    CONSTRAINT "Customer_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Customer_userId_key" ON "Customer"("userId");
+
+-- AddForeignKey
+ALTER TABLE "Budget" ADD CONSTRAINT "Budget_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -78,3 +108,9 @@ ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_accountId_fkey" FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE "Category" ADD CONSTRAINT "Category_budgetId_fkey" FOREIGN KEY ("budgetId") REFERENCES "Budget"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "CategoryAdjustment" ADD CONSTRAINT "CategoryAdjustment_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_id_fkey" FOREIGN KEY ("id") REFERENCES "Customer"("userId") ON DELETE CASCADE ON UPDATE CASCADE;

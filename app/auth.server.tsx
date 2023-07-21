@@ -9,6 +9,8 @@ const clientSecret = process.env.CLIENT_SECRET as string
 const cognitoRedirect = process.env.COGNITO_REDIRECT as string
 
 import { getUserById, createUser } from "~/models/user.server";
+import { Create as CreateStripeCustomer} from "~/components/stripe/Customer"
+import { Create as CreateDatabaseCustomer} from "~/models/customer.server"
 
 if (!sessionSecret) {
     throw new Error("SESSION_SECRET must be set");
@@ -93,8 +95,20 @@ async function createUserSession({
 
         if(!localUser) {
             console.log("Local user does NOT exist: ", user.username)
-          
+            // create local user
             const createLocalUser = await createUser(user.email, user.username)
+            console.log("Creating stripe customer for user: ", user.email)
+
+            // @TODO validate
+            const stripeCustomer = await CreateStripeCustomer({ email: user.email })
+  
+            const customer = await CreateDatabaseCustomer({
+                id: stripeCustomer.id,
+                userId: user.username
+            })
+
+
+
 
         } else {
             console.log("Local user exists: ", user.username)
@@ -151,27 +165,9 @@ export async function authorize({ request, redirectTo }: { request: Request, red
     const redirectUri = cognitoRedirect //"http://localhost:3000/auth"
 
     if (!code) {
-        // code
-        /* user = getUser() (access token -> refresh? -> or fail)
-         user: redirect / (or back to last url)
-         !user: getAuthCode() -> /auth
-         */
-        // does our session contain access and refresh tokens?
-      //  let access_token = session.get("access_token") as string
+      
         const refresh_token = session.get("refresh_token") as string
 
-        // if (!access_token) {
-        //     console.log("Access token not set")
-        //     return await getAuthCode()
-        // } else {
-            // const user = await getUser({ access_token })
-
-            // if (user) {
-            //     console.log("user found!: ", user)
-            //     return redirect("/")
-            // }
-
-          //  console.log("user not found")
             console.log("attempting to obtain new access token using refresh token")
 
             const refreshed = await refreshAccessToken({ refresh_token, redirectUri });

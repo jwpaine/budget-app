@@ -19,7 +19,7 @@ export async function action({ request, params }: ActionArgs) {
 
   const formData = await request.formData();
 
-  const type = formData.get("type") as string;
+  const type = (formData.get("type") as string) || "";
 
   if (type == "transfer") {
 
@@ -39,7 +39,7 @@ export async function action({ request, params }: ActionArgs) {
     // outflow ------------------------
 
     let payee = ""
-    let category = "Transfer"
+    let category = ""
     let accountId = fromId
     let memo = ""
     let inflow = 0
@@ -55,6 +55,7 @@ export async function action({ request, params }: ActionArgs) {
       inflow,
       outflow,
       userId,
+      type: "T"
     });
     // update account balance
 
@@ -79,6 +80,7 @@ export async function action({ request, params }: ActionArgs) {
       inflow,
       outflow,
       userId,
+      type: "T"
     });
     // update account balance
 
@@ -94,6 +96,7 @@ export async function action({ request, params }: ActionArgs) {
   const payee = (formData.get("payee") as string) || "";
   const category = (formData.get("category") as string) || "";
   const memo = (formData.get("memo") as string) || "";
+
 
   let outflow = Number((formData.get("outflow") as string).replace(/[^0-9.]/g, "")) || 0
   outflow = Math.abs(Math.round(outflow * 1e2) / 1e2)
@@ -119,6 +122,7 @@ export async function action({ request, params }: ActionArgs) {
     inflow,
     outflow,
     userId,
+    type
   });
   // update account balance
   const value = inflow > 0 ? inflow : -outflow

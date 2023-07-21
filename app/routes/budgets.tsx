@@ -15,10 +15,10 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const user = await getBudgets({ userId });
 
-  const account = await getUserById({id: userId, budgets: true});
+  const account = await getUserById({ id: userId, budgets: true });
 
-  
 
+  console.log("account", account)
 
   return json({ userId, account });
 }
@@ -38,8 +38,8 @@ export default function Budgets() {
 
   // add use effect that sets activeBudget to data.account.activeBudget:
   React.useEffect(() => {
-    setActiveBudget(data.account.activeBudget)
-  }, [data.account.activeBudget])
+    if (data.account?.activeBudget) setActiveBudget(data.account.activeBudget);
+  }, [data.account?.activeBudget]);
 
   return (
     <main className="flex flex-col w-full items-center bg-gray-950 h-full">
@@ -47,32 +47,39 @@ export default function Budgets() {
       <h1 className="text-3xl text-white">My Budgets</h1>
 
       <div className="flex flex-wrap my-10">
-        {data.account.budgets?.map((budget) => {
-          return <button key={budget.id} className={`rounded flex-1 min-h-500 w-100 p-5 m-2 flex flex-col justify-center items-center  ${budget.id == activeBudget  ? 'bg-sky-100' : 'bg-white'}  hover:bg-slate-100`} type="button" onClick={() => {
-            console.log("clicked!")
-            setActiveBudget(budget.id)
-          }}><span className="text-3xl text-black">{budget.name}</span>
-            
-            <span className="text-xl text-black">Created: {budget.createdAt.slice(0, 10)}</span>
-
-          </button>
+        {data.account?.budgets && data.account.budgets.map((budget) => {
+          return (
+            <button
+              key={budget.id}
+              className={`rounded flex-1 min-h-500 w-100 p-5 m-2 flex flex-col justify-center items-center  ${budget.id === activeBudget ? 'bg-sky-100' : 'bg-white'}  hover:bg-slate-100`}
+              type="button"
+              onClick={() => {
+                console.log("clicked!");
+                setActiveBudget(budget.id);
+              }}
+            >
+              <span className="text-3xl text-black">{budget.name}</span>
+              <span className="text-xl text-black">Created: {budget.createdAt.slice(0, 10)}</span>
+            </button>
+          );
         })}
 
-        </div>
 
-        <user.Form
-          className="flex flex-wrap justify-center p-1"
-          method="post"
-          action="/user/update"
-        >
+      </div>
 
-          <input name="budgetId" defaultValue={activeBudget} hidden={true} />
-          <button type="submit" className={`text-xl rounded-md ${activeBudget == data.account.activeBudget ? 'bg-slate-300 hover:bg-slate-300' : 'bg-white'} px-4 py-3 mx-1 font-medium text-blue-700 hover:bg-blue-50 `}
-               disabled={activeBudget == data.account.activeBudget}>Switch Budget</button>
-        </user.Form>
+      <user.Form
+        className="flex flex-wrap justify-center p-1"
+        method="post"
+        action="/user/update"
+      >
+
+        <input name="budgetId" defaultValue={activeBudget} hidden={true} />
+        {/* <button type="submit" className={`text-xl rounded-md ${activeBudget == data.account.activeBudget ? 'bg-slate-300 hover:bg-slate-300' : 'bg-white'} px-4 py-3 mx-1 font-medium text-blue-700 hover:bg-blue-50 `}
+               disabled={activeBudget == data.account.activeBudget}>Switch Budget</button> */}
+      </user.Form>
 
 
-    
+
 
       <budget.Form
         className="flex flex-wrap justify-center p-1 mt-10"
@@ -82,7 +89,7 @@ export default function Budgets() {
 
         <input className="bg-white rounded p-2" name="name" placeholder="Budget Name" />
         <button type="submit" className="flex flex-1 items-center justify-center rounded-md  bg-white px-4 py-3 mx-1 text-base font-medium text-blue-700 hover:bg-blue-50 "
-              >Add Budget</button>
+        >Add Budget</button>
       </budget.Form>
 
     </main>

@@ -8,17 +8,6 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  accounts  Account[]
-  budgets Budget[]
-  activeBudget String ?
-  customerId String? @unique
-  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-}
 
 model Budget {
   id           String        @id @default(cuid())
@@ -90,6 +79,19 @@ model CategoryAdjustment {
   category Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
 
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  accounts  Account[]
+  budgets Budget[]
+  activeBudget String ?
+  customerId String? @unique
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
 model Customer {
   id          String  @id
   userId      String  @unique
@@ -97,11 +99,6 @@ model Customer {
 
   subscriptionId String ?
   subscriptionStatus String ?
-  cardBrand  String ?
-  cardExpMonth Int ?
-  cardExpYear Int ?
-  cardId String ?
-  cardLast String ?
   user          User? 
 
 }

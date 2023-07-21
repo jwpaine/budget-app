@@ -26,18 +26,28 @@ export async function action({ request, params }: ActionArgs) {
         return json({ error: "No customer account assigned" })
     }
 
-    const id = user.customer.subscriptionId as string
-    console.log("Canceling subscription: ", id)
+    const s_id = user.customer.subscriptionId as string
+    const c_id = user.customer.id as string
 
-    const cancelledSubscription = await CancelStripeSubscription({id: id})
+    console.log("Canceling subscription: ", s_id)
+
+    const cancelledSubscription = await CancelStripeSubscription({id: s_id})
     if(cancelledSubscription.error) {
         console.log(cancelledSubscription.error)
         return json({ error: "Error canceling subscription" })
     }
 
+    const paymentMethods = await stripe.paymentMethods.list({
+        customer: c_id,
+        type: "card",
+    });
+    // delete each payment method from stripe:
+    paymentMethods.data.forEach(async (paymentMethod) => {
+         await stripe.paymentMethods.detach(paymentMethod.id);
+    });
+
     // mark subscription as cancelled in database:
-    console.log("about to update customer: ", user.customer.id)
-    const cancelled = await SetSubscriptionCancelled({id: user.customer.id})
+    const cancelled = await SetSubscriptionCancelled({id: c_id})
 
     
 

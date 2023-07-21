@@ -112,6 +112,7 @@ export function createTransaction({
   inflow,
   outflow,
   userId,
+  type
 }: {
   accountId: string;
   date: Date;
@@ -121,6 +122,7 @@ export function createTransaction({
   inflow: number;
   outflow: number;
   userId: User["id"];
+  type: string;
 }) {
   return prisma.transaction.create({
     data: {
@@ -131,6 +133,7 @@ export function createTransaction({
       inflow,
       outflow,
       userId,
+      type,
       account: {
         connect: {
           id: accountId,

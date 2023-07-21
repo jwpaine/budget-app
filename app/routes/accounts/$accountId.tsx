@@ -265,9 +265,8 @@ export default function AccountDetailsPage() {
           <input ref={outRef} name="outflow" placeholder="Out" type="hidden" />
 
           <input
-            ref={memoRef}
-            name="memo"
-            defaultValue="Reconciled"
+            name="type"
+            defaultValue="R"
             type="hidden"
           />
 
