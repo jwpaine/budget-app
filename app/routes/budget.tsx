@@ -314,7 +314,7 @@ export default function Budget() {
             <button className="text-slate-300 p-2" onClick={() => regressBudgetWindow()}> {renderCalendar(2).monthString}</button>
 
             <div className="flex flex-col">
-              <span className="text-white text-4xl text-center"> {renderCalendar(1).monthString}</span>
+              <span className="text-white text-3xl text-center"> {renderCalendar(1).monthString}</span>
               <span className="text-white text-center"> {renderCalendar(1).yearString}</span>
             </div>
 
@@ -356,7 +356,7 @@ export default function Budget() {
               </div>
               <div className={`grid grid-cols-4 w-full max-w-xl `}>
                 <span className={`flex flex-col justify-center text-right`}> Budgeted </span>
-                <span className={`flex flex-col justify-center text-right`}> Activity </span>
+                <span className={`flex flex-col justify-center text-right`}> Spent </span>
                 <span className={`flex flex-col justify-center text-right`}> Balance </span>
                 <span className={`flex flex-col justify-center text-right`}> Needed </span>
               </div>

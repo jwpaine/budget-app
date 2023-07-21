@@ -140,7 +140,7 @@ export default function Budget() {
 
         <section className="flex flex-col items-center w-full">
 
-          {data?.user?.customer?.subscriptionStatus == "active" && (<div className="flex flex-col p-2">
+          {data?.user?.customer?.subscriptionStatus == "active" && (<div className="flex flex-col p-2 ">
             <span className="text-white">You are subscribed!</span>
 
             {renderPaymentMethods()}

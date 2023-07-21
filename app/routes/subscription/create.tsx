@@ -35,6 +35,7 @@ export async function action({ request, params }: ActionArgs) {
 
    
     const stripeCustomerId = user?.customer?.id
+
    
 
     // update payment method UpdatePayment = async ({ id, payment_method }: { id: string, payment_method: string }) => {
@@ -44,13 +45,18 @@ export async function action({ request, params }: ActionArgs) {
         payment_method: id
     })
 
+    if (updatedPaymentMethod.error) {
+        return json({ error: updatedPaymentMethod.error })
+    }
+
 
     // create plan:
-    const plan = await CreateStripePlan()
-    if (plan.error) {
-        return json({ error: plan.error })
-    }
-    const stripeSubscription = await CreateStripeSubscription({ customerId: stripeCustomerId, plan: plan.plan })
+    // const plan = await CreateStripePlan()
+    // if (plan.error) {
+    //     return json({ error: plan.error })
+    // }
+
+    const stripeSubscription = await CreateStripeSubscription({ customerId: stripeCustomerId, plan_id: "plan_OIf6Sgh3Nfwo0F" })
 
     if (stripeSubscription.error) {
         return json({ error: stripeSubscription.error })

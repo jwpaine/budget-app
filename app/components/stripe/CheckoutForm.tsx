@@ -77,6 +77,8 @@ function CheckoutForm({ stripeClientSecret }) {
         </label>
         {/* You can add more form fields here */}
         <button className="bg-emerald-300 text-white" type="submit">Submit</button>
+        {/* Display any error that happens when processing the payment */}
+        {subscription?.data?.error && <div className="text-red-500">{subscription?.data?.error}</div>}
       </div>
     </form>
   );

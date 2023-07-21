@@ -66,13 +66,20 @@ export const Retrieve = async ({ id }: { id: string }) => {
 // update customer's default payment method:
 export const UpdatePayment = async ({ id, payment_method }: { id: string, payment_method: string }) => {
     console.log("attaching default payment method")
+    try {
+        const paymentMethod = await stripe.paymentMethods.attach(payment_method, { customer: id })
 
-    const paymentMethod = await stripe.paymentMethods.attach(payment_method, { customer: id })
-
-    const attach = await stripe.customers.update(id, {
-        invoice_settings: {
-            default_payment_method: payment_method
+        if (paymentMethod.error) {
+            return { error: paymentMethod.error };
         }
-    })
+
+        const attach = await stripe.customers.update(id, {
+            invoice_settings: {
+                default_payment_method: payment_method
+            }
+        })
+    } catch (e) {
+        return { error: e.message}
+    }
 }
 

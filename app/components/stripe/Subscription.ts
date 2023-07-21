@@ -1,7 +1,7 @@
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
-export const Create = async ({ customerId, plan }: { customer: any, plan: any }) => {
+export const Create = async ({ customerId, plan_id }: { customer: any, plan_id: string }) => {
 
     console.log('creating subscription')
 
@@ -14,36 +14,44 @@ export const Create = async ({ customerId, plan }: { customer: any, plan: any })
         customer: customerId,
         items: [
             {
-                plan: plan.id
+                plan: plan_id
             }
         ]
     }
 
-    const subscription = await stripe.subscriptions.create(sub_data);
+    try {
 
-    if (subscription.error) {
-        console.log(`subscription creation error: ${subscription.error}`)
-        return { error: subscription.error }
+        const subscription = await stripe.subscriptions.create(sub_data);
+
+        return subscription
+
+    } catch (error) {
+        return { error: error.message }
     }
-    console.log(`subscription created: ${subscription.id}`)
-    return { subscription }
+
+
 
 }
 
 export const getSubscription = async ({ id }: { id: string }) => {
-    return await stripe.subscriptions.retrieve(id)
+    try {
+        return await stripe.subscriptions.retrieve(id)
+    } catch (error) {
+        return { error: error.message }
+    }
 }
 
 // cancel stripe subscription:
 export const Cancel = async ({ id }: { id: string }) => {
 
     // cancel subscription:
-    const subscription = await stripe.subscriptions.del(id);
-  
-    if (subscription.error) {
-      console.log(`subscription cancellation error: ${subscription.error}`)
-      return { error: subscription.error }
+    try {
+        const subscription = await stripe.subscriptions.del(id);
+        return subscription
+    } catch (error) {
+        return { error: error.message }
     }
-    return subscription
-  }
-  
+
+
+
+}

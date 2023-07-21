@@ -17,7 +17,7 @@ export default function CategoryDemo() {
                         </div>
                         <div className="grid grid-cols-4 w-full max-w-xl ">
                             <span className="flex flex-col justify-center text-right text-white"> Budgeted </span>
-                            <span className="flex flex-col justify-center text-right text-white"> Activity </span>
+                            <span className="flex flex-col justify-center text-right text-white"> Spent </span>
                             <span className="flex flex-col justify-center text-right text-white"> Balance </span>
                             <span className="flex flex-col justify-center text-right text-white"> Needed </span>
                         </div>
