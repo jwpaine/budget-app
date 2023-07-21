@@ -29,7 +29,7 @@ export async function action({ request, params }: ActionArgs) {
 
   let v: any = formData.get("currentValue")
 
-  // Remove any non-numeric, '+', '-', or '.' characters from 'v'
+  /* sanitize and validate currentValue from client */
   v = v.replace(/[^0-9+-.]/g, '');
 
   if (v === '') {
@@ -37,7 +37,7 @@ export async function action({ request, params }: ActionArgs) {
     redirect("/budget")
   }
 
-  // Check if 'v' is not empty
+ 
   let currentValue = 0;
 
   if (!isNaN(v)) {
@@ -80,29 +80,6 @@ export async function action({ request, params }: ActionArgs) {
 
 
 
-
-  //  v = v.replace(/[^0-9+-.]/g, '');
-
-  // // console.log("v after replace: ", v)
-
-  // let sum = v.split("+")
-  // let diff = v.split("-")
-
-  // console.log("sum 0, 1: ", sum[0], sum[1])
-  // console.log("diff 0, 1: ", diff[0], diff[1])
-
-
-  // if (sum.length > 1 && diff.length > 1) {
-  //   console.log("cannot combine both + and -")
-  //   return redirect(`/accounts/${accountId}`);
-  // }
-
-
-  // const currentValue = sum.length > 1 ? (Number(sum[0]) + Number(sum[1])) : diff.length > 1 ? (Number(diff[0]) - Number(diff[1])) : Number(v)
-
-
-
-
   // @TODO ALWAYS setBudget if only currentValue is updated (not name, due, maxValue)
   if (action && action == "setBudget") {
     console.log("id-->: ", id)
@@ -121,6 +98,19 @@ export async function action({ request, params }: ActionArgs) {
   const name = (formData.get("name") as string) || "";
 
   const due = new Date(formData.get("due") as string) as Date;
+
+
+  // if due is not a date, redirect:
+  if (isNaN(due.getTime())) {
+    console.log("due is not a date")
+    const categories = await getCategories({ userId, budgetId, startDate });
+
+    return json({ categories, error: "Due is not a date" });
+
+  }
+
+
+
   let max = formData.get("needed") as string
   const maxValue = Number(max.replace(/[^0-9+-.]/g, '')) || 0 as number
 

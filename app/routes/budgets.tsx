@@ -74,8 +74,8 @@ export default function Budgets() {
       >
 
         <input name="budgetId" defaultValue={activeBudget} hidden={true} />
-        {/* <button type="submit" className={`text-xl rounded-md ${activeBudget == data.account.activeBudget ? 'bg-slate-300 hover:bg-slate-300' : 'bg-white'} px-4 py-3 mx-1 font-medium text-blue-700 hover:bg-blue-50 `}
-               disabled={activeBudget == data.account.activeBudget}>Switch Budget</button> */}
+        <button type="submit" className={`text-xl rounded-md ${activeBudget == data.account.activeBudget ? 'bg-slate-300 hover:bg-slate-300' : 'bg-white'} px-4 py-3 mx-1 font-medium text-blue-700 hover:bg-blue-50 `}
+          disabled={activeBudget == data.account.activeBudget}>Switch Budget</button>
       </user.Form>
 
 

@@ -92,7 +92,15 @@ export async function action({ request, params }: ActionArgs) {
   }
 
   const accountId = formData.get("accountId") as string;
+
   const date = new Date(formData.get("date") as string) as Date;
+
+  if (isNaN(date.getTime())) {
+    console.log("date is not a date")
+    return redirect(`/accounts/${accountId}`);
+  }
+
+
   const payee = (formData.get("payee") as string) || "";
   const category = (formData.get("category") as string) || "";
   const memo = (formData.get("memo") as string) || "";
