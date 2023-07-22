@@ -45,7 +45,7 @@ export async function action({ request, params }: ActionArgs) {
         payment_method: id
     })
 
-    if (updatedPaymentMethod.error) {
+    if (updatedPaymentMethod?.error) {
         return json({ error: updatedPaymentMethod.error })
     }
 
@@ -58,7 +58,7 @@ export async function action({ request, params }: ActionArgs) {
 
     const stripeSubscription = await CreateStripeSubscription({ customerId: stripeCustomerId, plan_id: "plan_OIf6Sgh3Nfwo0F" })
 
-    if (stripeSubscription.error) {
+    if (stripeSubscription?.error) {
         return json({ error: stripeSubscription.error })
     }
 
@@ -67,9 +67,9 @@ export async function action({ request, params }: ActionArgs) {
     // otherwise, update existing customer record:
    
     const customer = await UpdateDatabaseCustomer({
-            id: user?.customer?.id,
+            id: stripeCustomerId as string,
             userId,
-            subscriptionId: stripeSubscription.subscription.id,
+            subscriptionId: stripeSubscription.id,
             subscriptionStatus: 'active'
     })
 

@@ -19,6 +19,16 @@ Create async function createSubscription, which accepts the following parameters
 
 */
 
+export const retrieve = async ({ id }: { id: string }) => {
+  console.log(`retrieving stripe customer: ${id} from database`)
+  // retrieve customer record from database:
+  return await prisma.customer.findUnique({
+    where: {
+      id,
+    },
+  });
+}
+
 export const Create = async ({ id, userId}: { id: string, userId: User["id"]}) => {
   console.log("creating customer")
   // create subscription column in database:

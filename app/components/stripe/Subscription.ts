@@ -19,25 +19,22 @@ export const Create = async ({ customerId, plan_id }: { customer: any, plan_id: 
         ]
     }
 
-    try {
-
+   try {
         const subscription = await stripe.subscriptions.create(sub_data);
-
+        console.log('subscription created: ')
         return subscription
-
-    } catch (error) {
-        return { error: error.message }
+   } catch (error) {
+         return { error: error }
     }
 
-
-
+    
 }
 
 export const getSubscription = async ({ id }: { id: string }) => {
     try {
         return await stripe.subscriptions.retrieve(id)
     } catch (error) {
-        return { error: error.message }
+        return { error: error }
     }
 }
 
@@ -49,7 +46,7 @@ export const Cancel = async ({ id }: { id: string }) => {
         const subscription = await stripe.subscriptions.del(id);
         return subscription
     } catch (error) {
-        return { error: error.message }
+        return { error: error }
     }
 
 
