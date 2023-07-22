@@ -39,3 +39,10 @@ export async function create({
       select: { name: true, id: true }
     });
   }
+
+  export async function deleteBudget({userId, budgetId}: {userId: User["id"], budgetId: string}) {
+    // first obtain activeBudget from user:
+    return prisma.budget.delete({
+      where: { id: budgetId },
+    });
+  }

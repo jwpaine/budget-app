@@ -64,7 +64,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
 
 
-  const account = await getUserById({id: userId, budgets: true})
+  const account = await getUserById({ id: userId, budgets: true })
 
   const budgetId = account?.activeBudget
 
@@ -116,7 +116,7 @@ export default function Budget() {
     async function fetchData() {
       // Set date to the first day in the current month:
       const date = new Date() as Date
-  
+
       date.setUTCMonth(date.getUTCMonth());
       date.setUTCDate(1); // Set the date to the first day of the month
       const newBudgetWindow = date.toISOString().slice(0, 10);
@@ -314,7 +314,7 @@ export default function Budget() {
             <button className="text-slate-300 p-2" onClick={() => regressBudgetWindow()}> {renderCalendar(2).monthString}</button>
 
             <div className="flex flex-col">
-              <span className="text-white text-3xl text-center"> {renderCalendar(1).monthString}</span>
+              <span className="text-white text-2xl text-center"> {renderCalendar(1).monthString}</span>
               <span className="text-white text-center"> {renderCalendar(1).yearString}</span>
             </div>
 
@@ -412,7 +412,7 @@ export default function Budget() {
                 </categories.Form>
                 :
                 <div className="flex flex-col justify-center items-center bg-gray-600">
-                  <div className="flex w-full p-2 justify-between bg-gray-500">
+                  <div className="flex w-full p-2 justify-between bg-gray-700">
                     <button
                       type="button"
                       className="rounded bg-red-400 p-2 text-white"
@@ -420,11 +420,63 @@ export default function Budget() {
                     >
                       Delete
                     </button>
-                    <div>
+                    <div className="flex items-center h-full">
                       <span className="text-white font-bold">Activity: </span>
                       <span className="mx-2 text-right text-white">{activity}</span>
                       <span className="text-white font-bold" >Balance: </span>
                       <span className={`mx-2 text-right ${Number(balance) == 0 && 'text-white'} ${Number(balance) < 0 && 'text-red-500 font-bold'} ${Number(balance) > 0 && 'text-emerald-300 font-bold '}`}>{balance}</span>
+
+
+                      {Number(balance) < 0 && (
+                        <categories.Form
+                          className="h-full"
+                          method="post"
+                          action="/category/update"
+                          onSubmit={() => {
+                            setActiveBudget("")
+                          }}
+                        >
+                          <input
+                            name="action"
+                            defaultValue="setBudget"
+                            type="hidden"
+                          />
+
+                          <input
+                            name="budgetId"
+                            defaultValue={data?.account?.activeBudget}
+                            type="hidden"
+                          />
+
+                          <input
+                            name="id"
+                            defaultValue={c.id}
+                            type="hidden"
+                          />
+
+                          <input
+                            name="window"
+                            defaultValue={budgetWindow}
+                            type="hidden"
+                          />
+
+                          <input
+                            name="currentValue"
+                            defaultValue={Number(Number(budgeted) + Math.abs(Number(balance))).toFixed(2)}
+                            type="hidden"
+                          />
+
+                          <button
+                            type="submit"
+                            className="rounded bg-emerald-400 p-2 text-black"
+                          >
+                            Resolve
+                          </button>
+                        </categories.Form>
+                      )}
+
+
+
                     </div>
                   </div>
                   <categories.Form
@@ -518,53 +570,7 @@ export default function Budget() {
 
                   </categories.Form>
 
-                  {Number(balance) < 0 && (
-                    <categories.Form
-                      className="w-full "
-                      method="post"
-                      action="/category/update"
-                      onSubmit={() => {
-                        setActiveBudget("")
-                      }}
-                    >
-                      <input
-                        name="action"
-                        defaultValue="setBudget"
-                        type="hidden"
-                      />
 
-                      <input
-                        name="budgetId"
-                        defaultValue={data.account.activeBudget}
-                        type="hidden"
-                      />
-
-                      <input
-                        name="id"
-                        defaultValue={c.id}
-                        type="hidden"
-                      />
-
-                      <input
-                        name="window"
-                        defaultValue={budgetWindow}
-                        type="hidden"
-                      />
-
-                      <input
-                        name="currentValue"
-                        defaultValue={Number(Number(budgeted) + Math.abs(Number(balance))).toFixed(2)}
-                        type="hidden"
-                      />
-
-                      <button
-                        type="submit"
-                        className="rounded w-full bg-emerald-500 p-2 my-1 text-black"
-                      >
-                        Resolve Negative Budget
-                      </button>
-                    </categories.Form>
-                  )}
 
 
                 </div>
@@ -578,7 +584,7 @@ export default function Budget() {
                   setConfirmDelete(false)
                   setActiveBudget(c.id)
                 }}
-                className={` flex justify-between px-3 bg-gray-800 hover:bg-gray-700 p-2 border border-b border-slate-700
+                className={`flex justify-between px-3 bg-gray-800 hover:bg-gray-700 p-2 border border-b border-slate-700
                   
                          
             

@@ -35,18 +35,51 @@ export default function Budgets() {
 
   // react hook for setting activeBudget:
   const [activeBudget, setActiveBudget] = React.useState("");
+  const [confirmDelete, setConfirmDelete] = React.useState(false);
 
   // add use effect that sets activeBudget to data.account.activeBudget:
   React.useEffect(() => {
     if (data.account?.activeBudget) setActiveBudget(data.account.activeBudget);
   }, [data.account?.activeBudget]);
 
+  if (confirmDelete) {
+    return (
+      <main className="flex flex-col w-full items-center bg-gray-950 h-full">
+
+        <h1 className="text-white text-4xl font-bold">Warning!</h1>
+        <h2 className="text-2xl text-white p-2">
+          You are about to delete budget: {data.account.budgets.map((budget) => {
+            if (budget.id == activeBudget) return <span className="font-bold">{budget.name}</span>
+          })}
+        </h2>
+        <h3 className="text-white max-w-sm text-center p-5">All accounts, transactions and categories under this budget will be deleted if you proceed.</h3>
+
+        <button type="button" className="rounded p-2 bg-emerald-500 text-white hover:bg-emerald-400 mt-3" onClick={() => setConfirmDelete(false)}>Cancel</button>
+
+        <budget.Form
+          className="flex flex-col justify-center p-1 mt-10"
+          method="post"
+          action="/budget/delete"
+          onSubmit={() => {
+            setConfirmDelete(false)
+          }}
+
+        >
+          <input name="budgetId" defaultValue={activeBudget} hidden={true} />
+
+          <button type="submit" className="rounded p-2 bg-red-500 text-white hover:bg-red-400 mt-8">Confirm Delete</button>
+        </budget.Form>
+
+      </main>
+    )
+  }
+
   return (
     <main className="flex flex-col w-full items-center bg-gray-950 h-full">
 
-      <h1 className="text-3xl text-white">My Budgets</h1>
+      <h1 className="text-3xl text-white">{data.account.budgets.length > 0 ? 'My Budgets' : 'Add a budget to get started'}</h1>
 
-      <div className="flex flex-wrap my-10">
+      <div className="flex flex-wrap my-5">
         {data.account?.budgets && data.account.budgets.map((budget) => {
           return (
             <button
@@ -67,16 +100,24 @@ export default function Budgets() {
 
       </div>
 
-      <user.Form
+      {data.account.budgets.length > 0 && <user.Form
         className="flex flex-wrap justify-center p-1"
         method="post"
-        action="/user/update"
-      >
+        action="/user/update">
 
         <input name="budgetId" defaultValue={activeBudget} hidden={true} />
-        <button type="submit" className={`text-xl rounded-md ${activeBudget == data.account.activeBudget ? 'bg-slate-300 hover:bg-slate-300' : 'bg-white'} px-4 py-3 mx-1 font-medium text-blue-700 hover:bg-blue-50 `}
-          disabled={activeBudget == data.account.activeBudget}>Switch Budget</button>
-      </user.Form>
+        <button type="submit" className={`text-xl rounded-md ${activeBudget == data.account.activeBudget ? 'bg-slate-300 hover:bg-slate-300' : 'bg-white'} px-4 py-3 mx-1 font-medium text-blue-700 hover:bg-blue-50 `} disabled={activeBudget == data.account.activeBudget}>
+          Switch Budget
+        </button>
+
+        <button type="button" onClick={() => setConfirmDelete(true)} className="px-4 py-3 mx-1 rounded font-medium bg-red-500 text-white hover:bg-red-400">
+          Remove
+        </button>
+
+      </user.Form>}
+
+
+
 
 
 
