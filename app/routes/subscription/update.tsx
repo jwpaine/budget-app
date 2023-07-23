@@ -6,6 +6,9 @@ import { Create as CreateStripeCustomer, UpdatePayment } from "~/components/stri
 import { Create as CreateStripePlan } from "~/components/stripe/Plan"
 import { Create as CreateStripeSubscription } from "~/components/stripe/Subscription"
 import { Create as CreateDatabaseCustomer, Update as UpdateDatabaseCustomer } from "~/models/customer.server"
+import { Retrieve as RetrieveCustomer } from "~/components/stripe/Customer";
+import { Retrieve as RetrieveSubscription } from "~/components/stripe/Subscription";
+
 import { getUserById } from "~/models/user.server";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
@@ -62,7 +65,18 @@ export async function action({ request, params }: ActionArgs) {
         }
     });
 
-    return redirect(`/account`)
+
+
+    const customer = await RetrieveCustomer({ id: stripeCustomerId })
+    const subscription = await RetrieveSubscription({ id: user.customer?.subscriptionId as string })
+    // obtain next billing date for subscription:
+    const nextBillingDate = new Date(subscription.current_period_end * 1000)
+    // format to Month name, day, year:
+    const nextBillingDateFormatted = nextBillingDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+
+
+    return json({customer: customer, nextBillingDate: nextBillingDateFormatted, status: subscription.status})
+
 
 
 

@@ -3,7 +3,7 @@ import { redirect } from "@remix-run/server-runtime";
 import { Elements, CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
-export default function Checkout({ stripeKey, stripeClientSecret, updatePayment, paymentUpdated } : { stripeKey: string, stripeClientSecret: string, updatePayment: boolean, paymentUpdated: () => void }) {
+export default function Checkout({ stripeKey, stripeClientSecret, updatePayment, paymentUpdated, subscription } : { stripeKey: string, stripeClientSecret: string, updatePayment: boolean, paymentUpdated: () => void, subscription: any}) {
   const stripePromise = loadStripe(stripeKey);
 
 
@@ -14,15 +14,14 @@ export default function Checkout({ stripeKey, stripeClientSecret, updatePayment,
 
   return (
     <Elements stripe={stripePromise} >
-      <CheckoutForm stripeClientSecret={stripeClientSecret} updatePayment={updatePayment} paymentUpdated={paymentUpdated}/>
+      <CheckoutForm stripeClientSecret={stripeClientSecret} updatePayment={updatePayment} paymentUpdated={paymentUpdated} subscription={subscription}/>
     </Elements>
   );
 }
 
-function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated } : { stripeClientSecret: string, updatePayment: boolean, paymentUpdated: () => void }) {
+function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated, subscription } : { stripeClientSecret: string, updatePayment: boolean, paymentUpdated: () => void, subscription: any }) {
   const stripe = useStripe();
   const elements = useElements();
-  const subscription = useFetcher()
 
   const handleStripeToken = async (event: any) => {
     console.log("Received stripe response:");
@@ -60,8 +59,9 @@ function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated } : { 
         { method: "post", action: url }
       );
       // if no error returned, return to account page:
+      // @TODO: bulletproof this:
       if (!subscription.data?.error) {
-       window.location.href = "/account"
+        paymentUpdated()
       }
   
 

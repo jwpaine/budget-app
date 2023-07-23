@@ -39,30 +39,10 @@ export async function loader({ request, params }: LoaderArgs) {
     throw new Error("STRIPE_KEY must be set");
   }
 
-  // generate stripe client secret using stripe API:
-  // const stripe = new Stripe(secretKey, {
-  //   apiVersion: "2022-11-15",
-  // });
-  // const paymentIntent = await stripe.paymentIntents.create({
-  //   amount: 1000, // Replace with the actual amount in cents
-  //   currency: 'usd', // Replace with the actual currency code
-  // });
-
-  // const stripeClientSecret = paymentIntent.client_secret;
-
-
-
-
-
-  // if not stripe key, panic:
-
-  // const account = await getAccount({ userId });
-  const user = await getUserById({ id: userId, budgets: true, customer: true });
+  const user = await getUserById({ id: userId });
 
   return json({ userId, user, stripeKey });
 }
-
-// react useState hook accountState:
 
 
 export default function Budget() {
@@ -71,7 +51,7 @@ export default function Budget() {
   const [accountState, setAccountState] = React.useState("details")
   const [confirmCancel, setConfirmCancel] = React.useState(false)
   const [updatePaymentMethod, setUpdatePaymentMethod] = React.useState(false)
-  const[paymentUpdated, setPaymentUpdated] = React.useState(false)
+  const [paymentUpdated, setPaymentUpdated] = React.useState(false)
 
   const subscription = useFetcher()
 
@@ -114,6 +94,64 @@ export default function Budget() {
 
   }
 
+  const renderAccountDetails = () => {
+
+    return <section className="flex flex-col items-center w-full border-r border-sky-700 ">
+
+
+      <h3 className="text-xl text-white">{data?.user?.email}</h3>
+      <Form action="/logout" method="post" className="p-2">
+
+      </Form>
+
+    </section>
+
+  }
+
+  const renderSubscriptionDetails = () => {
+
+    if (!subscription.data) return
+
+    return <section className="flex flex-col items-center w-full">
+
+      <span className="text-white text-center text-2xl mb-5">Subscription Details: {JSON.stringify(subscription.data.status)}</span>
+
+      {subscription?.data?.status == "active" ? (<div className="flex flex-col p-2 items-center">
+        <span className="text-white text-center text-2xl mb-5">Thank you for subscribing!</span>
+        <span className="text-white text-center mb-10">Next payment ($7.00): {subscription?.data?.nextBillingDate}</span>
+
+        {renderPaymentMethods()}
+
+        <button
+          className="text-blue-100 hover:text-blue-200 mt-6 mb-5"
+          onClick={() => setUpdatePaymentMethod(true)}
+        >
+          Update Payment Method
+        </button>
+
+        <button
+          type="submit"
+          className="rounded text-blue-100 hover:text-blue-200 text-xs"
+          onClick={() => setConfirmCancel(true)}
+        >
+          Cancel Subscription
+        </button>
+
+
+      </div>
+      ) : (<div>
+        <span className="text-white">Subscribe now</span>
+        <p>Subscribe for $7/month</p>
+        <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={false} subscription={subscription}/>
+
+      </div>
+      )}
+
+
+    </section>
+
+  }
+
   if (confirmCancel) return (
 
     <main className="bg-black h-full flex flex-col items-center p-2">
@@ -121,6 +159,28 @@ export default function Budget() {
       <button onClick={() => cancelSubscription()} className="rounded p-2 w-fit text-blue-100 border border-red-900 hover:border-red-800 ml-2">Cancel Subscription</button>
     </main>
 
+  )
+
+  if (updatePaymentMethod) return (
+    <main className="bg-black h-full flex flex-col p-2 ">
+      <header>
+        <h1 className="text-3xl text-white text-center">Update Payment Method</h1>
+      </header>
+      <div className="flex flex-col p-2 items-center">
+
+        <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={true} subscription={subscription} paymentUpdated={() => {
+          setPaymentUpdated(true)
+          setUpdatePaymentMethod(false)
+        }} />
+
+        <button
+          className="text-blue-100 hover:text-blue-200 mt-6 mb-5"
+          onClick={() => setUpdatePaymentMethod(false)}
+        >
+          Nevermind, take me back
+        </button>
+      </div>
+    </main>
   )
 
   return (
@@ -133,71 +193,10 @@ export default function Budget() {
       <div className="flex flex-col lg:flex-row items-center">
 
 
-        <section className="flex flex-col items-center w-full border-r border-sky-700 ">
+        {renderAccountDetails()}
 
+        {renderSubscriptionDetails()}
 
-          <h3 className="text-xl text-white">{data?.user?.email}</h3>
-          <Form action="/logout" method="post" className="p-2">
-
-          </Form>
-
-        </section>
-
-        <section className="flex flex-col items-center w-full">
-
-          {updatePaymentMethod ? (
-            <div className="flex flex-col p-2 items-center">
-              <span className="text-white text-center text-2xl mb-5">Update Payment Method</span>
-
-                <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={true} paymentUpdated={() => {
-                  setPaymentUpdated(true)
-                  setUpdatePaymentMethod(false)
-                }}/>
-
-              <button
-                className="text-blue-100 hover:text-blue-200 mt-6 mb-5"
-                onClick={() => setUpdatePaymentMethod(false)}
-              >
-                Nevermind, take me back
-              </button>
-            </div>
-          ) : data?.user?.customer?.subscriptionStatus == "active" && (<div className="flex flex-col p-2 items-center">
-            <span className="text-white text-center text-2xl mb-5">{paymentUpdated ? "Payment method updated!" : "Thank you for subscribing!"}</span>
-            {subscription?.data?.nextBillingDate && <span className="text-white text-center mb-10">Next payment ($7.00): {subscription?.data?.nextBillingDate}</span>}
-
-            {renderPaymentMethods()}
-
-            <button
-              className="text-blue-100 hover:text-blue-200 mt-6 mb-5"
-              onClick={() => setUpdatePaymentMethod(true)}
-            >
-              Update Payment Method
-            </button>
-
-
-
-            <button
-              type="submit"
-              className="rounded text-blue-100 hover:text-blue-200 text-xs"
-              onClick={() => setConfirmCancel(true)}
-            >
-              Cancel Subscription
-            </button>
-
-
-
-          </div>
-          )}
-
-          {!data?.user?.customer?.subscriptionId && <div>
-            <span className="text-white">Subscribe now</span>
-            <p>Subscribe for $7/month</p>
-            <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={false}/>
-
-          </div>
-          }
-
-        </section>
 
       </div>
 

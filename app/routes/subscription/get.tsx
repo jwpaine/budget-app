@@ -41,15 +41,23 @@ export async function loader({ request, params }: LoaderArgs) {
         return json({ error: "Customer not found" })
     }   
 
+    if(!subscriptionId) {
+        return json({ status: 'inactive' })
+    }
+
     const customer = await RetrieveCustomer({ id: customerId })
+
     const subscription = await RetrieveSubscription({ id: subscriptionId as string })
+
+    console.log("Retrieved subscription: ", subscription)
 
     // obtain next billing date for subscription:
     const nextBillingDate = new Date(subscription.current_period_end * 1000)
     // format to Month name, day, year:
     const nextBillingDateFormatted = nextBillingDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 
+    console.log(`subscription status:${subscription.status}`)
 
-    return json({customer: customer, nextBillingDate: nextBillingDateFormatted})
+    return json({customer: customer, nextBillingDate: nextBillingDateFormatted, status: subscription.status})
 
 }
