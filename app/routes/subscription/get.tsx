@@ -9,6 +9,7 @@ import { Create as CreateDatabaseCustomer, Update as UpdateDatabaseCustomer } fr
 import { getUserById } from "~/models/user.server";
 
 import { Retrieve as RetrieveCustomer } from "~/components/stripe/Customer";
+import { Retrieve as RetrieveSubscription } from "~/components/stripe/Subscription";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
@@ -41,10 +42,14 @@ export async function loader({ request, params }: LoaderArgs) {
     }   
 
     const customer = await RetrieveCustomer({ id: customerId })
+    const subscription = await RetrieveSubscription({ id: subscriptionId as string })
+
+    // obtain next billing date for subscription:
+    const nextBillingDate = new Date(subscription.current_period_end * 1000)
+    // format to Month name, day, year:
+    const nextBillingDateFormatted = nextBillingDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 
 
-
-
-    return json(customer)
+    return json({customer: customer, nextBillingDate: nextBillingDateFormatted})
 
 }

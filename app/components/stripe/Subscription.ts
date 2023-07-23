@@ -30,7 +30,7 @@ export const Create = async ({ customerId, plan_id }: { customer: any, plan_id: 
     
 }
 
-export const getSubscription = async ({ id }: { id: string }) => {
+export const Retrieve = async ({ id }: { id: string }) => {
     try {
         return await stripe.subscriptions.retrieve(id)
     } catch (error) {

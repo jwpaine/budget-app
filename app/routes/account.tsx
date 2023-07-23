@@ -70,10 +70,13 @@ export default function Budget() {
 
   const [accountState, setAccountState] = React.useState("details")
   const [confirmCancel, setConfirmCancel] = React.useState(false)
+  const [updatePaymentMethod, setUpdatePaymentMethod] = React.useState(false)
+  const[paymentUpdated, setPaymentUpdated] = React.useState(false)
 
   const subscription = useFetcher()
 
   const isInitialMount = React.useRef(true);
+
 
 
 
@@ -95,23 +98,25 @@ export default function Budget() {
   }, []);
 
   const renderPaymentMethods = () => {
-    console.log("subscription data:", subscription)
+    console.log("subscription data:", subscription.data)
 
     if (!subscription.data) return
 
-    let paymentMethod = subscription.data.defaultPaymentMethod
+    let paymentMethod = subscription.data.customer.defaultPaymentMethod
 
-    return <div className="p-2 rounded flex flex-col bg-sky-800">
-      <span className="text-white">{paymentMethod.brand} </span>
-      <span className="text-white">**** **** **** **** {paymentMethod.last4}</span>
-      <span className="text-white">Exp: {paymentMethod.expirationDate}</span>
+    if (!paymentMethod) return
+
+    return <div className="p-2 rounded flex flex-col justify-evenly bg-sky-800 max-w-fit">
+      <span className="text-white text-xs">{paymentMethod.brand} </span>
+      <span className="text-white text-xs">**** **** **** {paymentMethod.last4}</span>
+      <span className="text-white text-xs">Exp: {paymentMethod.expirationDate}</span>
     </div>
 
   }
 
   if (confirmCancel) return (
 
-    <main className="bg-black h-full flex flex-col items-center">
+    <main className="bg-black h-full flex flex-col items-center p-2">
       <h1 className="text-xl text-white">Before you go</h1>
       <button onClick={() => cancelSubscription()} className="rounded p-2 w-fit text-blue-100 border border-red-900 hover:border-red-800 ml-2">Cancel Subscription</button>
     </main>
@@ -120,7 +125,7 @@ export default function Budget() {
 
   return (
 
-    <main className="bg-black h-full flex flex-col ">
+    <main className="bg-black h-full flex flex-col p-2 ">
       <header>
         <h1 className="text-3xl text-white text-center">My Account</h1>
       </header>
@@ -140,20 +145,40 @@ export default function Budget() {
 
         <section className="flex flex-col items-center w-full">
 
-          {data?.user?.customer?.subscriptionStatus == "active" && (<div className="flex flex-col p-2 ">
-            <span className="text-white">You are subscribed!</span>
+          {updatePaymentMethod ? (
+            <div className="flex flex-col p-2 items-center">
+              <span className="text-white text-center text-2xl mb-5">Update Payment Method</span>
+
+                <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={true} paymentUpdated={() => {
+                  setPaymentUpdated(true)
+                  setUpdatePaymentMethod(false)
+                }}/>
+
+              <button
+                className="text-blue-100 hover:text-blue-200 mt-6 mb-5"
+                onClick={() => setUpdatePaymentMethod(false)}
+              >
+                Nevermind, take me back
+              </button>
+            </div>
+          ) : data?.user?.customer?.subscriptionStatus == "active" && (<div className="flex flex-col p-2 items-center">
+            <span className="text-white text-center text-2xl mb-5">{paymentUpdated ? "Payment method updated!" : "Thank you for subscribing!"}</span>
+            {subscription?.data?.nextBillingDate && <span className="text-white text-center mb-10">Next payment ($7.00): {subscription?.data?.nextBillingDate}</span>}
 
             {renderPaymentMethods()}
 
             <button
-              className="rounded p-2 w-fit text-blue-100 border mt-5 mb-5"
+              className="text-blue-100 hover:text-blue-200 mt-6 mb-5"
+              onClick={() => setUpdatePaymentMethod(true)}
             >
               Update Payment Method
             </button>
 
+
+
             <button
               type="submit"
-              className="rounded text-blue-100 hover:text-blue-200"
+              className="rounded text-blue-100 hover:text-blue-200 text-xs"
               onClick={() => setConfirmCancel(true)}
             >
               Cancel Subscription
@@ -167,7 +192,7 @@ export default function Budget() {
           {!data?.user?.customer?.subscriptionId && <div>
             <span className="text-white">Subscribe now</span>
             <p>Subscribe for $7/month</p>
-            <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} />
+            <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={false}/>
 
           </div>
           }
@@ -176,7 +201,7 @@ export default function Budget() {
 
       </div>
 
-      <footer className="flex justify-center items-center flex-col w-full">
+      <footer className="flex justify-center items-center flex-col w-full mt-20 ">
         <Link
           to="/logout"
           type="submit"

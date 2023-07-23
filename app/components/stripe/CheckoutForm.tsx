@@ -1,8 +1,9 @@
 import { useFetcher } from "@remix-run/react";
+import { redirect } from "@remix-run/server-runtime";
 import { Elements, CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
-export default function Checkout({ stripeKey, stripeClientSecret }) {
+export default function Checkout({ stripeKey, stripeClientSecret, updatePayment, paymentUpdated } : { stripeKey: string, stripeClientSecret: string, updatePayment: boolean, paymentUpdated: () => void }) {
   const stripePromise = loadStripe(stripeKey);
 
 
@@ -13,17 +14,17 @@ export default function Checkout({ stripeKey, stripeClientSecret }) {
 
   return (
     <Elements stripe={stripePromise} >
-      <CheckoutForm stripeClientSecret={stripeClientSecret} />
+      <CheckoutForm stripeClientSecret={stripeClientSecret} updatePayment={updatePayment} paymentUpdated={paymentUpdated}/>
     </Elements>
   );
 }
 
-function CheckoutForm({ stripeClientSecret }) {
+function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated } : { stripeClientSecret: string, updatePayment: boolean, paymentUpdated: () => void }) {
   const stripe = useStripe();
   const elements = useElements();
   const subscription = useFetcher()
 
-  const handleStripeToken = async (event) => {
+  const handleStripeToken = async (event: any) => {
     console.log("Received stripe response:");
     event.preventDefault();
 
@@ -43,6 +44,9 @@ function CheckoutForm({ stripeClientSecret }) {
       return
     } 
 
+    const url = updatePayment ? "/subscription/update" : "/subscription/create"
+    console.log("updatePayment: ", updatePayment, " url: ", url)
+
     const r = subscription.submit(
         {
           
@@ -53,8 +57,15 @@ function CheckoutForm({ stripeClientSecret }) {
           cardExpYear: paymentMethod.card.exp_year,
           cardLast: paymentMethod.card.last4
         },
-        { method: "post", action: "/subscription/create" }
+        { method: "post", action: url }
       );
+      // if no error returned, return to account page:
+      if (!subscription.data?.error) {
+       window.location.href = "/account"
+      }
+  
+
+
   };
 
    // Custom styles for the CardElement
