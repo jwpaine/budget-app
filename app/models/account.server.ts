@@ -3,16 +3,30 @@ import { S } from "vitest/dist/types-94cfe4b4";
 
 import { prisma } from "~/db.server";
 
-export function getAccount({
+export async function getAccount({
   id,
   userId,
-}: Pick<Account, "id"> & {
-  userId: User["id"];
+  linked
+}: {
+  userId: User["id"],
+  id: string,
+  linked?: boolean
 }) {
-  return prisma.account.findFirst({
-    select: { id: true, name: true, balance: true, type: true },
-    where: { id, userId },
+  // return prisma.account.findFirst({
+  //   select: { id: true, name: true, balance: true, type: true, categoryId: true},
+  //   where: { id, userId },
+ 
+  // });
+  const account = await prisma.account.findUnique({
+    where: {
+      id,
+      userId
+    },
+    include: {
+      linked: linked ? linked : false
+    }
   });
+  return account
 }
 
 export async function getAccounts({ userId, budgetId }: { userId: User["id"], budgetId: string }) {
@@ -26,30 +40,32 @@ export async function addAccount({
   name,
   balance,
   userId,
-  type
-}: Pick<Account, "id"> & { userId: User["id"]; id: string; name: string, type: string, balance: number}) {
-    // first obtain activeBudget from user:
-    const account = await prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-      select: {
-        activeBudget: true,
-      },
-    });
+  type,
+  categoryId
+}: Pick<Account, "id"> & { userId: User["id"]; id: string; name: string, type: string, balance: number, categoryId?: string }) {
+  // first obtain activeBudget from user:
+  const account = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      activeBudget: true,
+    },
+  });
 
-    if(!account || !account.activeBudget) {
-      return false
-    }
+  if (!account || !account.activeBudget) {
+    return false
+  }
 
-    const budgetId = account.activeBudget as string
+  const budgetId = account.activeBudget as string
 
   return prisma.account.create({
     data: {
       name,
       balance,
       type,
-   
+      categoryId: categoryId || null,
+
       budget: {
         connect: {
           id: budgetId
@@ -60,6 +76,11 @@ export async function addAccount({
           id: userId,
         },
       },
+      linked: {
+        connect: {
+          id: categoryId
+        }
+      }
     },
   });
 }

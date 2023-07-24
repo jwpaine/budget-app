@@ -54,7 +54,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const accounts = await getAccounts({ userId, budgetId });
 
-  console.log("obtained accounts: ", accounts)
+
 
 
   const categories = await getCategoryNames({ userId, budgetId })

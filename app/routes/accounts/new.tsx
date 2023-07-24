@@ -49,9 +49,8 @@ export async function action({ request }: ActionArgs) {
     // );
   }
 
-  const account = await addAccount({ name, type, balance, userId });
 
-  // if account type is loan, add a linked category  (category.accountId = account.id) with a name matching new account name:
+
   if (type == "Loan") {
     let maxValue = 0;
     let currentValue = 0;
@@ -64,10 +63,18 @@ export async function action({ request }: ActionArgs) {
       frequency : "M",
       userId
     });
+  
+    const account = await addAccount({ name, type, balance, userId, categoryId: c.id })
+    return redirect(`/budget`);
   }
 
+  const account = await addAccount({ name, type, balance, userId});
 
-  return redirect(`/budget`);
+  // if account type is loan, add a linked category  (category.accountId = account.id) with a name matching new account name:
+
+
+
+  
 }
 
 export default function NewNotePage() {

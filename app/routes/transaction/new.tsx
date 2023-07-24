@@ -5,13 +5,17 @@ import { Form, useCatch, useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import { getAccount } from "~/models/account.server";
 import { requireUserId } from "~/auth.server";
+import { create as CreateCategoryAdjustment } from "~/models/categoryAdjustment";
 import NewTransactionPage from "../../components/transactions/new";
+
+
 
 import {
   createTransaction
 } from "~/models/transaction.server";
 import { incrementAccountBalance } from "~/models/account.server";
 import { Decimal } from "@prisma/client/runtime";
+import { get } from "http";
 
 export async function action({ request, params }: ActionArgs) {
   //  invariant(params.accountId, "noteId not found");
@@ -112,10 +116,12 @@ export async function action({ request, params }: ActionArgs) {
   let inflow = Number((formData.get("inflow") as string).replace(/[^0-9.]/g, "")) || 0
   inflow = Math.abs(Math.round(inflow * 1e2) / 1e2)
 
-  if(inflow > 0 && outflow > 0) {
+  if (inflow > 0 && outflow > 0) {
     console.log("both inflow and outflow are > 0, this is not allowed")
     return redirect(`/accounts/${accountId}`);
   }
+
+
 
 
 
@@ -138,6 +144,24 @@ export async function action({ request, params }: ActionArgs) {
   console.log('value:', value)
   let id = accountId as string;
   const a = await incrementAccountBalance({ id, userId, value });
+
+
+
+  const account = await getAccount({ id: accountId, userId, linked: true })
+
+  const linkedCategory = account?.linked?.id
+
+  if (linkedCategory) {
+    const categoryAdjustment = await CreateCategoryAdjustment({userId, categoryId: linkedCategory, value: -value, window: date })
+  }
+
+
+  // if account.categoryId then we know we have a linked account (CC repayment category), so we need to create a CategoryTransaction for that category, with value
+  // if (account?.categoryId) {
+  //   console.log("account has categoryId, creating CategoryTransaction")
+
+  // }
+
 
   return redirect(`/accounts/${accountId}`);
 }

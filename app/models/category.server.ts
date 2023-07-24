@@ -174,12 +174,48 @@ export function getCategories({ userId, budgetId, startDate }: { userId: User["i
 //   ORDER BY due ASC
 // `;
 
+// const categories = prisma.$queryRaw`
+//   SELECT 
+//     category.name AS category,
+//     category.id AS id,
+//     category.due AS due,
+//     category."maxValue" AS needed,
+//     category."accountId" as linked,
+//     COALESCE(SUM(transaction.outflow), 0) AS outflow,
+//     COALESCE(SUM(transaction.inflow), 0) AS inflow,
+//     adjustment.value AS "currentValue"
+//   FROM "Category" AS category 
+//   LEFT JOIN (
+//     SELECT *
+//     FROM "Transaction" AS tr
+//     WHERE tr."accountId" NOT IN (
+//       SELECT "id"
+//       FROM "Account"
+//       WHERE "type" = 'Loan'
+//     )
+//     AND tr.date >= ${startDate}::date 
+//     AND tr.date <= ${endDate}::date
+//   ) AS transaction ON transaction.category = category.id
+//   LEFT OUTER JOIN (
+//     SELECT DISTINCT ON ("categoryId") "categoryId", value
+//     FROM "CategoryAdjustment"
+//     WHERE "window" >= ${startDate}::date
+//     AND "window" <= ${endDate}::date
+//     ORDER BY "categoryId", "createdAt" DESC
+//   ) AS adjustment ON adjustment."categoryId" = category.id
+//   WHERE category."userId" = ${userId}
+//     AND category."budgetId" = ${budgetId}
+//   GROUP BY category.id, adjustment.value
+//   ORDER BY due ASC
+// `;
+
 const categories = prisma.$queryRaw`
   SELECT 
     category.name AS category,
     category.id AS id,
     category.due AS due,
     category."maxValue" AS needed,
+    category."accountId" as linked,
     COALESCE(SUM(transaction.outflow), 0) AS outflow,
     COALESCE(SUM(transaction.inflow), 0) AS inflow,
     adjustment.value AS "currentValue"
@@ -187,12 +223,7 @@ const categories = prisma.$queryRaw`
   LEFT JOIN (
     SELECT *
     FROM "Transaction" AS tr
-    WHERE tr."accountId" NOT IN (
-      SELECT "id"
-      FROM "Account"
-      WHERE "type" = 'Loan'
-    )
-    AND tr.date >= ${startDate}::date 
+    WHERE tr.date >= ${startDate}::date 
     AND tr.date <= ${endDate}::date
   ) AS transaction ON transaction.category = category.id
   LEFT OUTER JOIN (
@@ -207,7 +238,6 @@ const categories = prisma.$queryRaw`
   GROUP BY category.id, adjustment.value
   ORDER BY due ASC
 `;
-
 
 
 

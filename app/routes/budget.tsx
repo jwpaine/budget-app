@@ -413,13 +413,13 @@ export default function Budget() {
                 :
                 <div className="flex flex-col justify-center items-center bg-gray-600">
                   <div className="flex w-full p-2 justify-between bg-gray-700">
-                    <button
+                    {!c.linked ? <button
                       type="button"
                       className="rounded bg-red-400 p-2 text-white"
                       onClick={() => setConfirmDelete(true)}
                     >
                       Delete
-                    </button>
+                    </button> : <span className="text-white">Payment Category: {c.category}</span>}
                     <div className="flex items-center h-full">
                       <span className="text-white font-bold">Activity: </span>
                       <span className="mx-2 text-right text-white">{activity}</span>
