@@ -70,6 +70,8 @@ export async function action({ request }: ActionArgs) {
 
   const account = await addAccount({ name, type, balance, userId});
 
+  return redirect(`/budget`);
+
   // if account type is loan, add a linked category  (category.accountId = account.id) with a name matching new account name:
 
 

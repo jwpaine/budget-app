@@ -36,13 +36,69 @@ export async function getAccounts({ userId, budgetId }: { userId: User["id"], bu
   });
 }
 
+// export async function addAccount({
+//   name,
+//   balance,
+//   userId,
+//   type,
+//   categoryId
+// }: Pick<Account, "id"> & { userId: User["id"]; id: string; name: string, type: string, balance: number, categoryId?: string }) {
+//   // first obtain activeBudget from user:
+//   const account = await prisma.user.findUnique({
+//     where: {
+//       id: userId,
+//     },
+//     select: {
+//       activeBudget: true,
+//     },
+//   });
+
+//   if (!account || !account.activeBudget) {
+//     return false
+//   }
+
+//   const budgetId = account.activeBudget as string
+
+//   return prisma.account.create({
+//     data: {
+//       name,
+//       balance,
+//       type,
+//       categoryId: categoryId || null,
+
+//       budget: {
+//         connect: {
+//           id: budgetId
+//         }
+//       },
+//       user: {
+//         connect: {
+//           id: userId,
+//         },
+//       },
+//       linked: {
+//         connect: {
+//           id: categoryId
+//         }
+//       }
+//     },
+//   });
+// }
+
 export async function addAccount({
   name,
   balance,
   userId,
   type,
-  categoryId
-}: Pick<Account, "id"> & { userId: User["id"]; id: string; name: string, type: string, balance: number, categoryId?: string }) {
+  categoryId,
+}: Pick<Account, "id"> & {
+  userId: User["id"];
+  id: string;
+  name: string;
+  type: string;
+  balance: number;
+  categoryId?: string;
+}) {
   // first obtain activeBudget from user:
   const account = await prisma.user.findUnique({
     where: {
@@ -54,36 +110,61 @@ export async function addAccount({
   });
 
   if (!account || !account.activeBudget) {
-    return false
+    return false;
   }
 
-  const budgetId = account.activeBudget as string
+  const budgetId = account.activeBudget as string;
+
+  const accountData: {
+    name: string;
+    balance: number;
+    type: string;
+    categoryId?: string | null;
+    budget: {
+      connect: {
+        id: string;
+      };
+    };
+    user: {
+      connect: {
+        id: string;
+      };
+    };
+    linked?: {
+      connect: {
+        id: string;
+      };
+    };
+  } = {
+    name,
+    balance,
+    type,
+    categoryId: categoryId || null,
+    budget: {
+      connect: {
+        id: budgetId,
+      },
+    },
+    user: {
+      connect: {
+        id: userId,
+      },
+    },
+  };
+
+  if (categoryId) {
+    accountData.linked = {
+      connect: {
+        id: categoryId,
+      },
+    };
+  }
 
   return prisma.account.create({
-    data: {
-      name,
-      balance,
-      type,
-      categoryId: categoryId || null,
-
-      budget: {
-        connect: {
-          id: budgetId
-        }
-      },
-      user: {
-        connect: {
-          id: userId,
-        },
-      },
-      linked: {
-        connect: {
-          id: categoryId
-        }
-      }
-    },
+    data: accountData,
   });
 }
+
 
 export function incrementAccountBalance({
   id,
