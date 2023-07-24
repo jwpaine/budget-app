@@ -156,6 +156,9 @@ export default function AccountDetailsPage() {
 
     data.transactions.map((t) => {
       // let sum = Number(t._sum.inflow) - Number(t._sum.outflow)
+      // skip reconciled transactions
+      if (t.type == 'R') return
+      
       let v = -Number(t.inflow) + Number(t.outflow)
       cash = cash + v
 

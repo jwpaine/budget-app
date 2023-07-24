@@ -71,6 +71,8 @@ export default function Budgets() {
         graph_data.push({ name: 'today', cash: cash })
     
         data.transactions.map((t) => {
+          if (t.type == "R") return
+          
           let sum = Number(t._sum.inflow) - Number(t._sum.outflow)
           cash = cash - sum
           cash = Number(cash.toFixed(2))

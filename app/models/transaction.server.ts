@@ -52,6 +52,36 @@ export function getTransactions({
 //   }
 // }
 
+// export function getDailyTransactionSums({
+//   userId,
+//   startDate,
+//   budgetId
+// }: {
+//   userId: User["id"];
+//   startDate: Date;
+//   budgetId: string;
+// }) {
+//   if (startDate) {
+//     return prisma.transaction.groupBy({
+//       by: ["date"],
+//       where: {
+//         userId,
+//         account: {
+//           budgetId
+//         },
+//         date: {
+//           gte: startDate
+//         }
+//       },
+//       _sum: {
+//         inflow: true,
+//         outflow: true
+//       },
+//       orderBy: { date: "desc" },
+//     });
+//   }
+// }
+
 export function getDailyTransactionSums({
   userId,
   startDate,
@@ -71,7 +101,8 @@ export function getDailyTransactionSums({
         },
         date: {
           gte: startDate
-        }
+        },
+        NOT: { type: "R" } // Exclude transactions with type "R"
       },
       _sum: {
         inflow: true,
@@ -81,6 +112,7 @@ export function getDailyTransactionSums({
     });
   }
 }
+
 
 
 
