@@ -6,6 +6,7 @@ import * as React from "react";
 
 import { addAccount } from "~/models/account.server";
 import { requireUserId } from "~/auth.server";
+import { createCategory } from "~/models/category.server";
 
 export async function action({ request }: ActionArgs) {
   const userId = await requireUserId(request);
@@ -48,7 +49,23 @@ export async function action({ request }: ActionArgs) {
     // );
   }
 
-  const note = await addAccount({ name, type, balance, userId });
+  const account = await addAccount({ name, type, balance, userId });
+
+  // if account type is loan, add a linked category  (category.accountId = account.id) with a name matching new account name:
+  if (type == "Loan") {
+    let maxValue = 0;
+    let currentValue = 0;
+    let spent = 0;
+    const c = await createCategory({
+      name,
+      maxValue: 0,
+      currentValue: 0,
+      spent: 0,
+      frequency : "M",
+      userId
+    });
+  }
+
 
   return redirect(`/budget`);
 }
