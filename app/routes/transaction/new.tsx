@@ -27,9 +27,13 @@ export async function action({ request, params }: ActionArgs) {
 
   if (type == "transfer") {
 
-    const fromId = formData.get("fromId") as string;
-    const toId = formData.get("toId") as string;
-    const originatingAccountId = formData.get("accountId") as string;
+    const fromId = parseInt(formData.get("fromId") as string, 10) as number;
+    const toId = parseInt(formData.get("toId") as string, 10) as number;
+
+    
+
+
+    const originatingAccountId = parseInt(formData.get("accountId") as string, 10) as number;
 
     let v = formData.get("value") as string
     const value = Number(v.replace(/[^0-9.]/g, "")).toFixed(2)
@@ -43,7 +47,7 @@ export async function action({ request, params }: ActionArgs) {
     // outflow ------------------------
 
     let payee = ""
-    let category = ""
+    let category = null
     let accountId = fromId
     let memo = ""
     let inflow = 0
@@ -95,7 +99,7 @@ export async function action({ request, params }: ActionArgs) {
     return redirect(`/accounts/${originatingAccountId}`);
   }
 
-  const accountId = formData.get("accountId") as string;
+  const accountId = parseInt(formData.get("accountId") as string, 10) as number;
 
   const date = new Date(formData.get("date") as string) as Date;
 
@@ -106,7 +110,8 @@ export async function action({ request, params }: ActionArgs) {
 
 
   const payee = (formData.get("payee") as string) || "";
-  const category = (formData.get("category") as string) || "";
+ 
+  const category = parseInt(formData.get("category") as string, 10) as number;
   const memo = (formData.get("memo") as string) || "";
 
 
@@ -142,7 +147,7 @@ export async function action({ request, params }: ActionArgs) {
   const value = inflow > 0 ? inflow : -outflow
 
   console.log('value:', value)
-  let id = accountId as string;
+  let id = accountId as number;
   const a = await incrementAccountBalance({ id, userId, value });
 
 

@@ -10,9 +10,11 @@ export async function action({ request, params }: ActionArgs) {
 
   const formData = await request.formData();
   const userId = await requireUserId(request);
-  const id = formData.get("id") as string;
+  const id = parseInt(formData.get("id") as string, 10) as number;
+
   const startDate = formData.get("window") as string
-  const budgetId = formData.get("budgetId") as string
+  const budgetId = parseInt(formData.get("budgetId") as string, 10) as number;
+
 
   console.log('deleting category:', id)
 

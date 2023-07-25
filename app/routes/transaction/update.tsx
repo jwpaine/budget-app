@@ -22,8 +22,9 @@ export async function action({ request, params }: ActionArgs) {
 
   const formData = await request.formData();
 
-  const id = formData.get("id") as string;
-  const accountId = formData.get("accountId") as string;
+  const id = parseInt(formData.get("id") as string, 10);
+  const accountId = parseInt(formData.get("accountId") as string, 10);
+  
   const date = new Date(formData.get("date") as string) as Date;
 
   if (isNaN(date.getTime())) {
@@ -33,12 +34,12 @@ export async function action({ request, params }: ActionArgs) {
 
 
   const payee = (formData.get("payee") as string) || "";
-  const category = (formData.get("category") as string) || "Uncategorized";
+  const category = parseInt(formData.get("category") as string, 10) as number || null
   const memo = (formData.get("memo") as string) || "";
 
   let newInflow = Number((formData.get("inflow") as string).replace(/[^0-9.]/g, "")) || 0
   newInflow = Math.round(newInflow * 1e2) / 1e2
-  
+
   let newOutflow = Number((formData.get("outflow") as string).replace(/[^0-9.]/g, "")) || 0
   newOutflow = Math.round(newOutflow * 1e2) / 1e2
 

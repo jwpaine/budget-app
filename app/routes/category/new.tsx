@@ -21,7 +21,8 @@ export async function action({ request, params }: ActionArgs) {
   const maxValue = 0;
   const frequency = formData.get("frequency") as string || "M"
   const startDate = formData.get("window") as string
-  const budgetId = formData.get("budgetId") as string
+  const budgetId = parseInt(formData.get("budgetId") as string, 10) as number;
+
   const currentValue = 0;
   const spent = 0;
 

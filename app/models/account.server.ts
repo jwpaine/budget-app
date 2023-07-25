@@ -9,7 +9,7 @@ export async function getAccount({
   linked
 }: {
   userId: User["id"],
-  id: string,
+  id: number,
   linked?: boolean
 }) {
   // return prisma.account.findFirst({
@@ -29,7 +29,7 @@ export async function getAccount({
   return account
 }
 
-export async function getAccounts({ userId, budgetId }: { userId: User["id"], budgetId: string }) {
+export async function getAccounts({ userId, budgetId }: { userId: User["id"], budgetId: Number }) {
   return prisma.account.findMany({
     where: { userId, budgetId },
     orderBy: { balance: "desc" },
@@ -97,7 +97,7 @@ export async function addAccount({
   name: string;
   type: string;
   balance: number;
-  categoryId?: string;
+  categoryId?: number;
 }) {
   // first obtain activeBudget from user:
   const account = await prisma.user.findUnique({
@@ -113,16 +113,17 @@ export async function addAccount({
     return false;
   }
 
-  const budgetId = account.activeBudget as string;
+
+  const budgetId = parseInt(account.activeBudget, 10) as number;
 
   const accountData: {
     name: string;
     balance: number;
     type: string;
-    categoryId?: string | null;
+    categoryId?: number;
     budget: {
       connect: {
-        id: string;
+        id: number;
       };
     };
     user: {
@@ -132,7 +133,7 @@ export async function addAccount({
     };
     linked?: {
       connect: {
-        id: string;
+        id: number;
       };
     };
   } = {
@@ -183,7 +184,7 @@ export function updateAccount({
   userId,
   name,
   type
-}: Pick<Account, "id"> & { userId: User["id"]; id: string; name: string, type: string }) {
+}: Pick<Account, "id"> & { userId: User["id"]; id: number; name: string, type: string }) {
   return prisma.account.updateMany({
     where: { id, userId },
     data: { name, type },

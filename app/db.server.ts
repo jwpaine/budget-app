@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 // import invariant from "tiny-invariant";
-const prismaClient = new PrismaClient()
+const prismaClient = new PrismaClient({
+  log: ['query'],
+});
 let prisma: PrismaClient;
 
 declare global {

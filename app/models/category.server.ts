@@ -11,7 +11,7 @@ export async function updateCategory({
   due,
   window
 }: {
-  id: string;
+  id: number;
   name: string,
   currentValue: number,
   maxValue: number,
@@ -57,7 +57,7 @@ export async function setBudget({
   currentValue,
   window
 }: {
-  id: string;
+  id: number;
   currentValue: number,
   userId: User["id"],
   window: Date
@@ -101,16 +101,21 @@ export async function getCategoryNames({ userId }: { userId: User["id"] }) {
     return false
   }
 
-  const budgetId = account.activeBudget as string
+
+  const budgetId = parseInt(account.activeBudget as string, 10) as number;
+
+
   return prisma.category.findMany({
     where: { userId, budgetId },
     select: { name: true, id: true }
   });
 }
 
-export function getCategories({ userId, budgetId, startDate }: { userId: User["id"], budgetId: string, startDate: string }) {
+export function getCategories({ userId, budgetId, startDate }: { userId: User["id"], budgetId: number, startDate: string }) {
 
   console.log("getting categories for budgetId: ", budgetId)
+  // check if budgetId is a number and console log result:
+  console.log("typeof budgetId: ", typeof budgetId)
 
 
   console.log("startDate: ", startDate)
@@ -239,6 +244,39 @@ const categories = prisma.$queryRaw`
   ORDER BY due ASC
 `;
 
+// const categories = prisma.$queryRaw`
+//   SELECT 
+//     category.name AS category,
+//     category.id AS id,
+//     category.due AS due,
+//     category."maxValue" AS needed,
+//     category."accountId" AS linked,
+//     COALESCE(SUM(transaction.outflow), 0) AS outflow,
+//     COALESCE(SUM(transaction.inflow), 0) AS inflow,
+//     COALESCE(CAST(adjustment.value AS INTEGER), 0) AS currentValue
+//   FROM "Category" AS category 
+//   LEFT JOIN (
+//     SELECT *
+//     FROM "Transaction" AS tr
+//     WHERE tr.date >= ${startDate}::date 
+//     AND tr.date <= ${endDate}::date
+//   ) AS transaction ON transaction.category = category.id
+//   LEFT OUTER JOIN (
+//     SELECT DISTINCT ON ("categoryId") "categoryId", value
+//     FROM "CategoryAdjustment"
+//     WHERE "window" >= ${startDate}::date
+//     AND "window" <= ${endDate}::date
+//     ORDER BY "categoryId", "createdAt" DESC
+//   ) AS adjustment ON CAST(adjustment."categoryId" AS INTEGER) = category.id::integer
+//   WHERE category."userId" = ${userId}
+//     AND category."budgetId" = ${budgetId}
+//   GROUP BY category.id, adjustment.value
+//   ORDER BY due ASC
+// `;
+
+
+
+
 
 
 
@@ -270,7 +308,7 @@ const categories = prisma.$queryRaw`
   return categories
 }
 
-export async function initUserCategories({ userId, budgetId }: { userId: User["id"], budgetId: string }) {
+export async function initUserCategories({ userId, budgetId }: { userId: User["id"], budgetId: number }) {
 
   const categories = [
     {
@@ -389,7 +427,7 @@ export async function createCategories(categories: {
   currentValue: number,
   spent: number,
   due: Date,
-  budgetId: string
+  budgetId: number
 }[]) {
   return prisma.category.createMany({
     data: categories,

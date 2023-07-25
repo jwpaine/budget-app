@@ -19,8 +19,9 @@ export async function action({ request, params }: ActionArgs) {
 
   const userId = await requireUserId(request);
 
-  const accountId = formData.get("accountId");
-  const id = formData.get("transactionId") as string;
+  const accountId = parseInt(formData.get("accountId") as string, 10) as number;
+  const id =  parseInt(formData.get("transactionId") as string, 10) as number;
+
 
   // if (date == "a") {
   //     return {

@@ -64,8 +64,10 @@ export async function action({ request }: ActionArgs) {
       frequency : "M",
       userId
     });
+
+    const cid = c.id as number
   
-    const account = await addAccount({ name, type, balance, userId, categoryId: c.id })
+    const account = await addAccount({ name, type, balance, userId, categoryId: cid })
     return redirect(`/budget`);
   }
 

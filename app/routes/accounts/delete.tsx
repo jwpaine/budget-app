@@ -11,7 +11,8 @@ export async function action({ request, params }: ActionArgs) {
 
   const userId = await requireUserId(request);
 
-  const id = formData.get("accountId") as string;
+
+  const id = parseInt(formData.get("accountId") as string, 10) as number;
 
   const t = await deleteAccount({ id, userId });
 

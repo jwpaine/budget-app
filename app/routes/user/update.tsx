@@ -16,7 +16,8 @@ export async function action({ request, params }: ActionArgs) {
 
   const formData = await request.formData();
 
-  const budgetId = formData.get("budgetId") as string
+  const budgetId = parseInt(formData.get("budgetId") as string, 10);
+
 
   if (budgetId) {
 

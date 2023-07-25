@@ -7,7 +7,7 @@ import { initUserCategories } from "./category.server";
 
 export type { User } from "@prisma/client";
 
-export async function setActiveBudget({ userId, budgetId }: { userId: User["id"], budgetId: string }) {
+export async function setActiveBudget({ userId, budgetId }: { userId: User["id"], budgetId: number }) {
   // make sure userId is present on budget with budgetId:
   const budget = await prisma.budget.findMany({
     where: {

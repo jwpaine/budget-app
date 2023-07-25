@@ -36,13 +36,15 @@ import { getUserById } from "~/models/user.server";
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
   // invariant(params.accountId, "Account not found");
-
-  const account = await getAccount({ userId, id: params.accountId });
+  const accountId = parseInt(params.accountId as string, 10) as number;
+  const account = await getAccount({ userId, id: accountId });
 
   
   const user = await getUserById({id: userId, budgets: true, customer: true})
 
-  const budgetId = user?.activeBudget
+ 
+  const budgetId = parseInt(user?.activeBudget as string, 10) as number;
+
 
   if (!account || !budgetId) {
     return redirect("/budget");
@@ -59,9 +61,10 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const categories = await getCategoryNames({ userId, budgetId })
 
+  
   const transactions = await getTransactions({
     userId,
-    accountId: params.accountId,
+    accountId: accountId,
   });
 
   if (!account) {
@@ -143,12 +146,14 @@ export default function AccountDetailsPage() {
     let min = 999999 as number
     let max = 0 as number
 
-    data.accounts.map((account) => {
-      if (account.type != 'loan') {
-        //   console.log(`adding cash: ${account.balance}`)
-        cash += Number(account.balance)
-      }
-    });
+    // data.accounts.map((account) => {
+    //   if (account.type != 'loan') {
+    //     //   console.log(`adding cash: ${account.balance}`)
+    //     cash += Number(account.balance)
+    //   }
+    // });
+
+    cash = Number(data.account.balance)
 
     const graph_data = []
 

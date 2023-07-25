@@ -7,10 +7,10 @@ export function getTransactions({
   startDate
 }: {
   userId: User["id"];
-  accountId: String,
+  accountId: number,
   startDate: Date
 }) {
-  if (accountId != "") {
+  if (accountId) {
     return prisma.transaction.findMany({
       where: { accountId, userId },
       orderBy: { date: "desc" },
@@ -89,7 +89,7 @@ export function getDailyTransactionSums({
 }: {
   userId: User["id"];
   startDate: Date;
-  budgetId: string;
+  budgetId: number;
 }) {
   if (startDate) {
     return prisma.transaction.groupBy({
@@ -146,10 +146,10 @@ export function createTransaction({
   userId,
   type
 }: {
-  accountId: string;
+  accountId: number;
   date: Date;
   payee: string;
-  category: string;
+  category?: number | null;
   memo: string;
   inflow: number;
   outflow: number;
@@ -187,7 +187,7 @@ export async function deleteTransaction({
   id,
   userId,
 }: {
-  id: string;
+  id: number;
   userId: User["id"];
 }) {
   const transaction = await prisma.transaction.findUnique({
@@ -229,10 +229,10 @@ export async function updateTransaction({
   newOutflow,
   userId,
 }: {
-  id: string;
+  id: number
   date: Date;
   payee: string;
-  category: string;
+  category?: number | null;
   memo: string;
   newInflow: number;
   newOutflow: number;

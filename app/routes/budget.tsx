@@ -51,7 +51,9 @@ export async function action({ request, params }: ActionArgs) {
 
   const userId = await requireUserId(request);
 
-  const budgetId = formData.get("budgetId") as string;
+  // const budgetId = Number(formData.get("budgetId")) as number
+  const budgetId = parseInt(formData.get("budgetId") as string, 10) as number;
+
   const startDate = formData.get("startDate") as string;
 
   const categories = await getCategories({ userId, budgetId, startDate });
@@ -66,7 +68,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const account = await getUserById({ id: userId, budgets: true })
 
-  const budgetId = account?.activeBudget
+  const budgetId = Number(account?.activeBudget) as number
 
   console.log("using budgetId: ", budgetId)
 
