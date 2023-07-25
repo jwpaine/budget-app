@@ -27,7 +27,7 @@ import { Decimal } from "@prisma/client/runtime";
 
 import Transaction from "../../components/Transaction"
 import SideBar from "../../components/accounts/sidebar"
-import { Area, AreaChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { getUserById } from "~/models/user.server";
 
 // import { TransactionContainer } from "../../../theme/components/Core"
@@ -139,16 +139,16 @@ export default function AccountDetailsPage() {
       return
     }
 
-    let cash = Number(data.account.balance)
+    let cash = 0
     let min = 999999 as number
     let max = 0 as number
 
-    // data.accounts.map((account) => {
-    //   if (account.type != 'loan') {
-    //     //   console.log(`adding cash: ${account.balance}`)
-    //     cash += Number(account.balance)
-    //   }
-    // });
+    data.accounts.map((account) => {
+      if (account.type != 'loan') {
+        //   console.log(`adding cash: ${account.balance}`)
+        cash += Number(account.balance)
+      }
+    });
 
     const graph_data = []
 
@@ -161,6 +161,8 @@ export default function AccountDetailsPage() {
       
       let v = -Number(t.inflow) + Number(t.outflow)
       cash = cash + v
+      // limit cash to two decimal places:
+      cash = Math.round(cash * 1e2) / 1e2
 
       // if (max < cash) max = cash
       // if (cash < min) min = cash
@@ -177,26 +179,53 @@ export default function AccountDetailsPage() {
     console.log(`min: ${min}`)
     console.log(`max: ${max}`) // here
 
-    return <ResponsiveContainer width="100%" height={100} >
-      <LineChart
-        width={500}
-        height={200}
-        data={graph_data}
-        syncId="anyId"
-        margin={{
-          top: 10,
-          right: 30,
-          left: 10,
-          bottom: 0,
-        }}
-      >
-        {/* <CartesianGrid strokeDasharray="3 3" /> */}
-        <XAxis dataKey="name" stroke="#FFFFFF" />
-        <YAxis type="number" stroke="#FFFFFF" domain={[0, max]} />
-        <Tooltip />
-        <Line type="monotone" dataKey="cash" stroke="#FFFFFF" fill="#b3e0fe" strokeWidth={1} dot={false}/>
-      </LineChart>
-    </ResponsiveContainer>
+    // limit max to 0 decimal places:
+    max = Math.ceil(max)
+
+    return <ResponsiveContainer width="100%" height={150}>
+    <LineChart
+      width={500}
+      height={200}
+      data={graph_data}
+      margin={{
+        top: 5,
+        right: 30,
+        left: 20,
+        bottom: 5,
+      }}
+    >
+     
+      <XAxis dataKey="name" stroke="#FFFFFF" />
+      <YAxis type="number" stroke="#FFFFFF" domain={[0, max]} />
+      <Tooltip
+        contentStyle={{ backgroundColor: '#000000', color: '#FFFFFF' }} // Set the background and font color of the tooltip
+      />
+      <Legend />
+      <Line type="monotone" dataKey="cash" stroke="#ccf2ff" activeDot={{ r: 8 }} dot={false}/>
+     
+    </LineChart>
+  </ResponsiveContainer>
+
+    // return <ResponsiveContainer width="100%" height={100} >
+    //   <LineChart
+    //     width={500}
+    //     height={200}
+    //     data={graph_data}
+    //     syncId="anyId"
+    //     margin={{
+    //       top: 10,
+    //       right: 30,
+    //       left: 10,
+    //       bottom: 0,
+    //     }}
+    //   >
+    //     {/* <CartesianGrid strokeDasharray="3 3" /> */}
+    //     <XAxis dataKey="name" stroke="#FFFFFF" />
+    //     <YAxis type="number" stroke="#FFFFFF" domain={[0, max]} />
+    //     <Tooltip />
+    //     <Line type="monotone" dataKey="cash" stroke="#FFFFFF" fill="#b3e0fe" strokeWidth={1} dot={false}/>
+    //   </LineChart>
+    // </ResponsiveContainer>
     
 
   }

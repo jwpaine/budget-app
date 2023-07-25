@@ -50,6 +50,7 @@ export async function action({ request }: ActionArgs) {
   }
 
 
+  // if account type is loan, add a linked category  (category.accountId = account.id) with a name matching new account name:
 
   if (type == "Loan") {
     let maxValue = 0;
@@ -72,7 +73,6 @@ export async function action({ request }: ActionArgs) {
 
   return redirect(`/budget`);
 
-  // if account type is loan, add a linked category  (category.accountId = account.id) with a name matching new account name:
 
 
 

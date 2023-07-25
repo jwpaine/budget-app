@@ -8,7 +8,7 @@ import { addAccount, getAccounts } from "~/models/account.server";
 import { requireUserId } from "~/auth.server";
 import { getBudgets } from "~/models/budget.server";
 import { getUserById } from "~/models/user.server";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { getDailyTransactionSums } from "~/models/transaction.server";
 
 
@@ -94,26 +94,29 @@ export default function Budgets() {
         console.log(`min: ${min}`)
         console.log(`max: ${max}`) // here
     
-        return <ResponsiveContainer width="100%" height={100} >
-          <AreaChart
-            width={500}
-            height={200}
-            data={graph_data}
-            syncId="anyId"
-            margin={{
-              top: 10,
-              right: 30,
-              left: 10,
-              bottom: 0,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" stroke="#FFFFFF" />
-            <YAxis type="number" stroke="#FFFFFF" domain={[0, max]} />
-            <Tooltip />
-            <Area type="monotone" dataKey="cash" fill="#b3e0fe" dot={false} />
-          </AreaChart>
-        </ResponsiveContainer>
+        return <ResponsiveContainer width="100%" height={150}>
+        <LineChart
+          width={500}
+          height={200}
+          data={graph_data}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+         
+          <XAxis dataKey="name" stroke="#FFFFFF" />
+          <YAxis type="number" stroke="#FFFFFF" domain={[0, max]} />
+          <Tooltip
+            contentStyle={{ backgroundColor: '#000000', color: '#FFFFFF' }} // Set the background and font color of the tooltip
+          />
+          <Legend />
+          <Line type="monotone" dataKey="cash" stroke="#ccf2ff" activeDot={{ r: 8 }} dot={false}/>
+         
+        </LineChart>
+      </ResponsiveContainer>
     
       }
 
