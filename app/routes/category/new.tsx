@@ -27,7 +27,7 @@ export async function action({ request, params }: ActionArgs) {
   const spent = 0;
 
 
-  const due = new Date(new Date().toISOString().slice(0, 10))
+  // const due = new Date(new Date().toISOString().slice(0, 10))
 
 
   const t = await createCategory({
@@ -36,8 +36,7 @@ export async function action({ request, params }: ActionArgs) {
     currentValue,
     spent,
     frequency,
-    userId,
-    due
+    userId
   });
 
   const categories = await getCategories({ userId, budgetId, startDate });

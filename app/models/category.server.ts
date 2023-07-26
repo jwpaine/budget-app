@@ -16,7 +16,7 @@ export async function updateCategory({
   currentValue: number,
   maxValue: number,
   userId: User["id"]
-  due: Date,
+  due?: Date,
   window: Date
 }) {
 
@@ -31,7 +31,7 @@ export async function updateCategory({
       name,
       currentValue,
       maxValue,
-      due
+      due: due || null
     },
   });
 

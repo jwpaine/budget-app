@@ -20,16 +20,18 @@ export async function loader({ request }: LoaderArgs) {
 export default function Index() {
   // const user = useOptionalUser();
   return (
-    <main className="flex justify-center bg-gray-950 w-full h-full flex-col lg:flex-row">
-      <section className="flex flex-col p-5 ">
-        <h1 className="text-7xl text-white font-bold">Budgeting Made</h1>
-        <h1 className="text-8xl mg:text-9xl text-white font-bold">Simple</h1>
-
+    <main className="flex flex-col bg-gray-950 w-full h-full ">
+      <section className="flex flex-col lg:flex-row justify-center">
+        <div className="pb-5">
+          <h1 className="text-7xl text-white font-bold">Budgeting </h1>
+          <h1 className="text-4xl text-white mt-5 font-bold">Made</h1>
+          <h1 className="text-8xl text-white mt-5 font-bold">Simple</h1>
+        </div>
+        <CategoryDemo />
       </section>
 
-      <CategoryDemo />
 
-      
+
 
       {/* 
         <AccountDemo /> */}

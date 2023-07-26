@@ -99,11 +99,11 @@ export async function action({ request, params }: ActionArgs) {
 
   const name = (formData.get("name") as string) || "";
 
-  const due = new Date(formData.get("due") as string) as Date;
+  const due = formData.get("due") == "" ? null : new Date(formData.get("due") as string) as Date
 
 
   // if due is not a date, redirect:
-  if (isNaN(due.getTime())) {
+  if (due && isNaN(due.getTime())) {
     console.log("due is not a date")
     const categories = await getCategories({ userId, budgetId, startDate });
 

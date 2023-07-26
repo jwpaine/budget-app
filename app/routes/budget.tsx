@@ -524,7 +524,7 @@ export default function Budget() {
                         <span className="text-white text-center">Needed By Date</span>
                         <input
                           name="due"
-                          defaultValue={new Date(c.due).toISOString().slice(0, 10)}
+                          defaultValue={c.due ? new Date(c.due).toISOString().slice(0, 10) : ""}
                           placeholder="Due Date"
                           className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
                         />
@@ -588,20 +588,19 @@ export default function Budget() {
                 }}
                 className={`flex justify-between px-3 bg-gray-800 hover:bg-gray-700 p-2 border border-b border-slate-700
                   
-                         
-            
+      
                   
                   `}
                 key={c.id}
               >
 
                 <div className="flex flex-col w-40">
-                  <span className="text-white text-m font-bold">
+                  <span className={`text-white text-m font-bold ${!c.due && 'py-2'}`}>
                     {c.category || "-"}
                   </span>
-                  <span className="text-xs text-white">
-                    {new Date(c.due).toISOString().slice(0, 10)}
-                  </span>
+                  {c.due && <span className="text-xs text-white">
+                    {new Date(c.due).toISOString().slice(0, 10) }
+                  </span>}
                 </div>
                 <div className={`grid grid-cols-4 gap-4 w-full max-w-xl `}>
 
