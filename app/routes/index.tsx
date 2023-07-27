@@ -20,22 +20,32 @@ export async function loader({ request }: LoaderArgs) {
 export default function Index() {
   // const user = useOptionalUser();
   return (
-    <main className="flex flex-col bg-gray-950 w-full h-full ">
-      <section className="flex flex-col lg:flex-row justify-center">
-        <div className="pb-5">
-          <h1 className="text-7xl text-white font-bold">Budgeting </h1>
-          <h1 className="text-4xl text-white mt-5 font-bold">Made</h1>
-          <h1 className="text-8xl text-white mt-5 font-bold">Simple</h1>
-        </div>
-        <CategoryDemo />
+    <main className="flex flex-col bg-gray-950 w-full h-full items-center">
+      <section className="flex flex-col justify-center content-center items-center lg:items-start w-full max-w-6xl p-10">
+       
+          <h1 className="text-5xl md:text-7xl text-white font-bold">Budgeting</h1>
+          <h1 className="text-6xl md:text-8xl text-white font-bold">Made</h1>
+          <h1 className="text-7xl md:text-9xl text-emerald-400 font-bold">Simple</h1>
+          <p className="text-sky-100 text-2xl py-5 text-center lg:text-left">
+            Manage your spending, save towards goals, and pay off debt. <br /> It all starts with a budget.
+          </p>
+        
+
       </section>
+      <section className="bg-gray-900 p-10 w-full max-w-6xl">
 
+        <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between w-full ">
 
+          <p className="text-sky-100 text-xl lg:max-w-xl text-center lg:text-left lg:pr-12">
+            We make it easy for you to track your monthly expenses, and budget for the road ahead. <br /> <br /> Whether you
+            want to save money for a dream vacation, pay off debt, or build an emergency fund, DollarGrad can help.
+          </p>
 
+          <CategoryDemo />
 
-      {/* 
-        <AccountDemo /> */}
+        </div>
 
+      </section>
     </main>
   );
 }

@@ -426,7 +426,7 @@ export default function Budget() {
                       <span className="text-white font-bold">Activity: </span>
                       <span className="mx-2 text-right text-white">{activity}</span>
                       <span className="text-white font-bold" >Balance: </span>
-                      <span className={`mx-2 text-right ${Number(balance) == 0 && 'text-white'} ${Number(balance) < 0 && 'text-red-500 font-bold'} ${Number(balance) > 0 && 'text-emerald-300 font-bold '}`}>{balance}</span>
+                      <span className={`mx-2 text-right ${Number(balance) == 0 && 'text-white'} ${Number(balance) < 0 && 'text-red-500 font-bold'} ${Number(balance) > 0 && 'text-emerald-300 font-bold '}`}>{balance}!</span>
 
 
                       {Number(balance) < 0 && (
@@ -495,6 +495,8 @@ export default function Budget() {
                         defaultValue={c.id}
                         type="hidden"
                       />
+
+                  
 
                       <input
                         name="window"
@@ -588,7 +590,6 @@ export default function Budget() {
                 }}
                 className={`flex justify-between px-3 bg-gray-800 hover:bg-gray-700 p-2 border border-b border-slate-700
                   
-      
                   
                   `}
                 key={c.id}

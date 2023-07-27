@@ -3,7 +3,7 @@
 
 export default function CategoryDemo() {
     return (
-        <section className="flex flex-col lg:max-w-lg w-full">
+        <section className="flex flex-col w-full flex-1 max-w-xl">
             
             {/* <h2 className="text-blue-400 text-3xl text-center p-2">Create Categories</h2> */}
 
@@ -26,7 +26,7 @@ export default function CategoryDemo() {
             </header>
 
 
-            <div className=" flex justify-between px-3 bg-gray-800 hover:bg-gray-700 p-2 border border-b border-slate-700">
+            <div className=" flex justify-between px-3 bg-gray-600 hover:bg-gray-500 p-2 border border-b border-slate-700">
                 <div className="flex flex-col w-40"><span className="text-white text-m font-bold">🏋 Gym</span>
                     <span className="text-xs text-white">2023-07-15</span>
                 </div>
@@ -38,7 +38,7 @@ export default function CategoryDemo() {
                 </div>
             </div>
 
-            <div className=" flex justify-between px-3 bg-gray-800 hover:bg-gray-700 p-2 border border-b border-slate-700">
+            <div className=" flex justify-between px-3 bg-gray-600 hover:bg-gray-500 p-2 border border-b border-slate-700">
                 <div className="flex flex-col w-40"><span className="text-white text-m font-bold">📱 Phone</span>
                     <span className="text-xs text-white">2023-07-15</span>
                 </div>
@@ -50,7 +50,7 @@ export default function CategoryDemo() {
                 </div>
             </div>
 
-            <div className=" flex justify-between px-3 bg-gray-800 hover:bg-gray-700 p-2 border border-b border-slate-700">
+            <div className=" flex justify-between px-3 bg-gray-600 hover:bg-gray-500 p-2 border border-b border-slate-700">
                 <div className="flex flex-col w-40"><span className="text-white text-m font-bold">🏠 Rent</span>
                     <span className="text-xs text-white">2023-07-15</span>
                 </div>
@@ -62,7 +62,7 @@ export default function CategoryDemo() {
                 </div>
             </div>
 
-            <div className=" flex justify-between px-3 bg-gray-800 hover:bg-gray-700 p-2 border border-b border-slate-700">
+            <div className=" flex justify-between px-3 bg-gray-600 hover:bg-gray-500 p-2 border border-b border-slate-700">
                 <div className="flex flex-col w-40"><span className="text-white text-m font-bold py-2">🥕 Grocery</span>
                     
                 </div>
@@ -74,7 +74,7 @@ export default function CategoryDemo() {
                 </div>
             </div>
 
-            <div className=" flex justify-between px-3 bg-gray-800 hover:bg-gray-700 p-2 border border-b border-slate-700">
+            <div className=" flex justify-between px-3 bg-gray-600 hover:bg-gray-500 p-2 border border-b border-slate-700">
                 <div className="flex flex-col w-40"><span className="text-white text-m font-bold py-2">🍺 Fun</span>
                  
                 </div>

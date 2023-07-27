@@ -244,65 +244,19 @@ const categories = prisma.$queryRaw`
   ORDER BY due ASC
 `;
 
-// const categories = prisma.$queryRaw`
-//   SELECT 
-//     category.name AS category,
-//     category.id AS id,
-//     category.due AS due,
-//     category."maxValue" AS needed,
-//     category."accountId" AS linked,
-//     COALESCE(SUM(transaction.outflow), 0) AS outflow,
-//     COALESCE(SUM(transaction.inflow), 0) AS inflow,
-//     COALESCE(CAST(adjustment.value AS INTEGER), 0) AS currentValue
-//   FROM "Category" AS category 
-//   LEFT JOIN (
-//     SELECT *
-//     FROM "Transaction" AS tr
-//     WHERE tr.date >= ${startDate}::date 
-//     AND tr.date <= ${endDate}::date
-//   ) AS transaction ON transaction.category = category.id
-//   LEFT OUTER JOIN (
-//     SELECT DISTINCT ON ("categoryId") "categoryId", value
-//     FROM "CategoryAdjustment"
-//     WHERE "window" >= ${startDate}::date
-//     AND "window" <= ${endDate}::date
-//     ORDER BY "categoryId", "createdAt" DESC
-//   ) AS adjustment ON CAST(adjustment."categoryId" AS INTEGER) = category.id::integer
-//   WHERE category."userId" = ${userId}
-//     AND category."budgetId" = ${budgetId}
-//   GROUP BY category.id, adjustment.value
-//   ORDER BY due ASC
-// `;
 
 
 
 
+// Now you can use the 'categories' result to access the 'balance' field for each category.
+
+// Now you can use the 'categories' result to access the 'balance' field for each category.
+
+
+// Now you can use the 'categories' result to access the 'balance' field for each category.
 
 
 
-
-
-
-
-
-
-
-  //   SELECT 
-  //   category.name as category,
-  //   category.id as id,
-  //   category."currentValue" as "currentValue",
-  //   category.due as due,
-  //   category."maxValue" as needed,
-  //   COALESCE(SUM(transaction.outflow), 0) as outflow,
-  //   COALESCE(SUM(transaction.inflow), 0) as inflow
-  // FROM "Category" as category 
-  // LEFT OUTER JOIN (
-  //   SELECT * FROM "Transaction" 
-  //   WHERE date >= '2023-06-01' AND date <= '2025-06-30'
-  // ) as transaction on transaction.category = category.id
-  // WHERE category."userId" = ${userId} 
-  // GROUP BY category.id
-  // ORDER BY due asc
 
 
   return categories
