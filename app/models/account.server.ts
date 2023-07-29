@@ -29,12 +29,43 @@ export async function getAccount({
   return account
 }
 
-export async function getAccounts({ userId, budgetId }: { userId: User["id"], budgetId: Number }) {
+// export async function getAccounts({ userId, budgetId }: { userId: User["id"], budgetId: Number }) {
+//   return prisma.account.findMany({
+//     where: { userId, budgetId },
+//     orderBy: { balance: "desc" },
+//   });
+// }
+
+
+export async function getAccounts({ userId, budgetId }: { userId: User["id"], budgetId: number | undefined }) {
+
+
+  if (budgetId === undefined) {
+    // Get the user's activeBudget value
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { activeBudget: true },
+    });
+
+    // If activeBudget is undefined, return an empty array
+    if (!user?.activeBudget) {
+      return [];
+    }
+
+    // Query accounts with the same budgetId as the activeBudget value
+    return prisma.account.findMany({
+      where: { userId, budgetId: user.activeBudget },
+      orderBy: { balance: "desc" },
+    });
+  }
+
+  // Query accounts with the specified budgetId
   return prisma.account.findMany({
     where: { userId, budgetId },
     orderBy: { balance: "desc" },
   });
 }
+
 
 // export async function addAccount({
 //   name,

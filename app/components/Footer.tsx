@@ -4,27 +4,16 @@ interface HeaderProps {
   userId: string;
 }
 
-export default function Header(props: HeaderProps) {
+export default function Footer() {
 
   return (
-    <footer className="flex fixed bottom-0 left-0 w-full items-center justify-between bg-black p-2 text-white border-b border-gray-700">
-      <Link
-        to="/budget"
-        className="flex items-center justify-center rounded-md border border-slate-500 text-white px-4 py-3 text-base font-medium shadow-sm hover:bg-slate-800 sm:px-8"
-      >
-        {props.userId ? "My Budget" : "Get Started"}
-      </Link>
-
-
-
-      <Link
-        to={`/${props.userId ? "account" : "budget"}`}
-        className="flex items-center justify-center rounded-md bg-sky-600 px-4 py-3 font-medium text-white hover:bg-sky-700  " >
-       {props.userId ? "My Account" : "Log In"}
-      </Link>
-
-
-
+    <footer className="flex flex-col-reverse md:flex-row content-center items-center bg-gray-950 w-full justify-between p-10 items-start">
+        <span className="text-white text-xs">©2023 DollarGrad, LLC. All rights reserved.</span>
+      <div>
+        <Link to="/privacy" className="text-white hover:underline border-r border-slate-300 px-2">Privacy Policy</Link>
+        <Link to="/terms" className="text-white hover:underline px-2">Terms of Service</Link>
+      </div>
+    
     </footer>
   );
 }

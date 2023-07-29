@@ -305,7 +305,7 @@ export default function Budget() {
 
 
   return (
-    <main className="flex h-full flex-col bg-gray-950 md:flex-row">
+    <main className="flex flex-col md:flex-row">
 
       <SideBar accounts={data.accounts} />
 
@@ -426,7 +426,7 @@ export default function Budget() {
                       <span className="text-white font-bold">Activity: </span>
                       <span className="mx-2 text-right text-white">{activity}</span>
                       <span className="text-white font-bold" >Balance: </span>
-                      <span className={`mx-2 text-right ${Number(balance) == 0 && 'text-white'} ${Number(balance) < 0 && 'text-red-500 font-bold'} ${Number(balance) > 0 && 'text-emerald-300 font-bold '}`}>{balance}!</span>
+                      <span className={`mx-2 text-right ${Number(balance) == 0 && 'text-white'} ${Number(balance) < 0 && 'text-red-500 font-bold'} ${Number(balance) > 0 && 'text-emerald-300 font-bold '}`}>{balance}</span>
 
 
                       {Number(balance) < 0 && (
