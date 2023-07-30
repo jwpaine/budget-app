@@ -94,7 +94,21 @@ model User {
   activeBudget Int ?
   customerId String? @unique
   customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  referralCode String? @unique
+  referral   Referral? @relation(fields: [referralCode], references: [code], onDelete: Cascade, onUpdate: Cascade)
+
+
 }
+
+model Referral {
+  code  String  @id
+  userId  String
+  createdAt DateTime  @default(now())
+  earned Int @default(0)
+  user          User?
+}
+
 
 model Customer {
   id          String  @id

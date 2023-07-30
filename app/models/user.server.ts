@@ -31,7 +31,7 @@ export async function setActiveBudget({ userId, budgetId }: { userId: User["id"]
   })
 }
 
-export async function getUserById({id, budgets, customer} : {id: User["id"], budgets?: boolean, customer?: boolean}) {
+export async function getUserById({id, budgets, customer, referral} : {id: User["id"], budgets?: boolean, customer?: boolean, referral?: boolean}) {
   console.log("Looking up user by Id: ", id)
   try {
     // use prisma.user.findUnique({ where: { id } }); to find user, but join budget on budget id = user.activeBudget to get budget name:
@@ -41,7 +41,8 @@ export async function getUserById({id, budgets, customer} : {id: User["id"], bud
       },
       include: {
         budgets: budgets ? true : false,
-        customer: customer ? true : false
+        customer: customer ? true : false,
+        referral: referral ? referral : false
       }
     });
     return user

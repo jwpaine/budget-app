@@ -39,7 +39,7 @@ export async function loader({ request, params }: LoaderArgs) {
     throw new Error("STRIPE_KEY must be set");
   }
 
-  const user = await getUserById({ id: userId });
+  const user = await getUserById({ id: userId, referral: true });
 
   return json({ userId, user, stripeKey });
 }
@@ -54,6 +54,7 @@ export default function Budget() {
   const [paymentUpdated, setPaymentUpdated] = React.useState(false)
 
   const subscription = useFetcher()
+  const referral = useFetcher();
 
   const isInitialMount = React.useRef(true);
 
@@ -94,12 +95,56 @@ export default function Budget() {
 
   }
 
+  const renderReferralDetails = () => {
+    if(subscription?.data?.status != "active" ) return (
+      <div>
+        <span className="text-white">Referral program requires an active subscription</span>
+      </div>
+    )
+
+    return <div>
+      {data?.user?.referral?.code ? (
+        <p className="text-white text-center text-2xl mb-5">My Referral Code: {data?.user?.referral?.code}</p>
+
+      ) : (
+
+        <referral.Form
+          className="flex flex-col items-center w-full"
+          method="post"
+          action="/referral/set"
+        >
+          <span className="text-white text-center text-2xl mb-5">Create my referral code </span>
+          <input
+            className="rounded p-2 w-full text-black"
+            type="text"
+            name="code"
+            placeholder="My Referral Code"
+            defaultValue={data?.user?.referral?.code}
+          />
+          <button
+            type="submit"
+            className="rounded p-2 w-fit text-blue-100 border border-slate-500 hover:border-slate-400"
+          >
+            Update
+          </button>
+        </referral.Form>
+
+      )}
+
+      {referral?.data?.error && <div className="text-red-500">{referral?.data?.error}</div>}
+    </div>
+  }
+
+
+
   const renderAccountDetails = () => {
 
     return <section className="flex flex-col items-center w-full border-r border-sky-700 ">
 
-
       <h3 className="text-xl text-white">{data?.user?.email}</h3>
+
+      {renderReferralDetails()}
+
       <Form action="/logout" method="post" className="p-2">
 
       </Form>
@@ -142,7 +187,7 @@ export default function Budget() {
       ) : (<div>
         <span className="text-white">Subscribe now</span>
         <p>Subscribe for $7/month</p>
-        <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={false} subscription={subscription}/>
+        <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={false} subscription={subscription} />
 
       </div>
       )}
