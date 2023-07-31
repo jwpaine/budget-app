@@ -118,6 +118,7 @@ model Customer {
   subscriptionId String ?
   subscriptionStatus String ?
   user          User? 
+  referralCode  String?
 
 }
 

@@ -96,13 +96,15 @@ export default function Budget() {
   }
 
   const renderReferralDetails = () => {
-    if(subscription?.data?.status != "active" ) return (
+    if (subscription?.data?.status != "active") return (
       <div>
         <span className="text-white">Referral program requires an active subscription</span>
       </div>
     )
 
     return <div>
+      <h2 className="text-white text-3xl text-center mb-5">My Referrals</h2>
+      <p className="text-white text-center text-xl mb-5">We will credit you $1/month for each person you refer, as long as they maintain their subscription.</p>
       {data?.user?.referral?.code ? (
         <p className="text-white text-center text-2xl mb-5">My Referral Code: {data?.user?.referral?.code}</p>
 
@@ -143,11 +145,9 @@ export default function Budget() {
 
       <h3 className="text-xl text-white">{data?.user?.email}</h3>
 
-      {renderReferralDetails()}
 
-      <Form action="/logout" method="post" className="p-2">
 
-      </Form>
+
 
     </section>
 
@@ -159,7 +159,7 @@ export default function Budget() {
 
     return <section className="flex flex-col items-center w-full">
 
-      <span className="text-white text-center text-2xl mb-5">Subscription Details: {JSON.stringify(subscription.data.status)}</span>
+      {/* <span className="text-white text-center text-2xl mb-5">Subscription Details: {JSON.stringify(subscription.data.status)}</span> */}
 
       {subscription?.data?.status == "active" ? (<div className="flex flex-col p-2 items-center">
         <span className="text-white text-center text-2xl mb-5">Thank you for subscribing!</span>
@@ -184,9 +184,8 @@ export default function Budget() {
 
 
       </div>
-      ) : (<div>
-        <span className="text-white">Subscribe now</span>
-        <p>Subscribe for $7/month</p>
+      ) : (<div className="flex flex-col w-full justify-center p-5">
+        <span className="w-full text-white text-center text-xl">Subscribe now for $7/month</span>
         <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={false} subscription={subscription} />
 
       </div>
@@ -245,14 +244,20 @@ export default function Budget() {
 
       </div>
 
+      <div className="flex flex-col items-center border border-slate-800 m-5 mt-10 p-10">
+        {renderReferralDetails()}
+      </div>
+
       <footer className="flex justify-center items-center flex-col w-full mt-20 ">
         <Link
           to="/logout"
           type="submit"
-          className="rounded p-1 max-w-sm text-blue-100 border border-slate-500 hover:border-slate-400"
+          className="rounded border border-slate-600 text-slate-300 m-auto py-2 px-10"
         >
           Logout
         </Link>
+
+
 
 
       </footer>

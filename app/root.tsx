@@ -41,15 +41,16 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="h-full bg-gray-900">
+      <body className="flex flex-col bg-gray-900 h-full">
         <Header userId={data.userId} />
         <Outlet />
+        <Footer />
        
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
 
-        <Footer />
+       
        
       </body>
     </html>

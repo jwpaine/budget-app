@@ -23,11 +23,12 @@ export async function action({ request, params }: ActionArgs) {
     const referral = await Create({ userId, code })
 
     if (referral?.error) {
-        return json({ error: referral.error })
+        console.log("referral error: ", referral.error)
+        return json(referral)
     }
 
     console.log("referral code added ")
-    
+
     return redirect("/account")
    
 

@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { prisma } from "~/db.server";
 
 export const Create = async ({ code, userId }: { code: string, userId: User["id"] }) => {
@@ -17,8 +17,16 @@ export const Create = async ({ code, userId }: { code: string, userId: User["id"
             },
         });
     } catch (e) {
-        console.log(e)
-        return { error: e }
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+            // The .code property can be accessed in a type-safe manner
+            if (e.code === 'P2002') {
+              console.log(
+                'There is a unique constraint violation'
+              )
+              return { error: "Code already taken" }
+            }
+          }
+        return { error: "An Unknown error occured. Please try again later" }
     }
 
 }

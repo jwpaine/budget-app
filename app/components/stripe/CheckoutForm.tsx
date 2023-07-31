@@ -80,17 +80,16 @@ function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated, subsc
   };
 
   return (
-    <form onSubmit={handleStripeToken}>
-      <div style={{ display: "flex", flexDirection: "column", color: "white", width: "400px" }}>
+    <form onSubmit={handleStripeToken} className="flex flex-col w-full p-5 justify-center text-center">
         <label style={{ marginBottom: "12px" }}>
           Card Details
           <CardElement options={{ style: cardElementStyle }} />
         </label>
         {/* You can add more form fields here */}
-        <button className="bg-emerald-300 text-white" type="submit">Submit</button>
+        <button className="rounded bg-emerald-300 text-slate-800 m-auto py-2 px-10" type="submit">Submit</button>
         {/* Display any error that happens when processing the payment */}
         {subscription?.data?.error && <div className="text-red-500">{subscription?.data?.error}</div>}
-      </div>
+    
     </form>
   );
 }
