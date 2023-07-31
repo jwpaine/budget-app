@@ -45,6 +45,7 @@ export async function getUserById({id, budgets, customer, referral} : {id: User[
         referral: referral ? referral : false
       }
     });
+    console.log("user: ", user)
     return user
   } catch (e) {
     console.log(e)

@@ -267,7 +267,7 @@ export default function AccountDetailsPage() {
   if (reconcile) {
     return (
 
-      <main className="flex flex-col w-full items-center bg-gray-950 h-full">
+      <main className="flex flex-col items-center bg-gray-950 h-full">
 
         <transaction.Form
           method="post"
@@ -474,7 +474,7 @@ export default function AccountDetailsPage() {
 
   return (
 
-    <main className="flex h-full flex-col bg-gray-950 md:flex-row">
+    <main className="flex flex-col md:flex-row">
 
       <SideBar accounts={data.accounts} />
 

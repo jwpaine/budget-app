@@ -31,6 +31,7 @@ import { getDailyTransactionSums, getTransactions, getUncategorizedTransactions 
 import { Decimal } from "@prisma/client/runtime";
 import SideBar from "~/components/accounts/sidebar";
 import { getUserById } from "~/models/user.server";
+import { r } from "vitest/dist/types-94cfe4b4";
 
 // import {
 //   generateTransactionCategories
@@ -67,7 +68,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
 
   const account = await getUserById({ id: userId, budgets: true })
-
+  if(!account) return redirect("/logout")
   const budgetId = Number(account?.activeBudget) as number
 
   console.log("using budgetId: ", budgetId)

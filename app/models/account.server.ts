@@ -39,7 +39,7 @@ export async function getAccount({
 
 export async function getAccounts({ userId, budgetId }: { userId: User["id"], budgetId: number | undefined }) {
 
-
+  console.log("budgetId: ", budgetId)
   if (budgetId === undefined) {
     // Get the user's activeBudget value
     const user = await prisma.user.findUnique({
