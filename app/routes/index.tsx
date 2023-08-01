@@ -21,7 +21,7 @@ export async function loader({ request }: LoaderArgs) {
 export default function Index() {
   // const user = useOptionalUser();
   return (
-    <main className="flex flex-col bg-gray-950 w-full h-full items-center">
+    <main className="flex flex-col bg-gray-950 w-full items-center">
       <section className="flex flex-col lg:flex-row justify-center content-center items-center lg:items-start w-full max-w-6xl p-10">
 
         <div className="w-full">

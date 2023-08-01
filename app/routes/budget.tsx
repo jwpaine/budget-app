@@ -18,7 +18,7 @@ import {
 // import invariant from "tiny-invariant";
 import * as React from "react";
 import { getAccounts } from "~/models/account.server";
-import { requireUserId, } from "~/auth.server";
+import { requireUserId, trialExpired } from "~/auth.server";
 
 import { useOptionalUser } from "~/utils";
 
@@ -66,8 +66,14 @@ export async function action({ request, params }: ActionArgs) {
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
 
-
   const account = await getUserById({ id: userId, budgets: true })
+
+  // obtain account createdAt. If greater than two weeks and account.customer.subscription.status != 'active', than redirect to /account:
+  if(await trialExpired({ account })) {
+    return redirect("/account")
+  }
+
+
   if(!account) return redirect("/logout")
   const budgetId = Number(account?.activeBudget) as number
 

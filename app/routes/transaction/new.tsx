@@ -4,7 +4,7 @@ import { Form, useCatch, useLoaderData } from "@remix-run/react";
 // import invariant from "tiny-invariant";
 import * as React from "react";
 import { getAccount } from "~/models/account.server";
-import { requireUserId } from "~/auth.server";
+import { requireUserId, trialExpired } from "~/auth.server";
 import { create as CreateCategoryAdjustment } from "~/models/categoryAdjustment";
 import NewTransactionPage from "../../components/transactions/new";
 
@@ -16,10 +16,16 @@ import {
 import { incrementAccountBalance } from "~/models/account.server";
 import { Decimal } from "@prisma/client/runtime";
 import { get } from "http";
+import { getUserById } from "~/models/user.server";
 
 export async function action({ request, params }: ActionArgs) {
   //  invariant(params.accountId, "noteId not found");
   const userId = await requireUserId(request);
+  const user = await getUserById({ id: userId})
+  if(await trialExpired({ account: user })) {
+    return redirect("/account")
+  }
+
 
   const formData = await request.formData();
 

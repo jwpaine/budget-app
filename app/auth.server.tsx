@@ -66,7 +66,22 @@ async function getToken({ code, redirectUri }: { code: string, redirectUri: stri
     });
 }
 
-
+export async function trialExpired({account} : {account: any}) {
+    const createdAt = new Date(account.createdAt)
+    const now = new Date()
+    const diff = now.getTime() - createdAt.getTime()
+    const days = diff / (1000 * 3600 * 24);
+  
+    console.log("days: ", days)
+  
+    console.log(`Account is ${days} days old and subscription status is ${account?.customer?.subscriptionStatus}`)
+  
+    if (days > 14 && account?.customer?.subscriptionStatus != 'active') {
+        console.log(`Trial expired for ${account.email}, redirecting to account`)
+      return true
+    }
+    return false;
+}
 
 async function createUserSession({
     request,
@@ -77,6 +92,7 @@ async function createUserSession({
 }) {
 
     const redirectUri = cognitoRedirect
+   
     const tokenResponse = await getToken({ code, redirectUri });
 
     if (tokenResponse.status === 200) {
@@ -95,7 +111,7 @@ async function createUserSession({
 
         if(!localUser) {
             console.log("Local user does NOT exist: ", user.username)
-            // create local user
+
             const createLocalUser = await createUser(user.email, user.username)
             console.log("Creating stripe customer for user: ", user.email)
 
@@ -156,9 +172,12 @@ export async function requireUserId(
       return userId;
   }
 
-export async function authorize({ request, redirectTo }: { request: Request, redirectTo: string }) {
+export async function authorize({ request, redirectTo}: { request: Request, redirectTo: string}) {
     const url = new URL(request.url)
     const code = url.searchParams.get('code')
+
+  // const consent = url.searchParams.get('consent') ? true : false as boolean
+   //const consent = false
 
 
     const session = await getSession(request);

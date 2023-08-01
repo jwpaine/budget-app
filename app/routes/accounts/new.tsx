@@ -5,11 +5,17 @@ import * as React from "react";
 
 
 import { addAccount } from "~/models/account.server";
-import { requireUserId } from "~/auth.server";
+import { requireUserId, trialExpired } from "~/auth.server";
 import { createCategory } from "~/models/category.server";
+import { getUserById } from "~/models/user.server";
 
 export async function action({ request }: ActionArgs) {
   const userId = await requireUserId(request);
+
+  const user = await getUserById({ id: userId})
+  if(await trialExpired({ account: user })) {
+    return redirect("/account")
+  }
 
   const formData = await request.formData();
   let name = formData.get("name") as string

@@ -5,7 +5,7 @@ import * as React from "react";
 
 
 import { addAccount, getAccounts } from "~/models/account.server";
-import { requireUserId } from "~/auth.server";
+import { requireUserId, trialExpired } from "~/auth.server";
 import { getBudgets } from "~/models/budget.server";
 import { getUserById } from "~/models/user.server";
 import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -15,9 +15,16 @@ import { getDailyTransactionSums } from "~/models/transaction.server";
 export async function loader({ request, params }: LoaderArgs) {
     const userId = await requireUserId(request);
 
+    const account = await getUserById({id: userId, budgets: true});
+  
+    if(await trialExpired({ account })) {
+      return redirect("/account")
+    }
+ 
+
     const user = await getBudgets({ userId });
 
-    const account = await getUserById({id: userId, budgets: true});
+  
 
     let currentDate = new Date() as Date
     currentDate.setDate(currentDate.getDate() - 30);

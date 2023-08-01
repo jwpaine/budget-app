@@ -5,7 +5,7 @@ import * as React from "react";
 
 
 import { addAccount } from "~/models/account.server";
-import { requireUserId } from "~/auth.server";
+import { requireUserId, trialExpired } from "~/auth.server";
 import { getBudgets } from "~/models/budget.server";
 import { getUserById } from "~/models/user.server";
 
@@ -13,9 +13,11 @@ import { getUserById } from "~/models/user.server";
 export async function loader({ request, params }: LoaderArgs) {
   const userId = await requireUserId(request);
 
-  const user = await getBudgets({ userId });
-
   const account = await getUserById({ id: userId, budgets: true });
+
+  if(await trialExpired({ account })) {
+    return redirect("/account")
+  }
 
 
   console.log("account", account)

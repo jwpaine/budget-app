@@ -41,7 +41,7 @@ export async function getUserById({id, budgets, customer, referral} : {id: User[
       },
       include: {
         budgets: budgets ? true : false,
-        customer: customer ? true : false,
+        customer: true, // customer ? true : false,
         referral: referral ? referral : false
       }
     });
