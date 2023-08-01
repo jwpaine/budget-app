@@ -244,9 +244,9 @@ export default function Budget() {
 
       </div>
 
-      <div className="flex flex-col items-center border border-slate-800 m-5 mt-10 p-10">
+      {/* <div className="flex flex-col items-center border border-slate-800 m-5 mt-10 p-10">
         {renderReferralDetails()}
-      </div>
+      </div> */}
 
       <footer className="flex justify-center items-center flex-col w-full mt-20 ">
         <Link

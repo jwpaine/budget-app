@@ -27,6 +27,25 @@ export async function action({ request, params }: ActionArgs) {
         return json({ error: "Subscription already active" })
     }
 
+    if (user?.customer?.subscriptionStatus == 'processing') {
+        console.log("Subscription in progress")
+        return json({ error: "Subscription is being processed" })
+    }
+
+    const stripeCustomerId = user?.customer?.id
+
+
+    // set subscription status to processing:
+    const c = await UpdateDatabaseCustomer({
+        id: stripeCustomerId as string,
+        userId,
+        subscriptionStatus: 'processing'
+    })
+
+
+
+
+
     const id = formData.get("id") as string // payment id
     const created = formData.get("created") as string
     const cardBrand = formData.get("cardBrand") as string
@@ -36,10 +55,10 @@ export async function action({ request, params }: ActionArgs) {
 
     console.log("received: ", id, created, cardBrand, cardExpMonth, cardExpYear, cardLast)
 
-   
-    const stripeCustomerId = user?.customer?.id
 
-   
+
+
+
 
     // update payment method UpdatePayment = async ({ id, payment_method }: { id: string, payment_method: string }) => {
     console.log("Updating payment method for customer: ", stripeCustomerId, " with payment method: ", id)
@@ -68,12 +87,12 @@ export async function action({ request, params }: ActionArgs) {
     // Add customer record to database if it doesn't already exist
 
     // otherwise, update existing customer record:
-   
+
     const customer = await UpdateDatabaseCustomer({
-            id: stripeCustomerId as string,
-            userId,
-            subscriptionId: stripeSubscription.id,
-            subscriptionStatus: 'active'
+        id: stripeCustomerId as string,
+        userId,
+        subscriptionId: stripeSubscription.id,
+        subscriptionStatus: 'active'
     })
 
 
@@ -85,7 +104,7 @@ export async function action({ request, params }: ActionArgs) {
     const nextBillingDateFormatted = nextBillingDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 
 
-    return json({customer: customer, nextBillingDate: nextBillingDateFormatted, status: subscription.status})
+    return json({ customer: stripeCustomer, nextBillingDate: nextBillingDateFormatted, status: subscription.status })
 
 
 }

@@ -49,8 +49,11 @@ export async function action({ request, params }: ActionArgs) {
     // mark subscription as cancelled in database:
     const cancelled = await SetSubscriptionCancelled({id: c_id})
 
-    
+    if(cancelled.error) {
+        return json({ error: cancelled.error })
+    }
 
-   
-    return redirect(`/account`)
+    return json({status: 'cancelled'})
+
+    
 }

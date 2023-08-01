@@ -58,7 +58,7 @@ export const Create = async ({ id, userId}: { id: string, userId: User["id"]}) =
   cardLast
 }) */
 
-export const Update = async ({ id, userId, subscriptionId, subscriptionStatus, }: { id: string, userId: User["id"], subscriptionId: string, subscriptionStatus: string }) => { 
+export const Update = async ({ id, userId, subscriptionId, subscriptionStatus, }: { id: string, userId: User["id"], subscriptionId?: string, subscriptionStatus: string }) => { 
   console.log("update customer")
   // update customer record with the parameters passed:
   return await prisma.customer.update({
@@ -68,7 +68,7 @@ export const Update = async ({ id, userId, subscriptionId, subscriptionStatus, }
     },
     data: {
      // userId,
-      subscriptionId,
+      subscriptionId: subscriptionId ? subscriptionId : null,
       subscriptionStatus
     },
   });
@@ -79,6 +79,7 @@ export const Update = async ({ id, userId, subscriptionId, subscriptionStatus, }
 export const SetSubscriptionCancelled = async ({ id } : { id: string }) => {
   // update customer record, setting subscriptionStatus to subscriptionStatus, for customer with id of id:
   console.log("marking subscription as cancelled")
+  try{
   return await prisma.customer.update({
     where: {
       id,
@@ -88,6 +89,9 @@ export const SetSubscriptionCancelled = async ({ id } : { id: string }) => {
       subscriptionId: null
     },
   });
+} catch(e) {
+  return { error: "An Unknown error occured." }
+  }
 }
 
 
