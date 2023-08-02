@@ -3,23 +3,23 @@ import { redirect } from "@remix-run/server-runtime";
 import { Elements, CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
-export default function Checkout({ stripeKey, stripeClientSecret, updatePayment, paymentUpdated, subscription } : { stripeKey: string, stripeClientSecret: string, updatePayment: boolean, paymentUpdated: () => void, subscription: any}) {
+export default function Checkout({ stripeKey, stripeClientSecret, updatePayment, paymentUpdated, subscription }: { stripeKey: string, stripeClientSecret: string, updatePayment: boolean, paymentUpdated: () => void, subscription: any }) {
   const stripePromise = loadStripe(stripeKey);
 
 
-//   const stripeOptions = {
-//     // passing the client secret obtained from the server
-//     clientSecret: data.stripeClientSecret,
-//   };
+  //   const stripeOptions = {
+  //     // passing the client secret obtained from the server
+  //     clientSecret: data.stripeClientSecret,
+  //   };
 
   return (
     <Elements stripe={stripePromise} >
-      <CheckoutForm stripeClientSecret={stripeClientSecret} updatePayment={updatePayment} paymentUpdated={paymentUpdated} subscription={subscription}/>
+      <CheckoutForm stripeClientSecret={stripeClientSecret} updatePayment={updatePayment} paymentUpdated={paymentUpdated} subscription={subscription} />
     </Elements>
   );
 }
 
-function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated, subscription } : { stripeClientSecret: string, updatePayment: boolean, paymentUpdated: () => void, subscription: any }) {
+function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated, subscription }: { stripeClientSecret: string, updatePayment: boolean, paymentUpdated: () => void, subscription: any }) {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -41,35 +41,35 @@ function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated, subsc
     if (error) {
       console.log(error.message);
       return
-    } 
+    }
 
     const url = updatePayment ? "/subscription/update" : "/subscription/create"
     console.log("updatePayment: ", updatePayment, " url: ", url)
 
     const r = subscription.submit(
-        {
-          
-          id: paymentMethod.id,
-          created: paymentMethod.created,
-          cardBrand: paymentMethod.card.brand,
-          cardExpMonth: paymentMethod.card.exp_month,
-          cardExpYear: paymentMethod.card.exp_year,
-          cardLast: paymentMethod.card.last4
-        },
-        { method: "post", action: url }
-      );
-      // if no error returned, return to account page:
-      // @TODO: bulletproof this:
-      if (!subscription.data?.error) {
-        paymentUpdated()
-      }
-  
+      {
+
+        id: paymentMethod.id,
+        created: paymentMethod.created,
+        cardBrand: paymentMethod.card.brand,
+        cardExpMonth: paymentMethod.card.exp_month,
+        cardExpYear: paymentMethod.card.exp_year,
+        cardLast: paymentMethod.card.last4
+      },
+      { method: "post", action: url }
+    );
+    // if no error returned, return to account page:
+    // @TODO: bulletproof this:
+    if (!subscription.data?.error) {
+      paymentUpdated()
+    }
+
 
 
   };
 
-   // Custom styles for the CardElement
-   const cardElementStyle = {
+  // Custom styles for the CardElement
+  const cardElementStyle = {
     base: {
       color: "white",
       fontSize: "16px",
@@ -79,17 +79,20 @@ function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated, subsc
     },
   };
 
+
+
   return (
-    <form onSubmit={handleStripeToken} className="flex flex-col w-full p-5 justify-center text-center">
-        <label style={{ marginBottom: "12px" }}>
-          Card Details
-          <CardElement options={{ style: cardElementStyle }} />
-        </label>
-        {/* You can add more form fields here */}
-        <button className="rounded bg-emerald-300 text-slate-800 m-auto py-2 px-10" type="submit">Submit</button>
-        {/* Display any error that happens when processing the payment */}
-        {subscription?.data?.error && <div className="text-red-500">{subscription?.data?.error}</div>}
-    
+    <form onSubmit={handleStripeToken} className="flex flex-col w-full max-w-lg p-5 justify-center text-center">
+      <label style={{ marginBottom: "12px" }}>
+        Card Details
+        <CardElement options={{ style: cardElementStyle }} />
+      </label>
+      {/* You can add more form fields here */}
+      <button className="rounded bg-emerald-300 text-slate-800 m-auto py-2 px-10" type="submit">Submit</button>
+      {/* Display any error that happens when processing the payment */}
+      {subscription?.data?.error && <div className="text-red-500">{subscription?.data?.error}</div>}
+
+
     </form>
   );
 }

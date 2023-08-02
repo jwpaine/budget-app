@@ -185,9 +185,14 @@ export default function Budget() {
 
       </div>
       ) : (<div className="flex flex-col w-full justify-center p-5">
-        <span className="w-full text-white text-center text-xl">Subscribe now for $7/month</span>
-        <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={false} subscription={subscription} />
-
+        {subscription?.state == "submitting" ? (
+          <span className="text-white text-center w-full text-xl">Submitting, please wait...</span>
+        ) : (
+          <>
+            <span className="w-full text-white text-center text-xl">Subscribe now for $7/month</span>
+            <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={false} subscription={subscription} />
+          </>
+        )}
       </div>
       )}
 
@@ -198,15 +203,23 @@ export default function Budget() {
 
   if (confirmCancel) return (
 
-    <main className="bg-black h-full flex flex-col items-center p-2">
-      <h1 className="text-xl text-white">Before you go</h1>
-      <button onClick={() => cancelSubscription()} className="rounded p-2 w-fit text-blue-100 border border-red-900 hover:border-red-800 ml-2">Cancel Subscription</button>
+    <main className="h-full flex flex-col items-center justify-center content-center p-2">
+      <header>
+        <h1 className="text-6xl text-white text-center p-5">WAIT!</h1>
+      </header>
+      <section className="max-w-lg flex flex-col">
+        <h2 className="text-3xl text-white text-center">You are about to cancel your DollarGrad subscription.</h2>
+        <h3 className="text-white text-center mt-5">Your subscription will be immediately canceled and you will need to re-subscribe in order to re-gain access to your
+          budgets, accounts, transactions and categories in DollarGrad.</h3>
+        <button onClick={() => setConfirmCancel(false)} className="w-full rounded bg-emerald-300 text-slate-800 m-auto py-2 px-10 mt-5" type="submit">No, take me back!</button>
+        <a onClick={() => cancelSubscription()} className="text-white text-center mt-10 hover:cursor-pointer hover:text-slate-300">Cancel Subscription</a>
+      </section>
     </main>
 
   )
 
   if (updatePaymentMethod) return (
-    <main className="bg-black h-full flex flex-col p-2 ">
+    <main className="h-full flex flex-col p-2 ">
       <header>
         <h1 className="text-3xl text-white text-center">Update Payment Method</h1>
       </header>
@@ -229,7 +242,7 @@ export default function Budget() {
 
   return (
 
-    <main className="bg-black h-full flex flex-col p-2 ">
+    <main className="h-full flex flex-col p-2 ">
       <header>
         <h1 className="text-3xl text-white text-center">My Account</h1>
       </header>
