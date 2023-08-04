@@ -32,7 +32,7 @@ export default function Terms() {
                 <p className="text-white my-5">
                     We employ the use of cookies. By accessing DollarGrad, you agreed to use cookies in agreement with the DOLLARGRAD LLC's Privacy Policy.
 
-                    Cookies are used by our website to enable the functionality of certain areas to make it easier for people visiting our website.
+                    Cookies are used by our website to support the functionality of certain types of data interactions. We use cookies to keep you logged in.
                 </p>
 
                 <h1 className="text-3xl text-white text-center">License</h1>

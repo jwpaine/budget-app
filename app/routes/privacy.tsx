@@ -29,11 +29,12 @@ export default function Privacy() {
                 </p>
 
                 <h1 className="text-3xl text-white text-center">
-                    SUMMARY OF KEY POINTS
+                    What personal information do we process?
                 </h1>
 
+
                 <p className="text-white my-5 text-center">
-                    What personal information do we process?
+
                     When you visit, use, or navigate our Services, we may process personal information depending on how you interact with DOLLARGRAD LLC and the Services, the choices you make, and the products and features you use.
                     Learn more about personal information you disclose to us.Do we process any sensitive personal information?
                     We do not process sensitive personal information.
@@ -322,7 +323,7 @@ export default function Privacy() {
                     . Audio, electronic, visual, thermal, olfactory, or similar
                     informationImages and audio, video or call recordings created in connection with our business activities NO.
                     Professional or employment-related informationBusiness contact details in order to provide you our Services at a business level or job title,
-                    work history, and professional qualifications if you apply for a job with usNOJ. Education InformationStudent records and directory
+                    work history, and professional qualifications if you apply for a job with us: No. Education InformationStudent records and directory
                     informationNOK. Inferences drawn from other personal informationInferences drawn from any of the collected
                     personal information listed above to create a profile or summary about, for example, an individual’s preferences
                     and characteristics NO.
