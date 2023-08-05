@@ -11,7 +11,8 @@ export default function Footer() {
         <span className="text-white text-xs">©2023 DollarGrad, LLC. All rights reserved.</span>
       <div>
         <Link to="/privacy" className="text-white hover:underline border-r border-slate-300 px-2">Privacy Policy</Link>
-        <Link to="/terms" className="text-white hover:underline px-2">Terms of Service</Link>
+        <Link to="/terms" className="text-white hover:underline border-r border-slate-300 px-2">Terms of Service</Link>
+        <Link to ="/help" className="text-white hover:underline px-2">Help Center</Link>
       </div>
     
     </footer>

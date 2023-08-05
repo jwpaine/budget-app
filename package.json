@@ -45,6 +45,7 @@
     "@remix-run/server-runtime": "*",
     "@stripe/react-stripe-js": "^2.1.1",
     "@stripe/stripe-js": "^1.54.1",
+    "aws-sdk": "^2.1430.0",
     "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
     "cheerio": "^1.0.0-rc.12",
