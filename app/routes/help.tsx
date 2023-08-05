@@ -47,45 +47,87 @@ export async function action({ request, params }: ActionArgs) {
 
   // send email using AWS SES:
   const AWS = require('aws-sdk');
-  require('dotenv').config();
 
   // Set up AWS configuration
   AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET,
+  
     region: 'us-east-1'
   });
 
-  // Create a new SES object
-  const ses = new AWS.SES({ apiVersion: '2010-12-01' });
-
-  // Parameters for sending the email
-  const email_params = {
-    Destination: {
-      ToAddresses: ['jpaine@dollargrad.com']
+  var send_params = {
+    Destination: { /* required */
+      
+      ToAddresses: [
+        'jpaine@dollargrad.com',
+        /* more items */
+      ]
     },
-    Message: {
-      Body: {
+    Message: { /* required */
+      Body: { /* required */
+       
         Text: {
-          Data: `Customer email: ${email}. Message: ${message}`
+         Charset: "UTF-8",
+         Data: `Customer email: ${email}. Message: ${message}`
         }
-      },
-      Subject: {
+       },
+       Subject: {
+        Charset: 'UTF-8',
         Data: 'NEW SUPPORT REQUEST'
-      }
-    },
-    Source: 'noreply@dollargrad.com'
+       }
+      },
+    Source: 'noreply@dollargrad.com', /* required */
+    ReplyToAddresses: [
+       email,
+      /* more items */
+    ],
   };
+  
+  // Create the promise and SES service object
+  var sendPromise = new AWS.SES({apiVersion: '2010-12-01'}).sendEmail(send_params).promise();
+  
+  // Handle promise's fulfilled/rejected states
+  return sendPromise.then(
+    function(data) {
+      console.log(data.MessageId);
+      return json({ success: true });
+    }).catch(
+      function(err) {
+      console.error(err, err.stack);
+      return json({ error: err.message }, { status: 500 });
+    });
 
-  try {
-    // Send the email
-    await ses.sendEmail(email_params).promise();
-    console.log('Email sent successfully');
-    return json({ success: true });
-  } catch (err) {
-    console.log('Error sending email:', err);
-    return json({ error: err.message }, { status: 500 });
-  }
+
+  // Create a new SES object
+
+  // const ses = new AWS.SES({ apiVersion: '2010-12-01' });
+
+  // // Parameters for sending the email
+  // const email_params = {
+  //   Destination: {
+  //     ToAddresses: ['jpaine@dollargrad.com']
+  //   },
+  //   Message: {
+  //     Body: {
+  //       Text: {
+  //         Data: `Customer email: ${email}. Message: ${message}`
+  //       }
+  //     },
+  //     Subject: {
+  //       Data: 'NEW SUPPORT REQUEST'
+  //     }
+  //   },
+  //   Source: 'noreply@dollargrad.com'
+  // };
+
+  // try {
+  //   // Send the email
+  //   await ses.sendEmail(email_params).promise();
+  //   console.log('Email sent successfully');
+  //   return json({ success: true });
+  // } catch (err) {
+  //   console.log('Error sending email:', err);
+  //   return json({ error: err.message }, { status: 500 });
+  // }
 }
 
 
