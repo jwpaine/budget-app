@@ -184,7 +184,7 @@ export default function Budget() {
 
 
       </div>
-      ) : (<div className="flex flex-col w-full justify-center p-5">
+      ) : (<div className="flex flex-col w-full justify-center items-center p-5">
         {subscription?.state == "submitting" ? (
           <span className="text-white text-center w-full text-xl">Submitting, please wait...</span>
         ) : (

@@ -83,7 +83,7 @@ function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated, subsc
 
   return (
     <form onSubmit={handleStripeToken} className="flex flex-col w-full max-w-lg p-5 justify-center text-center">
-      <label style={{ marginBottom: "12px" }}>
+      <label className="text-white w-full text-center">
         Card Details
         <CardElement options={{ style: cardElementStyle }} />
       </label>
