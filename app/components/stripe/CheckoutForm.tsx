@@ -2,10 +2,12 @@ import { useFetcher } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { Elements, CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import React from "react";
 
 export default function Checkout({ stripeKey, stripeClientSecret, updatePayment, paymentUpdated, subscription }: { stripeKey: string, stripeClientSecret: string, updatePayment: boolean, paymentUpdated: () => void, subscription: any }) {
   const stripePromise = loadStripe(stripeKey);
 
+  
 
   //   const stripeOptions = {
   //     // passing the client secret obtained from the server
@@ -22,10 +24,14 @@ export default function Checkout({ stripeKey, stripeClientSecret, updatePayment,
 function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated, subscription }: { stripeClientSecret: string, updatePayment: boolean, paymentUpdated: () => void, subscription: any }) {
   const stripe = useStripe();
   const elements = useElements();
+  const [stripeError, setStripeError] = React.useState("");
 
   const handleStripeToken = async (event: any) => {
     console.log("Received stripe response:");
     event.preventDefault();
+
+    // clear stripeError:
+    setStripeError(null);
 
     // Ensure the CardElement is ready and mounted before attempting to create the payment method
     if (!elements || !elements.getElement(CardElement)) {
@@ -40,6 +46,8 @@ function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated, subsc
 
     if (error) {
       console.log(error.message);
+      let errorMessage = error.message || ""
+      setStripeError(errorMessage);
       return
     }
 
@@ -91,6 +99,7 @@ function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated, subsc
       <button className="rounded bg-emerald-300 text-slate-800 m-auto py-2 px-10" type="submit">Submit</button>
       {/* Display any error that happens when processing the payment */}
       {subscription?.data?.error && <div className="text-red-500">{subscription?.data?.error}</div>}
+      {stripeError != "" && <div className="text-red-500">{stripeError}</div>}
 
 
     </form>
