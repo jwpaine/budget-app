@@ -245,7 +245,7 @@ export default function Help() {
         {tag && chatBubble({ message: tag, type: "customer" })}
         {tag != "" && chatBubble({ message: `${tag}. Got it. Please provide a detailed message and our support team will reach back to you.` })}
         {message && chatBubble({ message: message, type: "customer" })}
-        {message && deliverMessage?.data?.success && chatBubble({ message: `Message received! We'll follow up with you at ${email} ASAP!` })}
+        {message && deliverMessage?.data?.success && chatBubble({ message: `Message received! We'll follow up with you soon!` })}
         {deliverMessage?.data?.error && chatBubble({ message: `We encountered an error when attempting to deliver your message. Our support team has been made aware of the issue. Please try again later.` })}
 
 
