@@ -37,8 +37,17 @@ export async function loader({ request, params }: LoaderArgs) {
     const subscriptionId = user.customer?.subscriptionId
 
     if (!customerId) {
-        console.log("Customer not found")
-        return json({ error: "Customer not found" })
+        console.log("Customer not found. Creating and attaching new stripe customer")
+        // create customer
+        const stripeCustomer = await CreateStripeCustomer({ email: user.email })
+  
+        const customer = await CreateDatabaseCustomer({
+            id: stripeCustomer.id,
+            userId: userId
+        })
+
+        return json({ status: 'inactive' })
+
     }   
 
     if(!subscriptionId) {
