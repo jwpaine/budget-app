@@ -21,7 +21,7 @@ export async function loader({ request }: LoaderArgs) {
 export default function Index() {
   // const user = useOptionalUser();
   return (
-    <main className="flex flex-col bg-gray-950 w-full items-center">
+    <main className="flex flex-col bg-gray-900 w-full items-center">
       <section className="flex flex-col lg:flex-row justify-center content-center items-center lg:items-start w-full max-w-6xl p-10">
 
         <div className="w-full">
@@ -38,7 +38,7 @@ export default function Index() {
 
 
       </section>
-      <section className="bg-gray-900 p-10 w-full max-w-6xl rounded">
+      <section className="bg-gray-800 p-10 w-full max-w-6xl rounded">
 
         <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between w-full ">
 
@@ -60,17 +60,18 @@ export default function Index() {
         </div>
 
       </section>
-      <section className="bg-white p-10 w-full max-w-6xl rounded mt-5">
+      {/* <section className="flex flex-col content-center items-center justify-center bg-white p-10 w-full max-w-6xl rounded mt-5">
 
+        <h1 className="text-black text-4xl text-center">Do you know where your money is going?</h1>
 
-        <p className="text-gray-900 text-sky-100 text-xl lg:max-w-xl text-center lg:text-left lg:pr-12">
-          We make it easy for you to track your monthly expenses, and budget for the road ahead. <br /> <br /> Whether you
-          want to save money for a dream vacation, pay off debt, or build an emergency fund, DollarGrad can help.
+        <p className="text-black text-2xl lg:max-w-xl text-center lg:pr-12">
+          The first step to taking control of your finances is knowing where your money is going. <br /> <br /> DollarGrad makes it easy to track your spending, and
+          see where your money is going.
         </p>
 
 
 
-      </section>
+      </section> */}
     </main>
   );
 }

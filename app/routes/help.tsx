@@ -162,6 +162,12 @@ export default function Help() {
   const deliverMessage = useFetcher()
 
 
+  function isValidEmail({email} : {email: string}) {
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailPattern.test(email);
+  }
+
+
   const sendMessage = () => {
     // send email to support
 
@@ -182,16 +188,26 @@ export default function Help() {
 
   const renderInput = () => {
     if (!email && !data.account) return <div className="flex max-w-2xl w-full mt-1">
-      <input className="rounded border border-sky-500 w-full p-2" type="text" value={response} onChange={(e) => setResponse(e.target.value)} />
-      <button className="rounded text-white bg-blue-500 p-2 ml-1" type="button" onClick={() => {
-        if (!data.account && !email) {
-          setEmail(response)
-          setResponse("")
-          return
+    <input
+      className="rounded border border-sky-500 w-full p-2"
+      type="text"
+      value={response}
+      onChange={(e) => setResponse(e.target.value)}
+    />
+    <button
+     className={`rounded text-white p-2 ml-1 ${(!data.account && !isValidEmail({email: response})) ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500'}`}
+      type="button"
+      onClick={() => {
+        if (!data.account && isValidEmail({email: response})) {
+          setEmail(response);
+          setResponse("");
         }
-        
-      }}>Send</button>
-    </div>
+      }}
+      disabled={!data.account && !isValidEmail({email: response})}
+    >
+      Send
+    </button>
+  </div>
 
     if (!message && tag) return <div className="flex max-w-2xl w-full mt-1">
       <input className="rounded border border-sky-500 w-full p-2" type="text" value={response} onChange={(e) => setResponse(e.target.value)} />
