@@ -21,7 +21,7 @@ export const Create = async () => {
             interval: 'month',
             product: product.id,
             nickname: `Subscription`,
-            amount_decimal: 700 // $7.00
+            amount_decimal: 500 // $5.00
         });
 
         if (plan.error) {
@@ -31,7 +31,7 @@ export const Create = async () => {
 
         console.log(`plan created: ${plan.id}`)
 
-        return {plan: plan}
+        return plan
 
     }
 

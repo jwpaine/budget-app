@@ -1,7 +1,7 @@
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
-export const Create = async ({ customerId, plan_id }: { customer: any, plan_id: string }) => {
+export const Create = async ({ customerId, price_id }: { customer: any, price_id: string }) => {
 
     console.log('creating subscription')
 
@@ -14,7 +14,7 @@ export const Create = async ({ customerId, plan_id }: { customer: any, plan_id: 
         customer: customerId,
         items: [
             {
-                plan: plan_id
+                price: price_id
             }
         ]
     }

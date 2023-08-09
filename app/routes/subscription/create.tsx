@@ -12,6 +12,7 @@ import { Retrieve as RetrieveCustomer } from "~/components/stripe/Customer";
 import { Retrieve as RetrieveSubscription } from "~/components/stripe/Subscription";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
+const stripe_price = process.env.STRIPE_PRICE
 
 export async function action({ request, params }: ActionArgs) {
 
@@ -21,6 +22,10 @@ export async function action({ request, params }: ActionArgs) {
     const formData = await request.formData();
     const user = await getUserById({ id: userId, customer: true });
 
+    if (!stripe_price) {
+        console.log("Product price not found")
+        return json({ error: "An error occurred. Please try again later" })
+    }
 
     if (user?.customer?.subscriptionStatus == 'active') {
         console.log("Subscription already active")
@@ -78,7 +83,7 @@ export async function action({ request, params }: ActionArgs) {
     //     return json({ error: plan.error })
     // }
 
-    const stripeSubscription = await CreateStripeSubscription({ customerId: stripeCustomerId, plan_id: "plan_OIf6Sgh3Nfwo0F" })
+    const stripeSubscription = await CreateStripeSubscription({ customerId: stripeCustomerId, price_id: stripe_price })
 
     if (stripeSubscription?.error) {
         return json({ error: stripeSubscription.error })

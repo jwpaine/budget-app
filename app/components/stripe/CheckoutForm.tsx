@@ -4,7 +4,7 @@ import { Elements, CardElement, useElements, useStripe } from "@stripe/react-str
 import { loadStripe } from "@stripe/stripe-js";
 import React from "react";
 
-export default function Checkout({ stripeKey, stripeClientSecret, updatePayment, paymentUpdated, subscription }: { stripeKey: string, stripeClientSecret: string, updatePayment: boolean, paymentUpdated: () => void, subscription: any }) {
+export default function Checkout({ stripeKey, stripeClientSecret, updatePayment, subscription }: { stripeKey: string, stripeClientSecret: string, updatePayment: boolean, subscription: any }) {
   const stripePromise = loadStripe(stripeKey);
 
   
@@ -16,12 +16,12 @@ export default function Checkout({ stripeKey, stripeClientSecret, updatePayment,
 
   return (
     <Elements stripe={stripePromise} >
-      <CheckoutForm stripeClientSecret={stripeClientSecret} updatePayment={updatePayment} paymentUpdated={paymentUpdated} subscription={subscription} />
+      <CheckoutForm stripeClientSecret={stripeClientSecret} updatePayment={updatePayment}  subscription={subscription} />
     </Elements>
   );
 }
 
-function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated, subscription }: { stripeClientSecret: string, updatePayment: boolean, paymentUpdated: () => void, subscription: any }) {
+function CheckoutForm({ stripeClientSecret, updatePayment, subscription }: { stripeClientSecret: string, updatePayment: boolean, subscription: any }) {
   const stripe = useStripe();
   const elements = useElements();
   const [stripeError, setStripeError] = React.useState("");
@@ -31,7 +31,7 @@ function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated, subsc
     event.preventDefault();
 
     // clear stripeError:
-    setStripeError(null);
+    setStripeError("");
 
     // Ensure the CardElement is ready and mounted before attempting to create the payment method
     if (!elements || !elements.getElement(CardElement)) {
@@ -68,9 +68,7 @@ function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated, subsc
     );
     // if no error returned, return to account page:
     // @TODO: bulletproof this:
-    if (!subscription.data?.error) {
-      paymentUpdated()
-    }
+   
 
 
 
@@ -100,6 +98,7 @@ function CheckoutForm({ stripeClientSecret, updatePayment, paymentUpdated, subsc
       {/* Display any error that happens when processing the payment */}
       {subscription?.data?.error && <div className="text-red-500">{subscription?.data?.error}</div>}
       {stripeError != "" && <div className="text-red-500">{stripeError}</div>}
+
 
 
     </form>

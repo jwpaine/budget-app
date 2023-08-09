@@ -163,7 +163,7 @@ export default function Budget() {
 
       {subscription?.data?.status == "active" ? (<div className="flex flex-col p-2 items-center">
         <span className="text-white text-center text-2xl mb-5">Thank you for subscribing!</span>
-        <span className="text-white text-center mb-10">Next payment ($7.00): {subscription?.data?.nextBillingDate}</span>
+        <span className="text-white text-center mb-10">Next payment ($5.00): {subscription?.data?.nextBillingDate}</span>
 
         {renderPaymentMethods()}
 
@@ -189,7 +189,7 @@ export default function Budget() {
           <span className="text-white text-center w-full text-xl">Submitting, please wait...</span>
         ) : (
           <>
-            <span className="w-full text-white text-center text-xl">Subscribe now for $7/month</span>
+            <span className="w-full text-white text-center text-xl">Subscribe now for $5/month</span>
             <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={false} subscription={subscription} />
           </>
         )}
@@ -225,10 +225,7 @@ export default function Budget() {
       </header>
       <div className="flex flex-col p-2 items-center">
 
-        <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={true} subscription={subscription} paymentUpdated={() => {
-          setPaymentUpdated(true)
-          setUpdatePaymentMethod(false)
-        }} />
+        <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={true} subscription={subscription} />
 
         <button
           className="text-blue-100 hover:text-blue-200 mt-6 mb-5"
