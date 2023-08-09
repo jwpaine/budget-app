@@ -22,17 +22,17 @@ export default function Index() {
   // const user = useOptionalUser();
   return (
     <main className="flex flex-col bg-gray-900 w-full items-center">
-      <section className="flex flex-col lg:flex-row justify-center content-center items-center lg:items-start w-full max-w-6xl p-10">
+      <section className="flex flex-col justify-center content-center items-center lg:items-start w-full max-w-6xl p-10">
 
-        <div className="w-full">
+       
           <h1 className="text-5xl md:text-7xl text-white font-bold">Budgeting</h1>
           <h1 className="text-6xl md:text-8xl text-white font-bold">Made</h1>
           <h1 className="text-7xl md:text-9xl text-emerald-400 font-bold">Simple</h1>
           <p className="text-sky-100 text-2xl py-5 text-center lg:text-left">
-            Manage your spending, save towards goals, and pay off debt. <br /> It all starts with a budget.
+            Manage your spending, save towards goals, and pay off debt. It all starts with a budget.
           </p>
 
-        </div>
+     
 
 
 
@@ -49,7 +49,7 @@ export default function Index() {
             </p>
 
             <Link to="/budget">
-              <button className="bg-emerald-400 hover:bg-emerald-500 text-gray-800 text-xl font-bold py-4 px-6 rounded mt-10">
+              <button className="bg-emerald-400 hover:bg-emerald-500 text-gray-800 text-xl font-bold py-4 px-6 rounded mt-10 w-full lg:max-w-fit mb-10 lg:mb-0">
                 Get Started
               </button>
             </Link>
