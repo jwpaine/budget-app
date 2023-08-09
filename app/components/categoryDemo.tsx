@@ -28,7 +28,7 @@ export default function CategoryDemo() {
 
             <div className=" flex justify-between px-3 bg-gray-600 hover:bg-gray-500 p-2 border border-b border-slate-700">
                 <div className="flex flex-col w-40"><span className="text-white text-m font-bold">🏋 Gym</span>
-                    <span className="text-xs text-white">2023-07-15</span>
+                    <span className="text-xs text-white">2023-08-01</span>
                 </div>
                 <div className="grid grid-cols-4 gap-4 w-full max-w-xl ">
                     <span className="flex flex-col justify-center text-right text-white">45</span>
@@ -40,7 +40,7 @@ export default function CategoryDemo() {
 
             <div className=" flex justify-between px-3 bg-gray-600 hover:bg-gray-500 p-2 border border-b border-slate-700">
                 <div className="flex flex-col w-40"><span className="text-white text-m font-bold">📱 Phone</span>
-                    <span className="text-xs text-white">2023-07-15</span>
+                    <span className="text-xs text-white">2023-08-15</span>
                 </div>
                 <div className="grid grid-cols-4 gap-4 w-full max-w-xl ">
                     <span className="flex flex-col justify-center text-right text-white">100</span>
@@ -52,7 +52,7 @@ export default function CategoryDemo() {
 
             <div className=" flex justify-between px-3 bg-gray-600 hover:bg-gray-500 p-2 border border-b border-slate-700">
                 <div className="flex flex-col w-40"><span className="text-white text-m font-bold">🏠 Rent</span>
-                    <span className="text-xs text-white">2023-07-15</span>
+                    <span className="text-xs text-white">2023-08-30</span>
                 </div>
                 <div className="grid grid-cols-4 gap-4 w-full max-w-xl ">
                     <span className="flex flex-col justify-center text-right text-white">600</span>
