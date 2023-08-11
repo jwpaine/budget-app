@@ -36,6 +36,8 @@
   ],
   "dependencies": {
     "@isaacs/express-prometheus-middleware": "^1.2.1",
+    "@microsoft/applicationinsights-react-js": "^17.0.0",
+    "@microsoft/applicationinsights-web": "^3.0.2",
     "@microsoft/microsoft-graph-client": "^3.0.5",
     "@prisma/client": "^5.0.0",
     "@remix-run/css-bundle": "^1.18.1",
