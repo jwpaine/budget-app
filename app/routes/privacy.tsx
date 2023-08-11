@@ -25,7 +25,7 @@ export default function Privacy() {
                     Questions or concerns?
                     Reading this privacy notice will help you understand your privacy rights and choices.
                     If you do not agree with our policies and practices, please do not use our Services. If you still have any questions or concerns,
-                    please contact us at jpaine@dollargrad.com
+                    please contact us at dollargrad.com/help
                 </p>
 
                 <h1 className="text-3xl text-white text-center">
@@ -277,7 +277,7 @@ export default function Privacy() {
                     Most Web browsers are set to accept cookies by default. If you prefer, you can usually choose to set your browser to
                     remove cookies and to reject cookies. If you choose to remove cookies or reject cookies, this could affect certain features or
                     services of our Services. You may also opt out of interest-based advertising by advertisers on our Services.
-                    If you have questions or comments about your privacy rights, you may email us at jpaine@dollargrad.com.
+                    If you have questions or comments about your privacy rights, you may contact us at dollargrad.com/help
                 </p>
 
                 <h1 className="text-3xl text-white text-center">
@@ -414,7 +414,7 @@ export default function Privacy() {
                     DOLLARGRAD LLC will not sell personal data in the future belonging to website visitors,
                     users, and other consumers.Exercise your rights provided under the Virginia CDPA
                     More information about our data collection and sharing practices
-                    can be found in this privacy notice.You may contact us by email at jpaine@dollargrad.com,
+                    can be found in this privacy notice.You may contact us by email at dollargrad.com/help
                     by visiting dollargrad.com/contact, or by referring to the contact details at the bottom of this document.
                 </p>
 
@@ -428,7 +428,7 @@ export default function Privacy() {
                     The response period may be extended once by forty-five (45) additional days when reasonably necessary.
                     We will inform you of any such extension within the initial 45-day response period, together with the reason
                     for the extension.Right to appealIf we decline to take action regarding your request, we will inform you of our
-                    decision and reasoning behind it. If you wish to appeal our decision, please email us at jpaine@dollargrad.com.
+                    decision and reasoning behind it. If you wish to appeal our decision, please email us at dollargrad.com/help
                     Within sixty (60) days of receipt of an appeal, we will inform you in writing of any action taken or not taken
                     in response to the appeal, including a written explanation of the reasons for the decisions.
                     If your appeal if denied, you may contact the Attorney General to submit a complaint.
