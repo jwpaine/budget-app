@@ -3,23 +3,26 @@ import { json, redirect } from "@remix-run/node";
 
 // import {Button} from "../components/Button"
 
-import { getUserId } from "~/auth.server";
+import { getUserId, signupLink } from "~/auth.server";
 
 import CategoryDemo from "~/components/categoryDemo";
 import AccountDemo from "~/components/accountDemo";
-import { Link } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
   if (userId) return redirect("/budget");
 
-  return json({});
+  const signup_link = signupLink()
+
+  return json({signupLink : signup_link});
 }
 
 
 export default function Index() {
   // const user = useOptionalUser();
+  const data = useLoaderData();
   return (
     <main className="flex flex-col bg-gray-900 w-full items-center">
       <section className="flex flex-col justify-center content-center items-center lg:items-start w-full max-w-6xl p-10">
@@ -55,7 +58,7 @@ export default function Index() {
 
      
 
-            <Link to="/budget">
+            <Link to={data.signupLink}>
               <button className="bg-emerald-400 hover:bg-emerald-500 text-gray-800 text-xl font-bold py-4 px-6 rounded mt-10 w-full lg:max-w-fit mb-10 lg:mb-0">
                 Get Started
               </button>

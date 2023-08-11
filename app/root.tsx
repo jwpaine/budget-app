@@ -13,7 +13,7 @@ import {
 import { cssBundleHref } from "@remix-run/css-bundle";
 
 import tailwindStylesheetUrl from "~/styles/tailwind.css";
-import { getUserId } from "~/auth.server";
+import { getUserId, signupLink } from "~/auth.server";
 
 import Header  from "./components/Header"
 import Footer  from "./components/Footer"
@@ -28,7 +28,10 @@ export const links: LinksFunction = () => [
 ];
 
 export const loader = async ({ request }: LoaderArgs) => {
-  return json({ userId: await getUserId(request) });
+  const signup_link = signupLink()
+
+
+  return json({ userId: await getUserId(request), signupLink : signup_link });
 };
 
 export default function App() {
@@ -42,7 +45,7 @@ export default function App() {
         <Links />
       </head>
       <body className="flex flex-col bg-gray-900 h-full">
-        <Header userId={data.userId} />
+        <Header userId={data.userId} signupLink={data.signupLink} />
         <Outlet />
         <Footer />
        

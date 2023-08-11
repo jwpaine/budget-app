@@ -44,6 +44,10 @@ export async function getSession(request: Request) {
     return sessionStorage.getSession(cookie);
 }
 
+export function signupLink() {
+    return `${cognitoDomain}/signup?client_id=${clientId}&response_type=code&scope=email+openid&redirect_uri=${cognitoRedirect}&state=/`;
+}
+
 export async function getAuthCode() {
     console.log("Fetching Authorization code")
    // let redirectUri = "http://localhost:3000/auth"
