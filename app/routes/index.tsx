@@ -36,23 +36,31 @@ export default function Index(props: { insights: ApplicationInsights }) {
   const recordClick = async () => {
     // Track event only on the client side
     if (typeof window !== "undefined") {
-      await insights.trackEvent({ name: 'Get Started Clicked (main)'});
-    } 
+      await insights.trackEvent({ name: 'Get Started Clicked (main)' });
+    }
   };
 
 
   return (
     <main className="flex flex-col bg-gray-900 w-full items-center">
-      <section className="flex flex-col justify-center content-center items-center lg:items-start w-full max-w-6xl p-10">
+      <section className="flex flex-col justify-center content-center items-center lg:items-start w-full max-w-6xl p-5 mb-10">
 
 
         <h1 className="text-5xl md:text-7xl text-white font-bold">Budgeting</h1>
-        <h1 className="text-6xl md:text-8xl text-white font-bold">Made</h1>
+        <h1 className="text-6xl md:text-8xl text-white font-bold py-2">Made</h1>
         <h1 className="text-7xl md:text-9xl text-emerald-400 font-bold">Simple</h1>
-        <p className="text-sky-100 text-2xl py-5 text-center lg:text-left">
-          Manage your spending, save towards goals, and pay off debt. It all starts with a budget.
-
+        <p className="text-sky-100 text-2xl py-5 mt-5 text-center lg:text-left">
+          We make it <span className="font-bold ">easy</span> to track monthly expenses, and budget for the road ahead.
         </p>
+        <Link to={data.signupLink} className="w-full lg:max-w-fit ">
+          <button className="bg-emerald-400 hover:bg-emerald-300 text-gray-900 text-xl font-bold py-4 px-6 rounded w-full"
+            onClick={() => recordClick()}
+          >
+            Try DollarGrad for Free
+          </button>
+        </Link>
+
+
 
 
 
@@ -60,31 +68,27 @@ export default function Index(props: { insights: ApplicationInsights }) {
 
 
       </section>
-      <section className="bg-gray-800 p-10 w-full max-w-6xl rounded">
+      <section className="bg-gray-800 p-5 w-full max-w-6xl rounded mb-10">
 
-        <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between w-full ">
+        <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between w-full mb-5">
 
-          <div className="flex flex-col ">
-            <p className="text-sky-100 text-xl lg:max-w-xl text-center lg:text-left lg:pr-12">
-              We make it <span className="font-bold ">easy</span> to track monthly expenses, and budget for the road ahead. <br /> <br /> Whether you
-              want to save money for a dream vacation, pay off debt, or build an emergency fund, DollarGrad can help.
+          <div className="flex flex-col mb-10 lg:mb-0">
+            <span className="text-white text-2xl font-bold text-center lg:text-left mb-5">It all starts with a budget </span>
+            {/* <p className="text-sky-100 text-xl lg:max-w-xl text-center lg:text-left lg:pr-12">
+              Whether you want to stop living paycheck-to-paycheck, save money for that dream vacation, pay off debt, or build an emergency fund, DollarGrad makes it simple.
 
-            </p>
-            <p className="text-sky-100 text-xl lg:max-w-xl text-center lg:text-left lg:pr-12 mt-10">
-              Get started with a <span className="text-emerald-400">free 2 week trial</span> (no card required), and then only $5/month after that! Hello, budgeting!
-            </p>
+            </p> */}
+            <ul className="text-white text-2xl">
+              <li className="py-2">✅ Stop living paycheck-to-paycheck</li>
+              <li className="py-2">🐖 Build an emergency fund</li>
+              <li className="py-2">💳 Pay off debt</li>
+              <li className="py-2">🏝️ Save for that dream vacation</li>
+              <li className="py-2">📈 See where my money is going</li>
+            </ul>
+
+            {/* <span className="text-white text-2xl font-bold text-center lg:text-left mb-5">See where my money is going</span> */}
 
 
-
-            <Link to={data.signupLink}>
-              <button className="bg-emerald-400 hover:bg-emerald-500 text-gray-800 text-xl font-bold py-4 px-6 rounded mt-10 w-full lg:max-w-fit mb-10 lg:mb-0"
-                onClick={() =>  recordClick() }
-              >
-                Get Started
-              </button>
-            </Link>
-
-          
 
 
           </div>
@@ -92,6 +96,13 @@ export default function Index(props: { insights: ApplicationInsights }) {
           <CategoryDemo />
 
         </div>
+        <Link to={data.signupLink} className="w-full lg:max-w-fit ">
+          <button className="bg-sky-400 hover:bg-sky-300 text-gray-900 text-xl font-bold py-4 px-6 rounded w-full lg:max-w-fit mt-5"
+            onClick={() => recordClick()}
+          >
+            Start My Free Trial
+          </button>
+        </Link>
 
       </section>
       {/* <section className="flex flex-col content-center items-center justify-center bg-white p-10 w-full max-w-6xl rounded mt-5">

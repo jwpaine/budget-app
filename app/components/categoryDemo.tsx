@@ -9,17 +9,17 @@ export default function CategoryDemo() {
 
             <header >
                
-                <div className="border-bottom my-0.5 flex flex-col px-3 py-0.5">
+                <div className="border-bottom my-0.5 flex flex-col pl-3 py-0.5">
                     <div className="flex justify-between">
                         <div className="flex flex-col w-40">
                             <span className="text-white text-s font-bold">Category</span>
                             <span className="text-xs text-white">Needed By Date</span>
                         </div>
                         <div className="grid grid-cols-4 w-full max-w-xl ">
-                            <span className="flex flex-col justify-center text-right text-white"> Budgeted </span>
-                            <span className="flex flex-col justify-center text-right text-white"> Spent </span>
-                            <span className="flex flex-col justify-center text-right text-white"> Balance </span>
-                            <span className="flex flex-col justify-center text-right text-white"> Needed </span>
+                            <span className="flex flex-col justify-center text-right text-white text-sm mr-2"> Budgeted </span>
+                            <span className="flex flex-col justify-center text-right text-white text-sm mr-2"> Spent </span>
+                            <span className="flex flex-col justify-center text-right text-white text-sm mr-2"> Balance </span>
+                            <span className="flex flex-col justify-center text-right text-white text-sm mr-2"> Needed </span>
                         </div>
                     </div>
                 </div>
