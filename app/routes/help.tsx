@@ -233,12 +233,12 @@ export default function Help() {
         {data.account && chatBubble({ message: `What can we help you with? Select an option below to get started:` })}
         {tag == "" && (data.account || email) && (
           <>
-            <button className="rounded text-white bg-blue-500 p-2 ml-1" type="button" onClick={() => setTag("Billing")}>Billing</button>
-            <button className="rounded text-white bg-blue-500 p-2 ml-1" type="button" onClick={() => setTag("Login")}>Login</button>
-            <button className="rounded text-white bg-blue-500 p-2 ml-1" type="button" onClick={() => setTag("Budget")} >My Budget</button>
-            <button className="rounded text-white bg-blue-500 p-2 ml-1" type="button" onClick={() => setTag("Suggestion")} >Suggestions</button>
-            <button className="rounded text-white bg-blue-500 p-2 ml-1" type="button" onClick={() => setTag("Bug")} >Report a bug</button>
-            <button className="rounded text-white bg-blue-500 p-2 ml-1" type="button" onClick={() => setTag("Other")}>Other</button>
+            <button className="rounded text-white bg-blue-500 p-3 m-1" type="button" onClick={() => setTag("Billing")}>Billing</button>
+            <button className="rounded text-white bg-blue-500 p-3 m-1" type="button" onClick={() => setTag("Login")}>Login</button>
+            <button className="rounded text-white bg-blue-500 p-3 m-1" type="button" onClick={() => setTag("Budget")} >My Budget</button>
+            <button className="rounded text-white bg-blue-500 p-3 m-1" type="button" onClick={() => setTag("Suggestion")} >Suggestions</button>
+            <button className="rounded text-white bg-blue-500 p-3 m-1" type="button" onClick={() => setTag("Bug")} >Report a bug</button>
+            <button className="rounded text-white bg-blue-500 p-3 m-1" type="button" onClick={() => setTag("Other")}>Other</button>
 
           </>
         )}
@@ -247,7 +247,8 @@ export default function Help() {
         {message && chatBubble({ message: message, type: "customer" })}
         {message && deliverMessage?.data?.success && chatBubble({ message: `Message received! We'll follow up with you soon!` })}
         {deliverMessage?.data?.error && chatBubble({ message: `We encountered an error when attempting to deliver your message. Our support team has been made aware of the issue. Please try again later.` })}
-
+        
+        
 
 
       </section>

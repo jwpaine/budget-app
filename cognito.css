@@ -1,25 +1,9 @@
 
 .background-customizable {
     box-shadow: 0px 2px 20px rgb(17, 24, 39), 0 0 0 10000px rgb(17, 24, 39);
-    background-color: rgb(17, 24, 39);
-  }
-
-  .textDescription-customizable  {
-    color: #FFF;
-  }
-
-  .label-customizable {
-    color: #FFF;
-  }
-
-  .redirect-customizable {
-    color: #FFF;
   }
 
   .banner-customizable {
     background-color: rgb(17, 24, 39);
   }
 
-  .redirect-customizable > a {
-    color: #FFF;
-  }
