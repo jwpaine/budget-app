@@ -49,7 +49,7 @@ export default function Index(props: { insights: ApplicationInsights }) {
         <h1 className="text-5xl md:text-7xl text-white font-bold">Budgeting</h1>
         <h1 className="text-6xl md:text-8xl text-white font-bold py-2">Made</h1>
         <h1 className="text-7xl md:text-9xl text-emerald-400 font-bold">Simple</h1>
-        <p className="text-sky-100 text-2xl py-5 mt-5 text-center lg:text-left">
+        <p className="text-sky-100 text-xl lg:text-2xl py-5 my-5 text-center lg:text-left">
           We make it <span className="font-bold ">easy</span> to track monthly expenses, and budget for the road ahead.
         </p>
         <Link to={data.signupLink} className="w-full lg:max-w-fit ">
@@ -78,7 +78,7 @@ export default function Index(props: { insights: ApplicationInsights }) {
               Whether you want to stop living paycheck-to-paycheck, save money for that dream vacation, pay off debt, or build an emergency fund, DollarGrad makes it simple.
 
             </p> */}
-            <ul className="text-white text-2xl">
+            <ul className="text-white text-xl lg:text-2xl">
               <li className="py-2">✅ Stop living paycheck-to-paycheck</li>
               <li className="py-2">🐖 Build an emergency fund</li>
               <li className="py-2">💳 Pay off debt</li>
