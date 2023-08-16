@@ -184,6 +184,8 @@ export default function NewNotePage() {
             actionData?.errors?.balance ? "title-error" : undefined
           }
           hidden={accountState != 'balance'}
+          type="number"
+          step="0.01"
         />
 
         <div className="flex w-full">
