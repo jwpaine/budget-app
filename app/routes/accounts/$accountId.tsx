@@ -293,6 +293,8 @@ export default function AccountDetailsPage() {
               defaultValue={data.account.balance}
               onChange={handleReconcileChange}
               className="w-small"
+              step="0.01"
+              type="number"
             />
           </div>
 
@@ -375,6 +377,8 @@ export default function AccountDetailsPage() {
               name="value"
               placeholder="Amount"
               className=""
+              step="0.01"
+              type="number"
             />
           </div>
 

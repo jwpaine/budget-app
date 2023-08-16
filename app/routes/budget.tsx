@@ -473,6 +473,7 @@ export default function Budget() {
                             name="currentValue"
                             defaultValue={Number(Number(budgeted) + Math.abs(Number(balance))).toFixed(2)}
                             type="hidden"
+                         
                           />
 
                           <button
@@ -547,6 +548,8 @@ export default function Budget() {
                           defaultValue={`${budgeted}`}
                           placeholder="Budgeted"
                           className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
+                          type="number"
+                          step="0.01"
 
                         />
                       </div>
@@ -558,6 +561,8 @@ export default function Budget() {
                           defaultValue={needed}
                           placeholder="Needed"
                           className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
+                          type="number"
+                          step="0.01"
                         />
 
                       </div>

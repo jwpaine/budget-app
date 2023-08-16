@@ -185,6 +185,8 @@ export default function Transaction(props: TransactionProps) {
                         <input
                             ref={inRef}
                             name="inflow"
+                            type="number"
+                            step="0.01"
                             defaultValue={props.transaction ? props.transaction.inflow : ""}
                             placeholder="In"
                             className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
@@ -196,6 +198,8 @@ export default function Transaction(props: TransactionProps) {
                         <input
                             ref={outRef}
                             name="outflow"
+                            type="number"
+                            step="0.01"
                             defaultValue={props.transaction ? props.transaction.outflow : ""}
                             placeholder="Out"
                             className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
