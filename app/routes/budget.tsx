@@ -319,7 +319,9 @@ export default function Budget() {
       <section className="flex w-full flex-col">
         <header className="bg-black">
 
-          <div className="flex h-200 w-full justify-between p-2">
+          {/* <div className="flex h-200 w-full justify-between p-2"> */}
+            <div className="h-200 w-full p-2 grid grid-cols-3">             
+
             <button className="text-slate-300 p-2" onClick={() => regressBudgetWindow()}> {renderCalendar(2).monthString}</button>
 
             <div className="flex flex-col">
