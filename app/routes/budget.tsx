@@ -317,7 +317,7 @@ export default function Budget() {
       <SideBar accounts={data.accounts} />
 
       <section className="flex w-full flex-col">
-        <header className="bg-black">
+        <header className="bg-black">ShadoWKobE123*!
 
           {/* <div className="flex h-200 w-full justify-between p-2"> */}
             <div className="h-200 w-full p-2 grid grid-cols-3">             
@@ -550,8 +550,6 @@ export default function Budget() {
                           defaultValue={`${budgeted}`}
                           placeholder="Budgeted"
                           className="m-1 rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none "
-                          type="number"
-                          step="0.01"
 
                         />
                       </div>
