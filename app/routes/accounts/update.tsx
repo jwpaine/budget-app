@@ -20,7 +20,7 @@ export async function action({ request, params }: ActionArgs) {
 
   const formData = await request.formData();
 
-  const id = formData.get("accountId") as string;
+  const id = Number(formData.get("accountId")) as number;
   const name = formData.get("name") as string;
   const type = formData.get("type") as string;
 
