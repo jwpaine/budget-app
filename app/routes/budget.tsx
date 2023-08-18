@@ -69,12 +69,12 @@ export async function loader({ request, params }: LoaderArgs) {
   const account = await getUserById({ id: userId, budgets: true })
 
   // obtain account createdAt. If greater than two weeks and account.customer.subscription.status != 'active', than redirect to /account:
-  if(await trialExpired({ account })) {
+  if (await trialExpired({ account })) {
     return redirect("/account")
   }
 
 
-  if(!account) return redirect("/logout")
+  if (!account) return redirect("/logout")
   const budgetId = Number(account?.activeBudget) as number
 
   console.log("using budgetId: ", budgetId)
@@ -310,6 +310,31 @@ export default function Budget() {
     return { cash, toBudget }
   }
 
+  const generateColumnSums = () => {
+    let budgeted = 0
+    let balance = 0
+    let spent = 0
+    let needed = 0
+
+    categories?.data?.categories?.map((c: any) => {
+     
+      budgeted += Number(c.currentValue)
+      balance += Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)
+      spent += Number(c.inflow) - Number(c.outflow)
+      needed += Number(c.needed)
+    })
+
+    console.log("got budgeted: ", budgeted)
+
+    return {
+      budgeted: Math.round(budgeted * 1e2) / 1e2,
+      balance: Math.round(balance * 1e2) / 1e2,
+      spent: Math.round(spent * 1e2) / 1e2,
+      needed: Math.round(needed * 1e2) / 1e2
+    }
+
+  }
+
 
   return (
     <main className="flex flex-col md:flex-row">
@@ -317,10 +342,10 @@ export default function Budget() {
       <SideBar accounts={data.accounts} />
 
       <section className="flex w-full flex-col">
-        <header className="bg-black">ShadoWKobE123*!
+        <header className="bg-black">
 
           {/* <div className="flex h-200 w-full justify-between p-2"> */}
-            <div className="h-200 w-full p-2 grid grid-cols-3">             
+          <div className="h-200 w-full p-2 grid grid-cols-3">
 
             <button className="text-slate-300 p-2" onClick={() => regressBudgetWindow()}> {renderCalendar(2).monthString}</button>
 
@@ -358,7 +383,7 @@ export default function Budget() {
           <div className={`border-bottom my-0.5 flex flex-col px-3 py-0.5 bg-slate-300`}>
             <div className="flex justify-between">
               <div className="flex flex-col w-40">
-                <span className="text-slac-800 text-s font-bold">
+                <span className="text-sm lg:text-base font-bold">
                   Category
                 </span>
                 <span className="text-xs text-slate-800">
@@ -366,10 +391,22 @@ export default function Budget() {
                 </span>
               </div>
               <div className={`grid grid-cols-4 w-full max-w-xl `}>
-                <span className={`flex flex-col justify-center text-right`}> Budgeted </span>
-                <span className={`flex flex-col justify-center text-right`}> Spent </span>
-                <span className={`flex flex-col justify-center text-right`}> Balance </span>
-                <span className={`flex flex-col justify-center text-right`}> Needed </span>
+                <div className={`flex flex-col justify-center text-right items-end mr-2`}> 
+                  <span className="text-sm lg:text-base font-bold">Budgeted</span>
+                  <span className="text-slate-800 rounded max-w-fit">{generateColumnSums().budgeted}</span>
+                </div>
+                <div className={`flex flex-col justify-center text-right items-end`}> 
+                  <span className="text-sm lg:text-base font-bold">Activity</span>
+                  <span className="text-slate-800 rounded max-w-fit">{generateColumnSums().spent}</span>
+                </div>
+                <div className={`flex flex-col justify-center text-right items-end`}> 
+                  <span className="text-sm lg:text-base font-bold">Balance</span>
+                  <span className="text-slate-800 rounded max-w-fit">{generateColumnSums().balance}</span>
+                </div>
+                <div className={`flex flex-col justify-center text-right items-end`}> 
+                  <span className="text-sm lg:text-base font-bold">Needed</span>
+                  <span className="text-slate-800 rounded max-w-fit">{generateColumnSums().needed}</span>
+                </div>
               </div>
             </div>
 
@@ -475,7 +512,7 @@ export default function Budget() {
                             name="currentValue"
                             defaultValue={Number(Number(budgeted) + Math.abs(Number(balance))).toFixed(2)}
                             type="hidden"
-                         
+
                           />
 
                           <button
@@ -506,7 +543,7 @@ export default function Budget() {
                         type="hidden"
                       />
 
-                  
+
 
                       <input
                         name="window"
@@ -612,7 +649,7 @@ export default function Budget() {
                     {c.category || "-"}
                   </span>
                   {c.due && <span className="text-xs text-white">
-                    {new Date(c.due).toISOString().slice(0, 10) }
+                    {new Date(c.due).toISOString().slice(0, 10)}
                   </span>}
                 </div>
                 <div className={`grid grid-cols-4 gap-4 w-full max-w-xl `}>
@@ -623,9 +660,9 @@ export default function Budget() {
                   <span className={`
                     flex flex-col justify-center text-right 
                     ${Number(balance) == 0 && 'text-white'} 
-                    ${Number(balance) < 0 && 'text-red-500 font-bold border-l-4 border-red-500'} 
-                    ${Number(balance) > 0 && Number(balance) >= Number(needed) && 'text-emerald-300 font-bold border-l-4 border-emerald-300'} 
-                    ${Number(balance) > 0 && Number(balance) < Number(needed) && 'text-orange-300 font-bold border-l-4 border-orange-300'}
+                    ${Number(balance) < 0 && 'text-red-500 font-bold '} 
+                    ${Number(balance) > 0 && Number(balance) >= Number(needed) && 'text-emerald-300 font-bold '} 
+                    ${Number(balance) > 0 && Number(balance) < Number(needed) && 'text-orange-300 font-bold '}
                   `}>{balance}</span>
                   <span className={`flex flex-col justify-center text-right text-white`}>{needed}</span>
 
