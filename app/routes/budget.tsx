@@ -323,9 +323,7 @@ export default function Budget() {
       spent += Number(c.inflow) - Number(c.outflow)
       needed += Number(c.needed)
     })
-
-    console.log("got budgeted: ", budgeted)
-
+    
     return {
       budgeted: Math.round(budgeted * 1e2) / 1e2,
       balance: Math.round(balance * 1e2) / 1e2,

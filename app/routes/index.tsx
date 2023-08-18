@@ -43,31 +43,32 @@ export default function Index(props: { insights: ApplicationInsights }) {
 
   return (
     <main className="flex flex-col bg-gray-900 w-full items-center">
-      <section className="flex flex-col justify-center content-center items-center lg:items-start w-full max-w-6xl p-5 mb-10">
+      <section className="flex flex-col lg:flex-row justify-center content-center items-center lg:items-start w-full max-w-6xl p-5 ">
 
+        <div className="flex flex-col justify-center content-center items-center lg:items-start w-full ">
+          <h1 className="text-5xl md:text-7xl text-white font-bold">Budgeting</h1>
+          <h1 className="text-6xl md:text-8xl text-white font-bold py-2">Made</h1>
+          <h1 className="text-7xl md:text-9xl text-emerald-400 font-bold">Simple</h1>
+          <p className="text-sky-100 text-xl lg:text-2xl py-5 my-5 text-center lg:text-left">
+            We make it <span className="font-bold ">easy</span> to track monthly expenses, and budget for the road ahead.
+          </p>
+          <Link to={data.signupLink} className="w-full lg:max-w-fit ">
+            <button className="bg-emerald-400 hover:bg-emerald-300 text-gray-900 text-xl font-bold py-4 px-6 rounded w-full"
+              onClick={() => recordClick()}
+            >
+              Try DollarGrad for Free
+            </button>
+          </Link>
+        </div>
 
-        <h1 className="text-5xl md:text-7xl text-white font-bold">Budgeting</h1>
-        <h1 className="text-6xl md:text-8xl text-white font-bold py-2">Made</h1>
-        <h1 className="text-7xl md:text-9xl text-emerald-400 font-bold">Simple</h1>
-        <p className="text-sky-100 text-xl lg:text-2xl py-5 my-5 text-center lg:text-left">
-          We make it <span className="font-bold ">easy</span> to track monthly expenses, and budget for the road ahead.
-        </p>
-        <Link to={data.signupLink} className="w-full lg:max-w-fit ">
-          <button className="bg-emerald-400 hover:bg-emerald-300 text-gray-900 text-xl font-bold py-4 px-6 rounded w-full"
-            onClick={() => recordClick()}
-          >
-            Try DollarGrad for Free
-          </button>
-        </Link>
-
-
-
+        <iframe className="mt-5 w-full"  height="315" src="https://www.youtube.com/embed/N5ees9IOIa0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 
 
 
 
       </section>
+
       <section className="bg-gray-800 p-5 w-full max-w-6xl rounded mb-10">
 
         <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between w-full mb-5">
