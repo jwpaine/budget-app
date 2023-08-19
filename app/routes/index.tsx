@@ -58,7 +58,7 @@ export default function Index(props: { insights: ApplicationInsights }) {
               <button className="bg-emerald-400 hover:bg-emerald-300 text-gray-900 text-xl font-bold py-4 px-6 rounded w-full"
                 onClick={() => recordClick()}
               >
-                Signup now
+                Sign up now
               </button>
 
             </Link>
