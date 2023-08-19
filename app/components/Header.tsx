@@ -28,7 +28,7 @@ const recordClick = async (name: string) => {
         className="flex items-center justify-center text-white px-4 py-3 text-base font-medium shadow-sm sm:px-8 hover:font-bold"
         onClick={() => recordClick( props.userId ? "My Budget Clicked (header)" : "Get Started Clicked (header)")}
       >
-        {props.userId ? "My Budget" : "Get Started"}
+        {props.userId ? "My Budget" : "Create Account"}
       </Link>
 
 

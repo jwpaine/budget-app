@@ -80,7 +80,7 @@ export async function trialExpired({account} : {account: any}) {
   
     console.log(`Account is ${days} days old and subscription status is ${account?.customer?.subscriptionStatus}`)
   
-    if (days > 14 && account?.customer?.subscriptionStatus != 'active') {
+    if (days > 30 && account?.customer?.subscriptionStatus != 'active') {
         console.log(`Trial expired for ${account.email}, redirecting to account`)
       return true
     }

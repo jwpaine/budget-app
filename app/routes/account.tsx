@@ -159,7 +159,7 @@ export default function Budget() {
       const diff = now.getTime() - createdAt.getTime()
       const days = diff / (1000 * 3600 * 24);
 
-      const remaining = 14-days > 0 ? Math.ceil(14 - days) : 0
+      const remaining = 30-days > 0 ? Math.ceil(30 - days) : 0
 
       return remaining
   }
@@ -200,7 +200,7 @@ export default function Budget() {
           <span className="text-white text-center w-full text-xl">Submitting, please wait...</span>
         ) : (
           <>
-            <span className="text-white text-center text-xl mb-5">{getTrialDaysLeft()} days left in your two week trial!</span>
+            <span className="text-white text-center text-xl mb-5">{getTrialDaysLeft()} days left in your 30 day trial!</span>
             <span className="w-full text-white text-center text-2xl">Subscribe now for $5/month</span>
             <CheckoutForm stripeKey={data.stripeKey} stripeClientSecret={data.stripeClientSecret} updatePayment={false} subscription={subscription} />
           </>

@@ -52,16 +52,21 @@ export default function Index(props: { insights: ApplicationInsights }) {
           <p className="text-sky-100 text-xl lg:text-2xl py-5 my-5 text-center lg:text-left">
             We make it <span className="font-bold ">easy</span> to track monthly expenses, and budget for the road ahead.
           </p>
-          <Link to={data.signupLink} className="w-full lg:max-w-fit ">
-            <button className="bg-emerald-400 hover:bg-emerald-300 text-gray-900 text-xl font-bold py-4 px-6 rounded w-full"
-              onClick={() => recordClick()}
-            >
-              Try DollarGrad for Free
-            </button>
-          </Link>
+          <div className="flex flex-col lg:flex-row">
+            <p className="text-white text-center lg:text-left mb-5 lg:mr-5">Try <span className="font-bold">FREE</span> for 30 DAYS  ( No card required ) and then only $5/month if you decide to budget longer!</p>
+            <Link to={data.signupLink} className="w-full lg:max-w-fit ">
+              <button className="bg-emerald-400 hover:bg-emerald-300 text-gray-900 text-xl font-bold py-4 px-6 rounded w-full"
+                onClick={() => recordClick()}
+              >
+                Signup now
+              </button>
+
+            </Link>
+
+          </div>
         </div>
 
-        <iframe className="mt-5 w-full"  height="315" src="https://www.youtube.com/embed/N5ees9IOIa0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        <iframe className="mt-5 w-full" height="315" src="https://www.youtube.com/embed/N5ees9IOIa0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 
 
@@ -79,12 +84,21 @@ export default function Index(props: { insights: ApplicationInsights }) {
               Whether you want to stop living paycheck-to-paycheck, save money for that dream vacation, pay off debt, or build an emergency fund, DollarGrad makes it simple.
 
             </p> */}
-            <ul className="text-white text-xl lg:text-2xl">
+            <ul className="text-white text-xl">
               <li className="py-2">✅ Stop living paycheck-to-paycheck</li>
               <li className="py-2">🐖 Build an emergency fund</li>
               <li className="py-2">💳 Pay off debt</li>
               <li className="py-2">🏝️ Save for that dream vacation</li>
               <li className="py-2">📈 See where my money is going</li>
+              <li>
+                <Link to={data.signupLink} className="w-full lg:max-w-fit ">
+                  <button className="bg-sky-400 hover:bg-sky-300 text-gray-900 text-xl font-bold py-4 px-6 rounded w-full lg:max-w-fit mt-5"
+                    onClick={() => recordClick()}
+                  >
+                    Start My Free Trial
+                  </button>
+                </Link>
+              </li>
             </ul>
 
             {/* <span className="text-white text-2xl font-bold text-center lg:text-left mb-5">See where my money is going</span> */}
@@ -97,13 +111,7 @@ export default function Index(props: { insights: ApplicationInsights }) {
           <CategoryDemo />
 
         </div>
-        <Link to={data.signupLink} className="w-full lg:max-w-fit ">
-          <button className="bg-sky-400 hover:bg-sky-300 text-gray-900 text-xl font-bold py-4 px-6 rounded w-full lg:max-w-fit mt-5"
-            onClick={() => recordClick()}
-          >
-            Start My Free Trial
-          </button>
-        </Link>
+
 
       </section>
       {/* <section className="flex flex-col content-center items-center justify-center bg-white p-10 w-full max-w-6xl rounded mt-5">
