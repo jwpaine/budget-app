@@ -32,6 +32,7 @@ import { Decimal } from "@prisma/client/runtime";
 import SideBar from "~/components/accounts/sidebar";
 import { getUserById } from "~/models/user.server";
 import { r } from "vitest/dist/types-94cfe4b4";
+import { useInsights } from "~/InsightsContext";
 
 // import {
 //   generateTransactionCategories
@@ -117,6 +118,22 @@ export default function Budget() {
   const [showAnalytics, setShowAnalytics] = React.useState(false);
 
   const [budgetWindow, setBudgetWindow] = React.useState("");
+
+
+  let insights = useInsights();
+
+
+
+
+  // create async function called recordClick:
+  const recordClick = async (name: string) => {
+    // Track event only on the client side
+    if (typeof window !== "undefined") {
+      await insights.trackEvent({ name: name });
+      // record username in insights if logged in:
+
+    }
+  };
 
 
 
@@ -317,13 +334,13 @@ export default function Budget() {
     let needed = 0
 
     categories?.data?.categories?.map((c: any) => {
-     
+
       budgeted += Number(c.currentValue)
       balance += Number(c.inflow) - Number(c.outflow) + Number(c.currentValue)
       spent += Number(c.inflow) - Number(c.outflow)
       needed += Number(c.needed)
     })
-    
+
     return {
       budgeted: Math.round(budgeted * 1e2) / 1e2,
       balance: Math.round(balance * 1e2) / 1e2,
@@ -389,19 +406,19 @@ export default function Budget() {
                 </span>
               </div>
               <div className={`grid grid-cols-4 w-full max-w-xl `}>
-                <div className={`flex flex-col justify-center text-right items-end mr-2`}> 
+                <div className={`flex flex-col justify-center text-right items-end mr-2`}>
                   <span className="text-sm lg:text-base font-bold">Budgeted</span>
                   <span className="text-slate-800 rounded max-w-fit">{generateColumnSums().budgeted}</span>
                 </div>
-                <div className={`flex flex-col justify-center text-right items-end`}> 
+                <div className={`flex flex-col justify-center text-right items-end`}>
                   <span className="text-sm lg:text-base font-bold">Activity</span>
                   <span className="text-slate-800 rounded max-w-fit">{generateColumnSums().spent}</span>
                 </div>
-                <div className={`flex flex-col justify-center text-right items-end`}> 
+                <div className={`flex flex-col justify-center text-right items-end`}>
                   <span className="text-sm lg:text-base font-bold">Balance</span>
                   <span className="text-slate-800 rounded max-w-fit">{generateColumnSums().balance}</span>
                 </div>
-                <div className={`flex flex-col justify-center text-right items-end`}> 
+                <div className={`flex flex-col justify-center text-right items-end`}>
                   <span className="text-sm lg:text-base font-bold">Needed</span>
                   <span className="text-slate-800 rounded max-w-fit">{generateColumnSums().needed}</span>
                 </div>
@@ -428,6 +445,7 @@ export default function Budget() {
                   onSubmit={() => {
                     setActiveBudget("")
                     setConfirmDelete(false)
+                    recordClick(`Delete Category: ${c.category}`)
                   }
                   }>
                   <h3 className="text-white text-center text-xl">Remove category {c.category}?</h3>
@@ -480,6 +498,7 @@ export default function Budget() {
                           action="/category/update"
                           onSubmit={() => {
                             setActiveBudget("")
+                            recordClick(`Resolve Category: ${c.category}`)
                           }}
                         >
                           <input
@@ -532,6 +551,7 @@ export default function Budget() {
                     action="/category/update"
                     onSubmit={() => {
                       setActiveBudget("")
+                      recordClick(`Update Category: ${c.category}`)
                     }}
                   >
                     <div className="lg:flex lg:flex-wrap grid grid-cols-2 gap-2 w-full justify-center">
@@ -634,6 +654,7 @@ export default function Budget() {
                 onClick={() => {
                   setConfirmDelete(false)
                   setActiveBudget(c.id)
+                 recordClick(`Category clicked: ${c.category}`)
                 }}
                 className={`flex justify-between px-3 bg-gray-800 hover:bg-gray-700 p-2 border border-b border-slate-700
                   
@@ -679,7 +700,10 @@ export default function Budget() {
 
         <categories.Form
           className={`mb-0.5 flex p-2 bg-gray-800 `}
-          method="post" action="/category/new">
+          method="post" action="/category/new"
+          onSubmit={() => { recordClick(`Added new category`) }}
+          >
+
           <input className={`rounded p-1 bg-gray-300 text-black-primary placeholder-gray-800 focus:outline-none `} ref={nameRef} name="name" placeholder="Category Name" />
           <input
             name="window"
@@ -690,7 +714,8 @@ export default function Budget() {
             defaultValue={data?.account?.activeBudget || ""}
             hidden />
           <button className="flex items-center justify-center rounded-md border border-transparent bg-gray-950 ml-2 px-2 py-1 text-base text-white shadow-sm hover:bg-slate-950 sm:px-8"
-            type="submit">Add Category</button>
+            type="submit"
+          >Add Category</button>
         </categories.Form>
 
 

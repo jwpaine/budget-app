@@ -3,6 +3,7 @@ import { useFetcher } from "@remix-run/react";
 
 import * as React from "react";
 import { D } from "vitest/dist/types-94cfe4b4";
+import { useInsights } from "~/InsightsContext";
 
 interface Transaction {
     id: string;
@@ -44,6 +45,21 @@ export default function Transaction(props: TransactionProps) {
 
     const [uncategorized, setUncategorized] = React.useState(props.transaction && props.transaction.inflow > 0);
 
+    let insights = useInsights();
+
+
+
+
+    // create async function called recordClick:
+    const recordClick = async (name: string) => {
+      // Track event only on the client side
+      if (typeof window !== "undefined") {
+        await insights.trackEvent({ name: name });
+        // record username in insights if logged in:
+  
+      }
+    };
+
     const formatDate = () => {
         const now = new Date();
         const dateParts = now.toLocaleDateString().split('/');
@@ -74,6 +90,7 @@ export default function Transaction(props: TransactionProps) {
                     <button
                         type="submit"
                         className="rounded bg-red-400 p-2 text-white"
+                        onClick={() => recordClick("Delete Transaction")}
                     >
                         Delete
                     </button>
@@ -108,6 +125,7 @@ export default function Transaction(props: TransactionProps) {
                     <button
                         type="submit"
                         className="rounded bg-red-400 p-2 text-white"
+                        onClick={() => recordClick("Delete Transaction")}
                     >
                         Delete
                     </button>
@@ -208,7 +226,9 @@ export default function Transaction(props: TransactionProps) {
                     </div>
                 </div>
                 <div className="flex flex-col w-full lg:flex-wrap lg:flex-row full-width justify-center mt-2 items-center">
-                    <button type="submit" className="w-full lg:w-40 rounded bg-gray-950 p-2 my-1 mx-1 text-white">
+                    <button type="submit" className="w-full lg:w-40 rounded bg-gray-950 p-2 my-1 mx-1 text-white"
+                        onClick={() => recordClick(props.transaction ? "Update Transaction" : "Add Transaction")}
+                    >
                         {props.transaction ? "Update Transaction" : "Add Transaction"}
                     </button>
                     {props.transaction && <button

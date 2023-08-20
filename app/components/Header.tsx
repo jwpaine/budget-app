@@ -12,12 +12,18 @@ export default function Header(props: HeaderProps) {
 
 let insights = useInsights();
 
+if (props.userId) {
+  insights.setAuthenticatedUserContext(props.userId);
+}
+
 
 // create async function called recordClick:
 const recordClick = async (name: string) => {
   // Track event only on the client side
   if (typeof window !== "undefined") {
     await insights.trackEvent({ name: name});
+    // record username in insights if logged in:
+   
   } 
 };
 

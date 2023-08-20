@@ -1,11 +1,29 @@
 import { Link, NavLink, useFetcher } from "@remix-run/react"
+import { useInsights } from "~/InsightsContext";
 
 
 
 export default function SideBar(props) {
     const accounts = props.accounts
 
+    let insights = useInsights();
+
+  
+
+
+    // create async function called recordClick:
+    const recordClick = async (name: string) => {
+        // Track event only on the client side
+        if (typeof window !== "undefined") {
+            await insights.trackEvent({ name: name });
+            // record username in insights if logged in:
+
+        }
+    };
+
     const renderAccountTotals = () => {
+
+
 
 
         let cash = 0 as number
@@ -50,6 +68,7 @@ export default function SideBar(props) {
                             `align-between w-full block flex justify-between mb-1 px-4 py-2 hover:bg-slate-800`
                         }
                         to={`/accounts/${account.id}`}
+                        onClick={() => recordClick("Account Clicked (sidebar)")}
                     >
                         <span className="text-m text-white">{account.name}</span>
                         <span
@@ -89,6 +108,7 @@ export default function SideBar(props) {
             <Link
                 to="/accounts/new"
                 className={`flex items-center justify-center rounded-md border border-slate-500 px-4 py-4 mt-10 mx-2 text-base font-medium shadow-sm ${accounts?.length == 0 ? 'bg-emerald-400 text-black hover:bg-emerald-300' : 'bg-slate-800 text-white hover:bg-slate-700'}  sm:px-8`}
+                onClick={() => recordClick("Add Account (sidebar)")}
             >
                 + Add Account
             </Link>
@@ -96,6 +116,7 @@ export default function SideBar(props) {
             <Link
                 to="/budgets"
                 className="flex items-center justify-center rounded-md border border-slate-500 text-white px-4 py-4 mt-2 mx-2 text-base font-medium shadow-sm bg-slate-800 hover:bg-slate-700 sm:px-8"
+                onClick={() => recordClick("Manage Budgets (sidebar)")}
             >
                 Manage Budgets
             </Link>
@@ -103,6 +124,7 @@ export default function SideBar(props) {
             <Link
                 to="/data"
                 className="flex items-center justify-center rounded-md border border-slate-500 text-white px-4 py-4 mt-2 mx-2 text-base font-medium shadow-sm bg-slate-800 hover:bg-slate-700 sm:px-8"
+                onClick={() => recordClick("Reports (sidebar)")}
             >Reports</Link>
 
         </section>
