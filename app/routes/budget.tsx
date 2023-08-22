@@ -491,6 +491,61 @@ export default function Budget() {
                       <span className={`mx-2 text-right ${Number(balance) == 0 && 'text-white'} ${Number(balance) < 0 && 'text-red-500 font-bold'} ${Number(balance) > 0 && 'text-emerald-300 font-bold '}`}>{balance}</span>
 
 
+                      
+                      {/* <span className={`bg-slate-800 rounded p-2 text-xl ${renderBudgetTotals().toBudget > 0 ? 'text-emerald-400' : renderBudgetTotals().toBudget < 0 ? 'text-red-400' : 'text-white'}`}>${renderBudgetTotals().toBudget}</span> */}
+
+                      {renderBudgetTotals().toBudget != 0 && (
+                        
+                        <categories.Form
+                          className="h-full"
+                          method="post"
+                          action="/category/update"
+                          onSubmit={() => {
+                            setActiveBudget("")
+                            recordClick(`Borrow Category: ${c.category}`)
+                          }}
+                        >
+                          <input
+                            name="action"
+                            defaultValue="setBudget"
+                            type="hidden"
+                          />
+
+                          <input
+                            name="budgetId"
+                            defaultValue={data?.account?.activeBudget}
+                            type="hidden"
+                          />
+
+                          <input
+                            name="id"
+                            defaultValue={c.id}
+                            type="hidden"
+                          />
+
+                          <input
+                            name="window"
+                            defaultValue={budgetWindow}
+                            type="hidden"
+                          />
+
+                          <input
+                            name="currentValue"
+                            defaultValue={Number(Number(budgeted) + renderBudgetTotals().toBudget).toFixed(2)}
+                            type="hidden"
+
+                          />
+
+                          <button
+                            type="submit"
+                            className={`rounded ${renderBudgetTotals().toBudget > 0 ? 'bg-emerald-400' : 'bg-red-300'} p-2 text-black`}
+                          >
+                            {renderBudgetTotals().toBudget > 0 && '+'}{renderBudgetTotals().toBudget}
+                          </button>
+                        </categories.Form>
+                      )}
+                      
+
                       {Number(balance) < 0 && (
                         <categories.Form
                           className="h-full"
