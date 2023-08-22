@@ -66,7 +66,7 @@ export default function Index(props: { insights: ApplicationInsights }) {
           </div>
         </div>
 
-        <iframe className="mt-5 w-full" height="315" src="https://www.youtube.com/embed/N5ees9IOIa0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        <iframe className="mt-5 w-full" height="315" src="https://www.youtube.com/embed/-7CCYjqJePU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 
 
