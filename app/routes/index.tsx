@@ -42,90 +42,141 @@ export default function Index(props: { insights: ApplicationInsights }) {
 
 
   return (
-    <main className="flex flex-col bg-gray-900 w-full items-center">
-      <section className="flex flex-col lg:flex-row justify-center content-center items-center lg:items-start w-full max-w-6xl p-5 ">
+    <main className="flex flex-col w-full items-center bg-gray-100">
+      <div className="bg-gray-900 w-full flex flex-col items-center mb-10">
+        <section className="flex flex-col lg:flex-row justify-center content-center items-center lg:items-start w-full max-w-6xl p-5 ">
 
-        <div className="flex flex-col justify-center content-center items-center lg:items-start w-full ">
-          <h1 className="text-5xl md:text-7xl text-white font-bold">Budgeting</h1>
-          <h1 className="text-6xl md:text-8xl text-white font-bold py-2">Made</h1>
-          <h1 className="text-7xl md:text-9xl text-emerald-400 font-bold">Simple</h1>
-          <p className="text-sky-100 text-xl lg:text-2xl py-5 my-5 text-center lg:text-left">
-            We make it <span className="font-bold ">easy</span> to track monthly expenses, and budget for the road ahead.
-          </p>
-          <div className="flex flex-col lg:flex-row">
-            <p className="text-white text-center lg:text-left mb-5 lg:mr-5">Try <span className="font-bold">FREE</span> for 30 DAYS  ( No card required ) and then only $5/month if you decide to budget longer!</p>
-            <Link to={data.signupLink} className="w-full lg:max-w-fit ">
-              <button className="bg-emerald-400 hover:bg-emerald-300 text-gray-900 text-xl font-bold py-4 px-6 rounded w-full"
+          <div className="flex flex-col justify-center content-center items-center lg:items-start w-full ">
+            <h1 className="text-5xl md:text-7xl text-white font-bold">Budgeting</h1>
+            <h1 className="text-6xl md:text-8xl text-white font-bold py-2">Made</h1>
+            <h1 className="text-7xl md:text-9xl text-emerald-400 font-bold">Simple</h1>
+            <p className="text-sky-100 text-xl lg:text-2xl py-5 my-2 text-center lg:text-left">
+              We make it <span className="font-bold ">easy</span> to build a flexible budget and see where your money is going!
+            </p>
+            <p className="text-sky-100 text-xl lg:text-2xl mb-5 text-center lg:text-left">
+              Try <span className="font-bold ">FREE</span> for 365 days (No card required) when you signup now!
+            </p>
+
+          </div>
+          <div className="flex flex-col justify-center content-center items-center w-full lg:mt-40">
+            <Link to={data.signupLink} className="w-full lg:max-w-fit">
+              <button className="bg-emerald-400 hover:bg-emerald-300 text-gray-900 text-xl font-bold py-4 px-6 lg:py-6 lg:px-10 lg:text-2xl rounded w-full"
                 onClick={() => recordClick()}
               >
                 Sign up now
               </button>
 
+
+
             </Link>
-
           </div>
-        </div>
 
-        <iframe className="mt-5 w-full" height="315" src="https://www.youtube.com/embed/-7CCYjqJePU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          {/* <ul className="text-white text-xl flex flex-col w-full mt-14">
+          <li className="py-2">✅ Stop living paycheck-to-paycheck</li>
+          <li className="py-2">🐖 Build an emergency fund</li>
+          <li className="py-2">💳 Pay off debt</li>
+          <li className="py-2">🏝️ Save for that dream vacation</li>
+          <li className="py-2">📈 See where your money is going</li>
+          
+        </ul> */}
+
+          {/* <iframe className="mt-5 w-full" height="315" src="https://www.youtube.com/embed/-7CCYjqJePU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+ */}
 
 
 
 
+        </section>
+      </div>
 
-      </section>
 
-      <section className="bg-gray-800 p-5 w-full max-w-6xl rounded mb-10">
+      <h1 className="text-7xl md:text-5xl text-gray-900 font-bold ">How it works</h1>
+      <section className="p-5 w-full max-w-6xl rounded mb-10 mt-5 flex flex-col lg:flex-row items-center lg:items-start justify-between w-full mb-5">
 
-        <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between w-full mb-5">
 
-          <div className="flex flex-col mb-10 lg:mb-0">
-            <span className="text-white text-2xl font-bold text-center lg:text-left mb-5">It all starts with a budget </span>
-            {/* <p className="text-sky-100 text-xl lg:max-w-xl text-center lg:text-left lg:pr-12">
+        <div className="flex flex-col mb-10 lg:mb-0">
+          <p className="text-gray-900 text-2xl text-center lg:text-left mb-5"><span className="font-bold text-4xl border border-white p-1 px-4 rounded mr-2 bg-gray-900 text-white">1</span> Add categories</p>
+          <p className="text-gray-900 text-xl text-center lg:text-left mb-5 max-w-sm ">You'll add categories for all of your bills, expenses, and savings goals. </p>
+          <p className="text-gray-900 text-xl text-center lg:text-left mb-5 max-w-sm ">It's easy to set due dates and how much you'll need for each.</p>
+          {/* <p className="text-sky-100 text-xl lg:max-w-xl text-center lg:text-left lg:pr-12">
               Whether you want to stop living paycheck-to-paycheck, save money for that dream vacation, pay off debt, or build an emergency fund, DollarGrad makes it simple.
 
             </p> */}
-            <ul className="text-white text-xl">
-              <li className="py-2">✅ Stop living paycheck-to-paycheck</li>
-              <li className="py-2">🐖 Build an emergency fund</li>
-              <li className="py-2">💳 Pay off debt</li>
-              <li className="py-2">🏝️ Save for that dream vacation</li>
-              <li className="py-2">📈 See where my money is going</li>
-              <li>
-                <Link to={data.signupLink} className="w-full lg:max-w-fit ">
-                  <button className="bg-sky-400 hover:bg-sky-300 text-gray-900 text-xl font-bold py-4 px-6 rounded w-full lg:max-w-fit mt-5"
-                    onClick={() => recordClick()}
-                  >
-                    Start My Free Trial
-                  </button>
-                </Link>
-              </li>
-            </ul>
 
-            {/* <span className="text-white text-2xl font-bold text-center lg:text-left mb-5">See where my money is going</span> */}
+
+          {/* <span className="text-white text-2xl font-bold text-center lg:text-left mb-5">See where my money is going</span> */}
 
 
 
 
+        </div>
+
+        <CategoryDemo />
+
+
+
+
+      </section>
+      <section className="p-5 w-full max-w-6xl rounded mb-10 flex flex-col lg:flex-row items-center lg:items-start justify-between w-full mb-5">
+
+
+
+
+        <div className="flex flex-col mb-10 lg:mb-0">
+        <p className="text-gray-900 text-2xl text-center lg:text-left mb-5"><span className="font-bold text-4xl border border-white p-1 px-4 rounded mr-2 bg-gray-900 text-white">2</span> Add Accounts</p>
+      
+
+
+
+          <p className="text-gray-900 text-xl text-center lg:text-left mb-5 max-w-sm">Every dollar is assigned to categories. Fill them up as you get payed!</p>
+
+          <div className="flex justify-center lg:justify-start">
+            <span className="text-4xl">💳</span>
+            <span className="text-4xl">💰</span>
+            <span className="text-4xl">💵</span>
           </div>
 
-          <CategoryDemo />
+
+
+
+
 
         </div>
 
 
+        <CategoryDemo values />
+
+
+
       </section>
-      {/* <section className="flex flex-col content-center items-center justify-center bg-white p-10 w-full max-w-6xl rounded mt-5">
 
-        <h1 className="text-black text-4xl text-center">Do you know where your money is going?</h1>
-
-        <p className="text-black text-2xl lg:max-w-xl text-center lg:pr-12">
-          The first step to taking control of your finances is knowing where your money is going. <br /> <br /> DollarGrad makes it easy to track your spending, and
-          see where your money is going.
-        </p>
+      <section className="p-5 w-full max-w-6xl rounded mb-10 flex flex-col lg:flex-row items-center lg:items-start justify-between w-full mb-5">
 
 
+        <div className="flex flex-col mb-10 lg:mb-0">
+        <p className="text-gray-900 text-2xl text-center lg:text-left mb-5"><span className="font-bold text-4xl border border-white p-1 px-4 rounded mr-2 bg-gray-900 text-white">3</span> Enter Transactions</p>
+      
+          <p className="text-gray-900 text-xl text-center lg:text-left mb-5 max-w-sm">As you spend money, assign those transactions to categories. When you've spent more from a category than you budgeted, borrow from another!</p>
 
-      </section> */}
+          <p className="text-gray-900 text-xl text-center lg:text-left mb-5 max-w-sm">Income gets budgeted: Keep filling those categories!</p>
+
+          <Link to={data.signupLink} className="w-full lg:max-w-fit ">
+            <button className="bg-gray-900 hover:bg-gray-800 text-white text-xl font-bold py-4 px-6 rounded w-full"
+              onClick={() => recordClick()}
+            >
+              Get Started
+            </button>
+
+
+
+          </Link>
+        </div>
+
+        <AccountDemo />
+
+
+      </section>
+
     </main>
   );
 }
