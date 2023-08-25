@@ -159,7 +159,7 @@ export default function Budget() {
       const diff = now.getTime() - createdAt.getTime()
       const days = diff / (1000 * 3600 * 24);
 
-      const remaining = 30-days > 0 ? Math.ceil(30 - days) : 0
+      const remaining = 365-days > 0 ? Math.ceil(365 - days) : 0
 
       return remaining
   }
