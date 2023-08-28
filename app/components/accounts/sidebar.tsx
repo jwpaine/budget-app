@@ -61,6 +61,7 @@ export default function SideBar(props) {
         <section className={`w-full lg:h-full border-r border-gray-700 bg-gray-900 pb-4 md:max-w-sm min-w-sm`}>
 
             {accounts.length > 0 && <div className="mt-1 rounded m-2 ">
+            <div className="rounded m-2 p-5 bg-slate-700"><p className="text-white text-center ">Select an account to manage transactions</p></div>
                 {accounts.map((account) => (
                     <NavLink
                         key={account.id}
@@ -74,7 +75,7 @@ export default function SideBar(props) {
                         <span
                             className={`${Number(account.balance) >= 0
                                 ? "text-white"
-                                : "p-1 text-red-500"
+                                : "text-red-500"
                                 } text-m`}
                         >
                             {account.balance}

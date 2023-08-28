@@ -78,9 +78,9 @@ export async function trialExpired({account} : {account: any}) {
   
     console.log("days: ", days)
   
-    console.log(`Account is ${days} days old and subscription status is ${account?.customer?.subscriptionStatus}`)
+    console.log(`Account is ${days} days old and subscription status is ${account?.customer?.subscriptionStatus}: expired? ${days > 365}`)
   
-    if (days > 30 && account?.customer?.subscriptionStatus != 'active') {
+    if (days > 365 && account?.customer?.subscriptionStatus != 'active') {
         console.log(`Trial expired for ${account.email}, redirecting to account`)
       return true
     }
@@ -159,6 +159,9 @@ export async function getUserId(
     // console.log("getUserId: ", user)
     return user?.username || null
   }
+
+
+
 
 
 
