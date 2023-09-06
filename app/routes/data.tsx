@@ -27,7 +27,7 @@ export async function loader({ request, params }: LoaderArgs) {
   
 
     let currentDate = new Date() as Date
-    currentDate.setDate(currentDate.getDate() - 30);
+    currentDate.setDate(currentDate.getDate() - 60);
     let startDate = new Date(currentDate.toISOString().slice(0, 10)) as Date
   
     const accountId = "" as string

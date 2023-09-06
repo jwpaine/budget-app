@@ -162,7 +162,7 @@ export async function action({ request, params }: ActionArgs) {
 
   const linkedCategory = account?.linked?.id
 
-  if (linkedCategory) {
+  if (linkedCategory && type != "R") {
     const categoryAdjustment = await CreateCategoryAdjustment({userId, categoryId: linkedCategory, value: -value, window: date })
   }
 
