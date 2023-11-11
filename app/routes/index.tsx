@@ -54,7 +54,7 @@ export default function Index(props: { insights: ApplicationInsights }) {
               We make it <span className="font-bold ">easy</span> to build a flexible budget and see where your money is going!
             </p>
             <p className="text-sky-100 text-xl lg:text-2xl mb-5 text-center lg:text-left">
-              Try <span className="font-bold ">FREE</span> for 365 days (No card required) when you signup now!
+              Try <span className="font-bold ">FREE</span> for 365 days (No card required) when you signup now!!
             </p>
 
           </div>
